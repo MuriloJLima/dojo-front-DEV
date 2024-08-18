@@ -9,8 +9,8 @@ const Global = createGlobalStyle`
     }
 
     body {
-        width: 100vw;
-        heigth; 100vh;
+        width: 100%;
+        heigth; 100%;
         display: flex;
         justify-content: center;
         background-color: #f2f2f2;

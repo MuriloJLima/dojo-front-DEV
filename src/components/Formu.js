@@ -1,49 +1,100 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
+import config from '../config/config.json'
+
 const FormContainer = styled.div`
-  width: 90vw; max-width: 900px; margin: 5vh auto;
-  padding: 30px; border: 1px solid #e0e0e0; border-radius: 12px;
-  background-color: #ffffff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 600%;
+  max-height: 570px; /* Altura máxima do formulário */
+  padding: 20px; 
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background-color: #ffffff; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Adiciona a barra de rolagem vertical */
 `;
 
 const FormRow = styled.div`
-  display: flex; justify-content: space-between;
-  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap; /* Permitir que os elementos "quebrem" linha se o espaço for limitado */
+  justify-content: space-between;
+
+  @media (max-width: 700px) {
+    flex-direction: column; /* Alinha em coluna em telas pequenas */
+    margin-bottom: 15px;
+  }
 `;
 
 const FormGroup = styled.div`
-  flex: 1; display: flex; flex-direction: column;
-  &:not(:last-child) { margin-right: 20px; }
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+
+  &:not(:last-child) {
+    @media (max-width: 600px) {
+      margin-right: 0;
+      margin-bottom: 15px;
+    }
+  }
 `;
 
 const Label = styled.label`
-  font-size: 1.2rem; font-weight: 600;
-  color: #333; margin-bottom: 8px;
+  font-size: 1.0rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
 `;
 
 const Input = styled.input`
-  padding: 12px; font-size: 1rem; border: 1px solid #ccc;
-  border-radius: 6px; transition: border-color 0.3s;
-  &:focus { border-color: #007BFF; outline: none; }
+  padding: 7px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s;
+
+  &:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
 `;
 
 const Select = styled.select`
-  padding: 12px; font-size: 1rem; border: 1px solid #ccc;
-  border-radius: 6px; transition: border-color 0.3s;
-  &:focus { border-color: #007BFF; outline: none; }
+  padding: 7px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s;
+
+  &:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center; /* Alinha o botão horizontalmente ao centro */
+  margin-top: 20px; /* Espaço opcional acima do botão */
 `;
 
 const Button = styled.button`
-  width: 100%; padding: 15px;
-  font-size: 1.2rem; font-weight: 600;
-  color: #fff; background-color: #007BFF;
-  border: none; border-radius: 6px; cursor: pointer;
+  width: 50%;
+  padding: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 6px;
   transition: background-color 0.3s;
-  &:hover { background-color: #0056b3; }
+
+  &:hover {
+    background-color: #0056b3;
+  }
 `;
 
-const Form = () => {
+const Formu = () => {
   const [student, setStudent] = useState({
     nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
     altura_aluno: "", peso_aluno: "", t_sanguineo: "",
@@ -90,7 +141,7 @@ const Form = () => {
             <Label>Peso (kg):</Label>
             <Input type="number" name="peso_aluno" value={student.peso_aluno} onChange={handleChange} required />
           </FormGroup>
-          <FormGroup >
+          <FormGroup>
             <Label>Tipo Sanguíneo:</Label>
             <Select name="t_sanguineo" value={student.t_sanguineo} onChange={handleChange} required>
               <option value="">Selecione</option>
@@ -106,7 +157,7 @@ const Form = () => {
           </FormGroup>
         </FormRow>
         <FormRow>
-          <FormGroup style={{ maxWidth: '35%' }}>
+          <FormGroup>
             <Label>Telefone:</Label>
             <Input type="tel" name="tel_aluno" value={student.tel_aluno} onChange={handleChange} required />
           </FormGroup>
@@ -126,13 +177,25 @@ const Form = () => {
           </FormGroup>
           <FormGroup>
             <Label>Graduação:</Label>
-            <Input type="text" name="grad_aluno" value={student.grad_aluno} onChange={handleChange} required />
+            <Select name="grad_aluno" value={student.grad_aluno} onChange={handleChange} required>
+              <option value="">Selecione</option>
+              <option value="Faixa-Branca">Faixa-Branca</option>
+              <option value="Faixa-Amarela">Faixa-Amarela</option>
+              <option value="Faixa-Vermelha">Faixa-Vermelha</option>
+              <option value="Faixa-Laranja">Faixa-Laranja</option>
+              <option value="Faixa-Verde">Faixa-Verde</option>
+              <option value="Faixa-Roxa">Faixa-Roxa</option>
+              <option value="Faixa-Marrom">Faixa-Marrom</option>
+              <option value="Faixa-Preta">Faixa-Preta</option>
+            </Select>
           </FormGroup>
         </FormRow>
-        <Button type="submit">Enviar</Button>
+        <ButtonContainer>
+          <Button type="submit">Cadastrar</Button>
+        </ButtonContainer>
       </form>
     </FormContainer>
   );
 };
 
-export default Form;
+export default Formu;
