@@ -92,7 +92,7 @@ const Button = styled.button`
   }
 `;
 
-const Formu = () => {
+const Aluno = () => {
   const [student, setStudent] = useState({
     nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
     altura_aluno: "", peso_aluno: "", t_sanguineo: "",
@@ -239,4 +239,4 @@ const Formu = () => {
   );
 };
 
-export default Formu;
+export default Aluno;

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaTrash, FaEdit, FaSearch, FaFilter } from "react-icons/fa";
 import { toast } from "react-toastify";
 import config from '../config/config.json'
+import Aluno from "./Aluno";
 
 const Table = styled.table`
   width: 100%;
@@ -87,20 +88,36 @@ const List = () => {
     console.log("aluno deletado", id);
   };
 
+  const RenderAluno = (id) => {
+    console.log("aluno listado", id);
+  };
+
   return (
     <Table>
       <Thead>
         <Tr>
+          
+        <Th style={{ color: '#808080' }}>Perfil</Th>
+
+
           <Th>Matrícula</Th>
           <Th>Nome</Th>
           <Th>Idade</Th>
           <Th>Telefone</Th>
           <Th>Graduação</Th>
+          <Th alignCenter width="5%">
+              <FaFilter style={{ paddingInline: "100%" }}/>
+            </Th>
         </Tr>
+        
+        
       </Thead>
       <tbody>
         {alunos.map((item, i) => (
           <Tr key={i}>
+            <Td alignCenter width="5%">
+              <FaSearch onClick={() => RenderAluno(item.id_aluno)} />
+            </Td>
             <Td>{formatId(item.id_aluno)}</Td>
             <Td>{item.nome_aluno}</Td>
             <Td>{calculateAge(item.nasc_aluno)}</Td>
@@ -112,6 +129,7 @@ const List = () => {
             <Td alignCenter width="5%">
               <FaTrash onClick={() => handleDelete(item.id_aluno)} />
             </Td>
+          
           </Tr>
         ))}
       </tbody>
