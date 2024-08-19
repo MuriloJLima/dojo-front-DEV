@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import config from '../config/config.json'
+import { toast, ToastContainer } from "react-toastify";
 
 const FormContainer = styled.div`
   width: 600%;
@@ -93,20 +96,23 @@ const Button = styled.button`
 `;
 
 const Formu = () => {
-  const [student, setStudent] = useState({
+
+  const initialAlunoState = {
     nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
     altura_aluno: "", peso_aluno: "", t_sanguineo: "",
     tel_aluno: "", email_aluno: "", endereco_aluno: "",
-    data_insc: "", grad_aluno: "", nome_resp: "", tel_resp: ""
-  });
+    data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: ""
+  };
+
+  const [aluno, setAluno] = useState(initialAlunoState);
 
   const [idade, setIdade] = useState(null);
 
   useEffect(() => {
-    if (student.nasc_aluno) {
-      const birthDate = new Date(student.nasc_aluno);
+    if (aluno.nasc_aluno) {
+      const birthDate = new Date(aluno.nasc_aluno);
       const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
+      let age = today.getFullYear() - birthDate.getFullYear();
       const monthDifference = today.getMonth() - birthDate.getMonth();
 
       if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
@@ -115,14 +121,30 @@ const Formu = () => {
 
       setIdade(age);
     }
-  }, [student.nasc_aluno]);
+  }, [aluno.nasc_aluno]);
 
-  const handleChange = (e) =>
-    setStudent({ ...student, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  // useEffect(() => {
+  //   toast.success("Aluno cadastrado com sucesso");
+
+  // });
+
+  const handleChange = (e) => setAluno({ ...aluno, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Student Data:", student);
+
+    try {
+      const response = await axios.post(`${config.urlRoot}/cadastrarAlunos`, aluno);
+
+      // toast.success("Aluno cadastrado com sucesso");
+
+      setAluno(initialAlunoState);
+      setIdade(null);
+    } catch (error) {
+      console.error("Erro ao cadastrar o aluno:", error);
+      // Aqui você pode tratar o erro, como exibir uma mensagem para o usuário
+    }
   };
 
   return (
@@ -130,36 +152,36 @@ const Formu = () => {
       <form onSubmit={handleSubmit}>
         <FormGroup>
           <Label>Nome Completo:</Label>
-          <Input type="text" name="nome_aluno" value={student.nome_aluno} onChange={handleChange} required />
+          <Input type="text" name="nome_aluno" value={aluno.nome_aluno} onChange={handleChange} required />
         </FormGroup>
         <FormRow>
           <FormGroup>
             <Label>Data de Nascimento:</Label>
-            <Input type="date" name="nasc_aluno" value={student.nasc_aluno} onChange={handleChange} required />
+            <Input type="date" name="nasc_aluno" value={aluno.nasc_aluno} onChange={handleChange} required />
           </FormGroup>
           <FormGroup>
             <Label>Sexo:</Label>
-            <Select name="sexo_aluno" value={student.sexo_aluno} onChange={handleChange} required>
+            <Select name="sexo_aluno" value={aluno.sexo_aluno} onChange={handleChange} required>
               <option value="">Selecione</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Feminino">Feminino</option>
-              <option value="Outro">Outro</option>
+              <option value="M">Masculino</option>
+              <option value="F">Feminino</option>
+              <option value="O">Outro</option>
             </Select>
           </FormGroup>
         </FormRow>
-        
+
         <FormRow>
           <FormGroup>
             <Label>Altura (cm):</Label>
-            <Input type="number" name="altura_aluno" value={student.altura_aluno} onChange={handleChange} required />
+            <Input type="number" name="altura_aluno" value={aluno.altura_aluno} onChange={handleChange} placeholder="ex: 150" required />
           </FormGroup>
           <FormGroup>
             <Label>Peso (kg):</Label>
-            <Input type="number" name="peso_aluno" value={student.peso_aluno} onChange={handleChange} required />
+            <Input type="number" name="peso_aluno" value={aluno.peso_aluno} onChange={handleChange} placeholder="ex: 50" required />
           </FormGroup>
           <FormGroup>
             <Label>Tipo Sanguíneo:</Label>
-            <Select name="t_sanguineo" value={student.t_sanguineo} onChange={handleChange} required>
+            <Select name="t_sanguineo" value={aluno.t_sanguineo} onChange={handleChange} required>
               <option value="">Selecione</option>
               <option value="A+">A+</option>
               <option value="A-">A-</option>
@@ -174,51 +196,57 @@ const Formu = () => {
         </FormRow>
         {idade !== null && idade <= 18 ? (
           <>
-
             <FormGroup>
-              <Label>Nome Completo do Responsável:</Label>
-              <Input type="text" name="nome_resp" value={student.nome_resp} onChange={handleChange} required />
+              <Label>Nome Completo do responsonsável:</Label>
+              <Input type="text" name="nome_respons" value={aluno.nome_respons} onChange={handleChange} required />
             </FormGroup>
             <FormRow>
+              <FormGroup>
+                <Label>Telefone (responsonsável):</Label>
+                <Input type="tel" name="tel_respons" value={aluno.tel_respons} onChange={handleChange} required />
+              </FormGroup>
+              <FormGroup>
+                <Label>Telefone (Aluno):</Label>
+                <Input type="tel" name="tel_aluno" value={aluno.tel_aluno} onChange={handleChange} required />
+              </FormGroup>
+            </FormRow>
             <FormGroup>
-              <Label>Telefone (Responsável):</Label>
-              <Input type="tel" name="tel_resp" value={student.tel_resp} onChange={handleChange} required />
+              <Label>Email:</Label>
+              <Input type="email" name="email_aluno" value={aluno.email_aluno} onChange={handleChange} required />
             </FormGroup>
-            <FormGroup>
-            <Label>Telefone (Aluno):</Label>
-            <Input type="tel" name="tel_aluno" value={student.tel_aluno} onChange={handleChange} required />
-          </FormGroup>
-          </FormRow>
-          <FormGroup>
-            <Label>Email:</Label>
-            <Input type="email" name="email_aluno" value={student.email_aluno} onChange={handleChange} required />
-          </FormGroup>
           </>
         ) : (
           <FormRow>
-          <FormGroup>
-            <Label>Telefone:</Label>
-            <Input type="tel" name="tel_aluno" value={student.tel_aluno} onChange={handleChange} required />
-          </FormGroup>
-          <FormGroup>
-            <Label>Email:</Label>
-            <Input type="email" name="email_aluno" value={student.email_aluno} onChange={handleChange} required />
-          </FormGroup>
-        </FormRow>
-        ) }
-        
+            <FormGroup>
+              <Label>Telefone:</Label>
+              <Input type="tel" name="tel_aluno" value={aluno.tel_aluno} onChange={handleChange} required />
+            </FormGroup>
+            <FormGroup>
+              <Label>Email:</Label>
+              <Input type="email" name="email_aluno" value={aluno.email_aluno} onChange={handleChange} required />
+            </FormGroup>
+          </FormRow>
+        )}
+
         <FormGroup>
           <Label>Endereço Completo:</Label>
-          <Input type="text" name="endereco_aluno" value={student.endereco_aluno} onChange={handleChange} required />
+          <Input
+            type="text"
+            name="endereco_aluno"
+            value={aluno.endereco_aluno}
+            onChange={handleChange}
+            placeholder="ex: Rua das Flores, 123"
+            required
+          />
         </FormGroup>
         <FormRow>
           <FormGroup>
             <Label>Data de Inscrição:</Label>
-            <Input type="date" name="data_insc" value={student.data_insc} onChange={handleChange} required />
+            <Input type="date" name="data_insc" value={aluno.data_insc} onChange={handleChange} required />
           </FormGroup>
           <FormGroup>
             <Label>Graduação:</Label>
-            <Select name="grad_aluno" value={student.grad_aluno} onChange={handleChange} required>
+            <Select name="grad_aluno" value={aluno.grad_aluno} onChange={handleChange} required>
               <option value="">Selecione</option>
               <option value="Faixa-Branca">Faixa-Branca</option>
               <option value="Faixa-Amarela">Faixa-Amarela</option>
@@ -235,6 +263,15 @@ const Formu = () => {
           <Button type="submit">Cadastrar</Button>
         </ButtonContainer>
       </form>
+      {/* <ToastContainer
+        style={{
+          color: '#808080',
+          position: 'fixed', // Fixa o container em relação à tela
+          right: '-400%', // Distância da direita
+          zIndex: 9999 // Garante que o toast fique acima de outros elementos
+        }}
+        autoClose={3000}
+      /> */}
     </FormContainer>
   );
 };
