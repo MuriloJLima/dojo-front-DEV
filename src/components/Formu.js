@@ -137,7 +137,7 @@ const Formu = () => {
     try {
       const response = await axios.post(`${config.urlRoot}/cadastrarAlunos`, aluno);
 
-      // toast.success("Aluno cadastrado com sucesso");
+      toast.success("Aluno cadastrado com sucesso");
 
       setAluno(initialAlunoState);
       setIdade(null);
@@ -263,7 +263,7 @@ const Formu = () => {
           <Button type="submit">Cadastrar</Button>
         </ButtonContainer>
       </form>
-      {/* <ToastContainer
+      <ToastContainer
         style={{
           color: '#808080',
           position: 'fixed', // Fixa o container em relação à tela
@@ -271,7 +271,7 @@ const Formu = () => {
           zIndex: 9999 // Garante que o toast fique acima de outros elementos
         }}
         autoClose={3000}
-      /> */}
+      />
     </FormContainer>
   );
 };
