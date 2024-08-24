@@ -3,6 +3,7 @@ import GlobalStyle from "./styles/global";
 import styled from "styled-components";
 import List from "./components/List.js";
 import Formu from "./components/Formu.js";
+import Aluno from "./components/Aluno.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -55,18 +56,41 @@ const FloatingForm = styled.div`
   align-items: center;
 `;
 
+const FloatingForm2 = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 500%;
+  height: 500%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+`;
+
+const Overlay2 = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 500%;
+  height: 500%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
 `;
 
 function App() {
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [selectedAlunoId, setSelectedAlunoId] = useState(null);
 
   const handleAddStudent = () => {
     setIsFormVisible(true);
@@ -76,9 +100,20 @@ function App() {
     setIsFormVisible(false);
   };
 
+  const handleCloseAluno = () => {
+    setSelectedAlunoId(null);
+
+    console.log(selectedAlunoId)
+  };
+
   const handleExportExcel = () => {
     toast.success("Exportar dados para Excel");
   };
+
+  const handleAlunoSelect = (id) => {
+    setSelectedAlunoId(id);
+  };
+
 
   return (
     <>
@@ -88,7 +123,7 @@ function App() {
           <Button onClick={handleAddStudent}>Cadastrar Aluno</Button>
           <Button onClick={handleExportExcel}>Exportar em Excel</Button>
         </ButtonGroup>
-        <List />
+        <List onAlunoSelect={handleAlunoSelect} />
       </Container>
 
       {isFormVisible && (
@@ -99,6 +134,17 @@ function App() {
           </FloatingForm>
         </>
       )}
+
+      {selectedAlunoId !== null && (
+        <>
+          <Overlay2 onClick={handleCloseAluno} />
+          <FloatingForm2>
+            <Aluno id={selectedAlunoId} />
+          </FloatingForm2>
+        </>
+      )}
+      
+
 
       <ToastContainer autoClose={3000} />
       <GlobalStyle />
