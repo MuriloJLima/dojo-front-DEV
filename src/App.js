@@ -4,6 +4,7 @@ import styled from "styled-components";
 import List from "./components/List.js";
 import Formu from "./components/Formu.js";
 import Aluno from "./components/Aluno.js";
+import EdicaoAluno from "./components/EdicaoAluno.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -90,7 +91,8 @@ const Overlay2 = styled.div`
 
 function App() {
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [selectedAlunoId, setSelectedAlunoId] = useState(null);
+  const [searchAlunoId, setSearchAlunoId] = useState(null);
+  const [editAlunoId, setEditAlunoId] = useState(null);
 
   const handleAddStudent = () => {
     setIsFormVisible(true);
@@ -101,9 +103,8 @@ function App() {
   };
 
   const handleCloseAluno = () => {
-    setSelectedAlunoId(null);
-
-    console.log(selectedAlunoId)
+    setSearchAlunoId(null);
+    setEditAlunoId(null);
   };
 
   const handleExportExcel = () => {
@@ -111,7 +112,20 @@ function App() {
   };
 
   const handleAlunoSelect = (id) => {
-    setSelectedAlunoId(id);
+    // Verifica se o id começa com "S:"
+    if (id.startsWith("S:")) {
+      const idAluno = id.slice(2)
+
+      setSearchAlunoId(idAluno)
+    }
+    // Verifica se o id começa com "E:"
+    else if (id.startsWith("E:")) {
+      const idAluno = id.slice(2)
+
+      setEditAlunoId(idAluno)
+    } else {
+      console.log("Formato de ID desconhecido.");
+    }
   };
 
 
@@ -135,16 +149,23 @@ function App() {
         </>
       )}
 
-      {selectedAlunoId !== null && (
+      {searchAlunoId && (
         <>
           <Overlay2 onClick={handleCloseAluno} />
           <FloatingForm2>
-            <Aluno id={selectedAlunoId} />
+            <Aluno id={searchAlunoId} />
           </FloatingForm2>
         </>
       )}
-      
 
+      {editAlunoId && (
+        <>
+          <Overlay2 onClick={handleCloseAluno} />
+          <FloatingForm2>
+            <EdicaoAluno id={editAlunoId} />
+          </FloatingForm2>
+        </>
+      )}
 
       <ToastContainer autoClose={3000} />
       <GlobalStyle />

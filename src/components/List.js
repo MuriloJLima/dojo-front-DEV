@@ -57,7 +57,6 @@ export const Td = styled.td`
 
 const List = ({ onAlunoSelect }) => {
   const [alunos, setAlunos] = useState([]);
-  const [selectedAlunoId, setSelectedAlunoId] = useState(null);
 
   const getAlunos = async () => {
     const response = await axios.get(`${config.urlRoot}/listarAlunos`);
@@ -69,11 +68,6 @@ const List = ({ onAlunoSelect }) => {
     getAlunos();
   }, []);
 
-  useEffect(() => {
-    if (selectedAlunoId !== null) {
-      onAlunoSelect(selectedAlunoId);
-    }
-  }, [selectedAlunoId, onAlunoSelect]);
 
   const formatId = (id) => {
     return id.toString().padStart(4, '0');
@@ -97,8 +91,7 @@ const List = ({ onAlunoSelect }) => {
   };
 
   const handleAlunoClick = (id) => {
-    console.log("aluno listado", id);
-    setSelectedAlunoId(id); // Atualiza o estado com o id do aluno selecionado
+    onAlunoSelect(id);
   };
 
   return (
@@ -107,7 +100,7 @@ const List = ({ onAlunoSelect }) => {
         <Tr>
           <Th style={{ color: '#808080' }}>Perfil</Th>
           <Th>Matrícula</Th>
-          <Th>Nome</Th>
+          <Th>Nome Completo</Th>
           <Th>Idade</Th>
           <Th>Telefone</Th>
           <Th>Graduação</Th>
@@ -120,7 +113,7 @@ const List = ({ onAlunoSelect }) => {
         {alunos.map((item, i) => (
           <Tr key={i}>
             <Td alignCenter width="5%">
-              <FaSearch onClick={() => handleAlunoClick(item.id_aluno)} />
+              <FaSearch onClick={() => handleAlunoClick(`S:${item.id_aluno}`)} />
             </Td>
             <Td>{formatId(item.id_aluno)}</Td>
             <Td>{item.nome_aluno}</Td>
@@ -128,13 +121,14 @@ const List = ({ onAlunoSelect }) => {
             <Td>{item.tel_aluno}</Td>
             <Td>{item.grad_aluno}</Td>
             <Td alignCenter width="5%">
-              <FaEdit />
+              <FaEdit onClick={() => handleAlunoClick(`E:${item.id_aluno}`)} />
             </Td>
             <Td alignCenter width="5%">
               <FaTrash onClick={() => handleDelete(item.id_aluno)} />
             </Td>
           </Tr>
         ))}
+
       </tbody>
     </Table>
   );

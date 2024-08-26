@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import config from '../config/config.json';
+import axios from "axios";
 
-const FormContainer = styled.div`
+const ProfileContainer = styled.div`
   width: 600%;
   max-height: 570px;
   padding: 20px; 
@@ -12,8 +14,8 @@ const FormContainer = styled.div`
   overflow-y: auto;
 `;
 
-const FormRow = styled.div`
-  display: flex;
+const ProfileRow = styled.div`
+   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 
@@ -23,11 +25,11 @@ const FormRow = styled.div`
   }
 `;
 
-const FormGroup = styled.div`
+const ProfileGroup = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin: 5px;
+  margin: 1px;
 
   &:not(:last-child) {
     @media (max-width: 600px) {
@@ -40,73 +42,48 @@ const FormGroup = styled.div`
 const Label = styled.label`
   font-size: 1.0rem;
   font-weight: 500;
-  color: #333;
+  color: #555;
   margin-bottom: 8px;
+  display: block;
 `;
 
-const Input = styled.input`
-  padding: 7px;
+const Info = styled.span`
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  transition: border-color 0.3s;
-
-  &:focus {
-    border-color: #007BFF;
-    outline: none;
-  }
+  color: #333;
+  display: block;
+  margin-bottom: 12px;
 `;
 
-const Select = styled.select`
-  padding: 7px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  transition: border-color 0.3s;
-
-  &:focus {
-    border-color: #007BFF;
-    outline: none;
-  }
+const ProfileTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #007BFF;
+  text-align: center;
+  margin-bottom: 20px;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-`;
-
-const Button = styled.button`
-  width: 50%;
-  padding: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
-  background-color: #007BFF;
-  border: none;
-  border-radius: 6px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const Aluno = () => {
-  const [student, setStudent] = useState({
-    nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
-    altura_aluno: "", peso_aluno: "", t_sanguineo: "",
-    tel_aluno: "", email_aluno: "", endereco_aluno: "",
-    data_insc: "", grad_aluno: "", nome_resp: "", tel_resp: ""
-  });
-
+const Aluno = ({ id }) => {
+  const [aluno, setAluno] = useState({});
   const [idade, setIdade] = useState(null);
 
+  const getAluno = async () => {
+    try {
+      const response = await axios.get(`${config.urlRoot}/listarAlunoPK/${id}`);
+      setAluno(response.data.data);
+    } catch (error) {
+      console.error("Erro ao buscar aluno:", error);
+    }
+  };
+
   useEffect(() => {
-    if (student.nasc_aluno) {
-      const birthDate = new Date(student.nasc_aluno);
+    getAluno();
+  }, []);
+
+  useEffect(() => {
+    if (aluno.nasc_aluno) {
+      const birthDate = new Date(aluno.nasc_aluno);
       const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
+      let age = today.getFullYear() - birthDate.getFullYear();
       const monthDifference = today.getMonth() - birthDate.getMonth();
 
       if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
@@ -115,127 +92,78 @@ const Aluno = () => {
 
       setIdade(age);
     }
-  }, [student.nasc_aluno]);
-
-  const handleChange = (e) =>
-    setStudent({ ...student, [e.target.name]: e.target.value });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Student Data:", student);
-  };
+  }, [aluno.nasc_aluno]);
 
   return (
-    <FormContainer>
-      <form onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>Nome Completo:</Label>
-          <Input type="text" name="nome_aluno" value={student.nome_aluno} onChange={handleChange} required />
-        </FormGroup>
-        <FormRow>
-          <FormGroup>
-            <Label>Data de Nascimento:</Label>
-            <Input type="date" name="nasc_aluno" value={student.nasc_aluno} onChange={handleChange} required />
-          </FormGroup>
-          <FormGroup>
-            <Label>Sexo:</Label>
-            <Select name="sexo_aluno" value={student.sexo_aluno} onChange={handleChange} required>
-              <option value="">Selecione</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Feminino">Feminino</option>
-              <option value="Outro">Outro</option>
-            </Select>
-          </FormGroup>
-        </FormRow>
-        
-        <FormRow>
-          <FormGroup>
-            <Label>Altura (cm):</Label>
-            <Input type="number" name="altura_aluno" value={student.altura_aluno} onChange={handleChange} required />
-          </FormGroup>
-          <FormGroup>
-            <Label>Peso (kg):</Label>
-            <Input type="number" name="peso_aluno" value={student.peso_aluno} onChange={handleChange} required />
-          </FormGroup>
-          <FormGroup>
-            <Label>Tipo Sanguíneo:</Label>
-            <Select name="t_sanguineo" value={student.t_sanguineo} onChange={handleChange} required>
-              <option value="">Selecione</option>
-              <option value="A+">A+</option>
-              <option value="A-">A-</option>
-              <option value="B+">B+</option>
-              <option value="B-">B-</option>
-              <option value="AB+">AB+</option>
-              <option value="AB-">AB-</option>
-              <option value="O+">O+</option>
-              <option value="O-">O-</option>
-            </Select>
-          </FormGroup>
-        </FormRow>
-        {idade !== null && idade <= 18 ? (
-          <>
-
-            <FormGroup>
-              <Label>Nome Completo do Responsável:</Label>
-              <Input type="text" name="nome_resp" value={student.nome_resp} onChange={handleChange} required />
-            </FormGroup>
-            <FormRow>
-            <FormGroup>
-              <Label>Telefone (Responsável):</Label>
-              <Input type="tel" name="tel_resp" value={student.tel_resp} onChange={handleChange} required />
-            </FormGroup>
-            <FormGroup>
-            <Label>Telefone (Aluno):</Label>
-            <Input type="tel" name="tel_aluno" value={student.tel_aluno} onChange={handleChange} required />
-          </FormGroup>
-          </FormRow>
-          <FormGroup>
-            <Label>Email:</Label>
-            <Input type="email" name="email_aluno" value={student.email_aluno} onChange={handleChange} required />
-          </FormGroup>
-          </>
-        ) : (
-          <FormRow>
-          <FormGroup>
-            <Label>Telefone:</Label>
-            <Input type="tel" name="tel_aluno" value={student.tel_aluno} onChange={handleChange} required />
-          </FormGroup>
-          <FormGroup>
-            <Label>Email:</Label>
-            <Input type="email" name="email_aluno" value={student.email_aluno} onChange={handleChange} required />
-          </FormGroup>
-        </FormRow>
-        ) }
-        
-        <FormGroup>
-          <Label>Endereço Completo:</Label>
-          <Input type="text" name="endereco_aluno" value={student.endereco_aluno} onChange={handleChange} required />
-        </FormGroup>
-        <FormRow>
-          <FormGroup>
-            <Label>Data de Inscrição:</Label>
-            <Input type="date" name="data_insc" value={student.data_insc} onChange={handleChange} required />
-          </FormGroup>
-          <FormGroup>
-            <Label>Graduação:</Label>
-            <Select name="grad_aluno" value={student.grad_aluno} onChange={handleChange} required>
-              <option value="">Selecione</option>
-              <option value="Faixa-Branca">Faixa-Branca</option>
-              <option value="Faixa-Amarela">Faixa-Amarela</option>
-              <option value="Faixa-Vermelha">Faixa-Vermelha</option>
-              <option value="Faixa-Laranja">Faixa-Laranja</option>
-              <option value="Faixa-Verde">Faixa-Verde</option>
-              <option value="Faixa-Roxa">Faixa-Roxa</option>
-              <option value="Faixa-Marrom">Faixa-Marrom</option>
-              <option value="Faixa-Preta">Faixa-Preta</option>
-            </Select>
-          </FormGroup>
-        </FormRow>
-        <ButtonContainer>
-          <Button type="submit">Cadastrar</Button>
-        </ButtonContainer>
-      </form>
-    </FormContainer>
+    <ProfileContainer>
+      <ProfileTitle>Perfil do Aluno</ProfileTitle>
+      <ProfileGroup>
+        <Label>Nome Completo:</Label>
+        <Info>{aluno.nome_aluno || "N/A"}</Info>
+      </ProfileGroup>
+      <ProfileRow>
+        <ProfileGroup>
+          <Label>Data de Nascimento:</Label>
+          <Info>{aluno.nasc_aluno ? new Date(aluno.nasc_aluno).toLocaleDateString() : "N/A"}</Info>
+        </ProfileGroup>
+        <ProfileGroup>
+          <Label>Idade:</Label>
+          <Info>{idade !== null ? `${idade} anos` : "N/A"}</Info>
+        </ProfileGroup>
+      </ProfileRow>
+      <ProfileRow>
+        <ProfileGroup>
+          <Label>Sexo:</Label>
+          <Info>{aluno.sexo_aluno || "N/A"}</Info>
+        </ProfileGroup>
+        <ProfileGroup>
+          <Label>Tipo Sanguíneo:</Label>
+          <Info>{aluno.t_sanguineo || "N/A"}</Info>
+        </ProfileGroup>
+      </ProfileRow>
+      <ProfileRow>
+        <ProfileGroup>
+          <Label>Altura (cm):</Label>
+          <Info>{aluno.altura_aluno || "N/A"}</Info>
+        </ProfileGroup>
+        <ProfileGroup>
+          <Label>Peso (kg):</Label>
+          <Info>{aluno.peso_aluno || "N/A"}</Info>
+        </ProfileGroup>
+      </ProfileRow>
+      <ProfileRow>
+        <ProfileGroup>
+          <Label>Telefone:</Label>
+          <Info>{aluno.tel_aluno || aluno.tel_resp || "N/A"}</Info>
+        </ProfileGroup>
+        <ProfileGroup>
+          <Label>Email:</Label>
+          <Info>{aluno.email_aluno || "N/A"}</Info>
+        </ProfileGroup>
+      </ProfileRow>
+      {idade !== null && idade <= 18 && (
+        <>
+          <ProfileGroup>
+            <Label>Nome do Responsável:</Label>
+            <Info>{aluno.nome_resp || "N/A"}</Info>
+          </ProfileGroup>
+        </>
+      )}
+      <ProfileGroup>
+        <Label>Endereço:</Label>
+        <Info>{aluno.endereco_aluno || "N/A"}</Info>
+      </ProfileGroup>
+      <ProfileRow>
+        <ProfileGroup>
+          <Label>Data de Inscrição:</Label>
+          <Info>{aluno.data_insc ? new Date(aluno.data_insc).toLocaleDateString() : "N/A"}</Info>
+        </ProfileGroup>
+        <ProfileGroup>
+          <Label>Graduação:</Label>
+          <Info>{aluno.grad_aluno || "N/A"}</Info>
+        </ProfileGroup>
+      </ProfileRow>
+    </ProfileContainer>
   );
 };
 
