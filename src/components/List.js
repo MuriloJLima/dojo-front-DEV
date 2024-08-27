@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { FaTrash, FaEdit, FaSearch, FaFilter } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { FaTrash, FaEdit, FaSearch, FaSort } from "react-icons/fa";
+import { confirmAlert } from 'react-confirm-alert'; // Importa o react-confirm-alert
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Importa o CSS do react-confirm-alert
 import config from '../config/config.json';
 import Aluno from "./Aluno";
 
@@ -16,8 +17,6 @@ const Table = styled.table`
   border-collapse: collapse;
 `;
 
-
-
 export const Thead = styled.thead``;
 
 export const Tr = styled.tr`
@@ -28,12 +27,12 @@ export const Th = styled.th`
   text-align: center;
   padding: 15px 10px;
   @media (max-width: 768px) {
-    &:nth-child(n+4) {
+    &:nth-child(n+5):not(:last-child) {
       display: none;
     }
   }
   @media (max-width: 500px) {
-    &:nth-child(n+3) {
+    &:nth-child(n+4):not(:last-child) {
       display: none;
     }
   }
@@ -44,16 +43,17 @@ export const Td = styled.td`
   padding: 15px 10px;
   border-bottom: 1px solid #e0e0e0;
   @media (max-width: 768px) {
-    &:nth-child(n+4) {
+    &:nth-child(n+5):not(:nth-last-child(2)):not(:last-child) {
       display: none;
     }
   }
   @media (max-width: 500px) {
-    &:nth-child(n+3) {
+    &:nth-child(n+4):not(:nth-last-child(2)):not(:last-child) {
       display: none;
     }
   }
 `;
+
 
 const List = ({ onAlunoSelect }) => {
   const [alunos, setAlunos] = useState([]);
@@ -67,7 +67,6 @@ const List = ({ onAlunoSelect }) => {
   useEffect(() => {
     getAlunos();
   }, []);
-
 
   const formatId = (id) => {
     return id.toString().padStart(4, '0');
@@ -86,8 +85,23 @@ const List = ({ onAlunoSelect }) => {
     return age;
   };
 
-  const handleDelete = (id) => {
-    console.log("aluno deletado", id);
+  const handleDelete = async (id) => {
+    confirmAlert({
+      message: 'Você tem certeza que deseja excluir este aluno?',
+      buttons: [
+        {
+          label: 'Sim',
+          onClick: async () => {
+            await axios.delete(`${config.urlRoot}/excluirAlunos/${id}`);
+            window.location.reload();
+          }
+        },
+        {
+          label: 'Não',
+          onClick: () => {}
+        }
+      ]
+    });
   };
 
   const handleAlunoClick = (id) => {
@@ -105,7 +119,7 @@ const List = ({ onAlunoSelect }) => {
           <Th>Telefone</Th>
           <Th>Graduação</Th>
           <Th alignCenter width="5%">
-            <FaFilter style={{ paddingInline: "100%" }} />
+            <FaSort style={{ paddingInline: "100%" }} />
           </Th>
         </Tr>
       </Thead>
@@ -128,7 +142,6 @@ const List = ({ onAlunoSelect }) => {
             </Td>
           </Tr>
         ))}
-
       </tbody>
     </Table>
   );

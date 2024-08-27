@@ -21,7 +21,6 @@ const ProfileRow = styled.div`
 
   @media (max-width: 700px) {
     flex-direction: column;
-    margin-bottom: 15px;
   }
 `;
 
@@ -29,7 +28,7 @@ const ProfileGroup = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin: 1px;
+  margin: 3px;
 
   &:not(:last-child) {
     @media (max-width: 600px) {
@@ -43,7 +42,7 @@ const Label = styled.label`
   font-size: 1.0rem;
   font-weight: 500;
   color: #555;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   display: block;
 `;
 
@@ -94,6 +93,19 @@ const Aluno = ({ id }) => {
     }
   }, [aluno.nasc_aluno]);
 
+  const getSexoRepresentativo = (sexo) => {
+    switch (sexo) {
+      case 'M':
+        return 'Masculino';
+      case 'F':
+        return 'Feminino';
+      case 'O':
+        return 'Outro';
+      default:
+        return 'N/A';
+    }
+  };
+
   return (
     <ProfileContainer>
       <ProfileTitle>Perfil do Aluno</ProfileTitle>
@@ -114,7 +126,7 @@ const Aluno = ({ id }) => {
       <ProfileRow>
         <ProfileGroup>
           <Label>Sexo:</Label>
-          <Info>{aluno.sexo_aluno || "N/A"}</Info>
+          <Info>{getSexoRepresentativo(aluno.sexo_aluno)}</Info>
         </ProfileGroup>
         <ProfileGroup>
           <Label>Tipo Sanguíneo:</Label>
@@ -131,28 +143,64 @@ const Aluno = ({ id }) => {
           <Info>{aluno.peso_aluno || "N/A"}</Info>
         </ProfileGroup>
       </ProfileRow>
-      <ProfileRow>
-        <ProfileGroup>
-          <Label>Telefone:</Label>
-          <Info>{aluno.tel_aluno || aluno.tel_resp || "N/A"}</Info>
-        </ProfileGroup>
+      {/* <ProfileRow>
+          <ProfileGroup>
+            <Label>Telefone:</Label>
+            <Info>{aluno.tel_aluno || aluno.tel_resp || "N/A"}</Info>
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Email:</Label>
+            <Info>{aluno.email_aluno || "N/A"}</Info>
+          </ProfileGroup>
+        </ProfileRow> */}
+      {idade !== null && idade < 18 ? (
+        <>
+          <ProfileGroup>
+            <Label>Nome do Responsável:</Label>
+            <Info>{aluno.nome_respons || "N/A"}</Info>
+          </ProfileGroup>
+          <ProfileRow>
+            <ProfileGroup>
+              <Label>Telefone (responsonsável):</Label>
+              <Info>{aluno.tel_respons || "N/A"}</Info>
+            </ProfileGroup>
+            <ProfileGroup>
+              <Label>Telefone (aluno):</Label>
+              <Info>{aluno.tel_aluno || "N/A"}</Info>
+            </ProfileGroup>
+          </ProfileRow>
+          <ProfileRow>
         <ProfileGroup>
           <Label>Email:</Label>
           <Info>{aluno.email_aluno || "N/A"}</Info>
         </ProfileGroup>
+        <ProfileGroup>
+          <Label>Endereço:</Label>
+          <Info>{aluno.endereco_aluno || "N/A"}</Info>
+        </ProfileGroup>
       </ProfileRow>
-      {idade !== null && idade <= 18 && (
-        <>
-          <ProfileGroup>
-            <Label>Nome do Responsável:</Label>
-            <Info>{aluno.nome_resp || "N/A"}</Info>
-          </ProfileGroup>
+
         </>
+      ) : (
+        <>
+        <ProfileRow>
+          <ProfileGroup>
+            <Label>Telefone:</Label>
+            <Info>{aluno.tel_aluno || aluno.tel_resp || "N/A"}</Info>
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Email:</Label>
+            <Info>{aluno.email_aluno || "N/A"}</Info>
+          </ProfileGroup>
+        </ProfileRow>
+        <ProfileGroup>
+          <Label>Endereço:</Label>
+          <Info>{aluno.endereco_aluno || "N/A"}</Info>
+        </ProfileGroup>
+        </>
+        
       )}
-      <ProfileGroup>
-        <Label>Endereço:</Label>
-        <Info>{aluno.endereco_aluno || "N/A"}</Info>
-      </ProfileGroup>
+      
       <ProfileRow>
         <ProfileGroup>
           <Label>Data de Inscrição:</Label>

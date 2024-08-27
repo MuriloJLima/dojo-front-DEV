@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import config from '../config/config.json';
 import axios from "axios"; // Certifique-se de que o axios está importado
+import { toast, ToastContainer } from "react-toastify";
 
 const FormContainer = styled.div`
   width: 600%;
@@ -130,10 +131,22 @@ const EdicaoAluno = ({ id }) => {
   const handleChange = (e) =>
     setAluno({ ...aluno, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Aluno Data:", aluno);
+    
+    try {
+      const response = await axios.put(`${config.urlRoot}/alterarAlunos`, aluno);
+      toast.success("Aluno editado com sucesso!");
+
+      setTimeout(() => {
+        window.location.reload(); // Recarrega a página após 3 segundos
+      }, 1500);
+    } catch (error) {
+      console.error("Erro ao editar aluno:", error);
+      // Adicione aqui qualquer ação adicional, como exibir uma mensagem de erro
+    }
   };
+  
 
   return (
     <FormContainer>
@@ -182,16 +195,16 @@ const EdicaoAluno = ({ id }) => {
             </Select>
           </FormGroup>
         </FormRow>
-        {idade !== null && idade <= 18 ? (
+        {idade !== null && idade < 18 ? (
           <>
             <FormGroup>
               <Label>Nome Completo do Responsável:</Label>
-              <Input type="text" name="nome_resp" value={aluno.nome_resp || ""} onChange={handleChange} required />
+              <Input type="text" name="nome_respons" value={aluno.nome_respons || ""} onChange={handleChange} required />
             </FormGroup>
             <FormRow>
               <FormGroup>
                 <Label>Telefone (Responsável):</Label>
-                <Input type="tel" name="tel_resp" value={aluno.tel_resp || ""} onChange={handleChange} required />
+                <Input type="tel" name="tel_respons" value={aluno.tel_respons || ""} onChange={handleChange} required />
               </FormGroup>
               <FormGroup>
                 <Label>Telefone (Aluno):</Label>
@@ -241,9 +254,18 @@ const EdicaoAluno = ({ id }) => {
           </FormGroup>
         </FormRow>
         <ButtonContainer>
-          <Button type="submit">Cadastrar</Button>
+          <Button type="submit">Editar</Button>
         </ButtonContainer>
       </form>
+      <ToastContainer
+        style={{
+          color: '#808080',
+          position: 'fixed', // Fixa o container em relação à tela
+          right: '-400%', // Distância da direita
+          zIndex: 9999 // Garante que o toast fique acima de outros elementos
+        }}
+        autoClose={3000}
+      />
     </FormContainer>
   );
 };

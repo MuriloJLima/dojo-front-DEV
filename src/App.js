@@ -57,17 +57,6 @@ const FloatingForm = styled.div`
   align-items: center;
 `;
 
-const FloatingForm2 = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  width: 10%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
 
 const Overlay = styled.div`
   position: fixed;
@@ -79,15 +68,6 @@ const Overlay = styled.div`
   z-index: 999;
 `;
 
-const Overlay2 = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 500%;
-  height: 500%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-`;
 
 function App() {
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -100,11 +80,13 @@ function App() {
 
   const handleCloseForm = () => {
     setIsFormVisible(false);
+    window.location.reload()
   };
 
   const handleCloseAluno = () => {
     setSearchAlunoId(null);
     setEditAlunoId(null);
+    window.location.reload()
   };
 
   const handleExportExcel = () => {
@@ -151,19 +133,19 @@ function App() {
 
       {searchAlunoId && (
         <>
-          <Overlay2 onClick={handleCloseAluno} />
-          <FloatingForm2>
+          <Overlay onClick={handleCloseAluno} />
+          <FloatingForm>
             <Aluno id={searchAlunoId} />
-          </FloatingForm2>
+          </FloatingForm>
         </>
       )}
 
       {editAlunoId && (
         <>
-          <Overlay2 onClick={handleCloseAluno} />
-          <FloatingForm2>
+          <Overlay onClick={handleCloseAluno} />
+          <FloatingForm>
             <EdicaoAluno id={editAlunoId} />
-          </FloatingForm2>
+          </FloatingForm>
         </>
       )}
 

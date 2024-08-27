@@ -194,7 +194,7 @@ const Formu = () => {
             </Select>
           </FormGroup>
         </FormRow>
-        {idade !== null && idade <= 18 ? (
+        {idade !== null && idade < 18 ? (
           <>
             <FormGroup>
               <Label>Nome Completo do responsonsável:</Label>
