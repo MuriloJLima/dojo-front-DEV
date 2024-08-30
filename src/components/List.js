@@ -5,6 +5,8 @@ import { FaTrash, FaEdit, FaSearch, FaSort } from "react-icons/fa";
 import { confirmAlert } from 'react-confirm-alert'; // Importa o react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Importa o CSS do react-confirm-alert
 import config from '../config/config.json';
+import { toast, ToastContainer } from "react-toastify";
+
 import Aluno from "./Aluno";
 
 const Table = styled.table`
@@ -93,7 +95,11 @@ const List = ({ onAlunoSelect }) => {
           label: 'Sim',
           onClick: async () => {
             await axios.delete(`${config.urlRoot}/excluirAlunos/${id}`);
-            window.location.reload();
+            toast.success("Aluno deletado com sucesso!");
+
+            setTimeout(() => {
+              window.location.reload(); 
+            }, 1000);
           }
         },
         {
@@ -143,6 +149,16 @@ const List = ({ onAlunoSelect }) => {
           </Tr>
         ))}
       </tbody>
+      <ToastContainer
+        style={{
+          color: '#808080',
+          position: 'fixed', // Fixa o container em relação à tela
+          right: '-400%', // Distância da direita
+          zIndex: 9999 // Garante que o toast fique acima de outros elementos
+        }}
+        autoClose={3000}
+      />
+  
     </Table>
   );
 };

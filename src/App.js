@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import GlobalStyle from "./styles/global";
 import styled from "styled-components";
+
 import List from "./components/List.js";
 import Formu from "./components/Formu.js";
 import Aluno from "./components/Aluno.js";
 import EdicaoAluno from "./components/EdicaoAluno.js";
+import ExcelEdit from "./components/ExelConfig.js";
+
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { useEffect } from "react";
+import config from './config/config.json';
 
 const Container = styled.div`
   width: 100%;
@@ -74,6 +77,8 @@ function App() {
   const [searchAlunoId, setSearchAlunoId] = useState(null);
   const [editAlunoId, setEditAlunoId] = useState(null);
 
+  const [isExcelVisible, setIsExcelVisible] = useState(false);
+
   const handleAddStudent = () => {
     setIsFormVisible(true);
   };
@@ -89,8 +94,12 @@ function App() {
     window.location.reload()
   };
 
+  const handleCloseExcel = () => {
+    setIsExcelVisible(false)
+  };
+
   const handleExportExcel = () => {
-    toast.success("Exportar dados para Excel");
+    setIsExcelVisible(true)
   };
 
   const handleAlunoSelect = (id) => {
@@ -145,6 +154,15 @@ function App() {
           <Overlay onClick={handleCloseAluno} />
           <FloatingForm>
             <EdicaoAluno id={editAlunoId} />
+          </FloatingForm>
+        </>
+      )}
+
+      {isExcelVisible && (
+        <>
+          <Overlay onClick={handleCloseExcel} />
+          <FloatingForm>
+            <ExcelEdit />
           </FloatingForm>
         </>
       )}
