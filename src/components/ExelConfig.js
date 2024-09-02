@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import config from '../config/config.json';
 import axios from "axios";
+import * as XLSX from "xlsx";  // Importa a biblioteca xlsx
 
 const Container = styled.div`
-  width: 600%; /* Ajuste de largura para não ultrapassar 100% */
+  width: 600%;
   max-height: 570px;
   padding: 20px; 
   border: 1px solid #e0e0e0;
@@ -43,7 +44,21 @@ const FieldList = styled.div`
   border-radius: 8px;
 `;
 
-// Mapeamento de campos para títulos amigáveis
+const ExportButton = styled.button`
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 20px;
+  
+  &:hover {
+    background-color: #218838;
+  }
+`;
+
 const fieldTitles = {
   id_aluno: "ID do Aluno",
   nome_aluno: "Nome do Aluno",
@@ -62,10 +77,40 @@ const fieldTitles = {
   grad_aluno: "Graduação",
 };
 
+const padIdAluno = (id) => {
+  return id.toString().padStart(4, '0');
+};
+
+const formatDateToBrazilian = (date) => {
+  const [year, month, day] = date.split("-");
+  return `${day}/${month}/${year}`;
+};
+
+const calculateAge = (birthdate) => {
+  const [year, month, day] = birthdate.split("-");
+  const birthDateObj = new Date(year, month - 1, day);
+  const ageDifMs = Date.now() - birthDateObj.getTime();
+  const ageDate = new Date(ageDifMs);
+  return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
+const formatSexoAluno = (sexo) => {
+  switch (sexo) {
+    case "M":
+      return "Masculino";
+    case "F":
+      return "Feminino";
+    case "O":
+      return "Outro";
+    default:
+      return sexo;
+  }
+};
+
 const ExcelEdit = () => {
   const [alunos, setAlunos] = useState([]);
   const [selectedFields, setSelectedFields] = useState({
-    id_aluno: true,  // Campo obrigatório, marcado por padrão
+    id_aluno: true,
     nome_aluno: true,
     nasc_aluno: true,
     idade: true,
@@ -84,7 +129,15 @@ const ExcelEdit = () => {
 
   const getAlunos = async () => {
     const response = await axios.get(`${config.urlRoot}/listarAlunos`);
-    setAlunos(response.data.data);
+    const alunosComDadosTratados = response.data.data.map((aluno) => ({
+      ...aluno,
+      id_aluno: padIdAluno(aluno.id_aluno),
+      nasc_aluno: formatDateToBrazilian(aluno.nasc_aluno),
+      data_insc: formatDateToBrazilian(aluno.data_insc),
+      idade: calculateAge(aluno.nasc_aluno),
+      sexo_aluno: formatSexoAluno(aluno.sexo_aluno),
+    }));
+    setAlunos(alunosComDadosTratados);
   };
 
   useEffect(() => {
@@ -113,15 +166,22 @@ const ExcelEdit = () => {
     });
   };
 
-  const filteredAlunos = alunos.map((aluno) => {
-    const filtered = {};
-    Object.keys(selectedFields).forEach((field) => {
-      if (selectedFields[field]) {
-        filtered[field] = aluno[field];
-      }
+  const exportToExcel = () => {
+    const filteredAlunos = alunos.map((aluno) => {
+      const filtered = {};
+      Object.keys(selectedFields).forEach((field) => {
+        if (selectedFields[field]) {
+          filtered[fieldTitles[field]] = aluno[field];
+        }
+      });
+      return filtered;
     });
-    return filtered;
-  });
+
+    const worksheet = XLSX.utils.json_to_sheet(filteredAlunos);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Alunos");
+    XLSX.writeFile(workbook, "Alunos.xlsx");
+  };
 
   return (
     <Container>
@@ -141,25 +201,15 @@ const ExcelEdit = () => {
               type="checkbox"
               checked={selectedFields[field]}
               onChange={() => handleCheckboxChange(field)}
-              disabled={field === "id_aluno"} // Desabilitar checkbox para id_aluno
+              disabled={field === "id_aluno"}
             />
             {fieldTitles[field]}
           </CheckboxLabel>
         ))}
       </CheckboxContainer>
-      <FieldList>
-        {filteredAlunos.map((aluno, index) => (
-          <div key={index}>
-            <p><strong>Aluno {index + 1}:</strong></p>
-            {Object.entries(aluno).map(([key, value]) => (
-              <p key={key}>
-                <strong>{fieldTitles[key]}:</strong> {value}
-              </p>
-            ))}
-            <hr />
-          </div>
-        ))}
-      </FieldList>
+      <ExportButton onClick={exportToExcel}>
+        Exportar para Excel
+      </ExportButton>
     </Container>
   );
 };

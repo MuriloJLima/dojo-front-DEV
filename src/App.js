@@ -91,6 +91,11 @@ function App() {
   const handleCloseAluno = () => {
     setSearchAlunoId(null);
     setEditAlunoId(null);
+  };
+
+  const handleCloseEditAluno = () => {
+    setSearchAlunoId(null);
+    setEditAlunoId(null);
     window.location.reload()
   };
 
@@ -151,7 +156,7 @@ function App() {
 
       {editAlunoId && (
         <>
-          <Overlay onClick={handleCloseAluno} />
+          <Overlay onClick={handleCloseEditAluno} />
           <FloatingForm>
             <EdicaoAluno id={editAlunoId} />
           </FloatingForm>
