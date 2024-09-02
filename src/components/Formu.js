@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import config from '../config/config.json'
+import config from '../config/config.json';
 import { toast, ToastContainer } from "react-toastify";
 
 const FormContainer = styled.div`
@@ -50,12 +50,12 @@ const Label = styled.label`
 const Input = styled.input`
   padding: 7px;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid ${props => props.error ? '#e74c3c' : '#ccc'};
   border-radius: 6px;
   transition: border-color 0.3s;
 
   &:focus {
-    border-color: #007BFF;
+    border-color: ${props => props.error ? '#e74c3c' : '#007BFF'};
     outline: none;
   }
 `;
@@ -63,14 +63,20 @@ const Input = styled.input`
 const Select = styled.select`
   padding: 7px;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid ${props => props.error ? '#e74c3c' : '#ccc'};
   border-radius: 6px;
   transition: border-color 0.3s;
 
   &:focus {
-    border-color: #007BFF;
+    border-color: ${props => props.error ? '#e74c3c' : '#007BFF'};
     outline: none;
   }
+`;
+
+const ErrorText = styled.p`
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin: 5px 0 0;
 `;
 
 const ButtonContainer = styled.div`
@@ -95,18 +101,46 @@ const Button = styled.button`
   }
 `;
 
+const SmallFormGroup = styled(FormGroup)`
+  flex: 0 0 0%;
+`;
+
 const Formu = () => {
 
-  const initialAlunoState = {
-    nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
+  const [aluno, setAluno] = useState({
+    id_aluno: "", nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
     altura_aluno: "", peso_aluno: "", t_sanguineo: "",
     tel_aluno: "", email_aluno: "", endereco_aluno: "",
     data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: ""
-  };
-
-  const [aluno, setAluno] = useState(initialAlunoState);
+  });
 
   const [idade, setIdade] = useState(null);
+  const [alunos, setAlunos] = useState([]);
+  const [idError, setIdError] = useState("");
+
+  const getAlunos = async () => {
+    try {
+      const response = await axios.get(`${config.urlRoot}/listarAlunos`);
+      const alunosData = response.data.data;
+      setAlunos(alunosData);
+
+      const ids = alunosData.map(a => parseInt(a.id_aluno, 10)).filter(id => !isNaN(id));
+      const maxId = Math.max(...ids, 0);
+      const nextId = (maxId + 1).toString().padStart(4, '0');
+
+      setAluno(prevState => ({
+        ...prevState,
+        id_aluno: nextId
+      }));
+
+    } catch (error) {
+      console.error("Erro ao buscar alunos:", error);
+    }
+  };
+
+  useEffect(() => {
+    getAlunos();
+  }, []);
 
   useEffect(() => {
     if (aluno.nasc_aluno) {
@@ -123,23 +157,36 @@ const Formu = () => {
     }
   }, [aluno.nasc_aluno]);
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+    setAluno({ ...aluno, [name]: value });
 
-  // useEffect(() => {
-  //   toast.success("Aluno cadastrado com sucesso");
-
-  // });
-
-  const handleChange = (e) => setAluno({ ...aluno, [e.target.name]: e.target.value });
+    if (name === "id_aluno") {
+      const existingAluno = alunos.find(a => a.id_aluno === value);
+      if (existingAluno) {
+        setIdError("Este ID já está em uso.");
+      } else {
+        setIdError("");
+      }
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (idError) {
+      return; // Não permite o envio se houver erro
+    }
+
     try {
       const response = await axios.post(`${config.urlRoot}/cadastrarAlunos`, aluno);
-
-      toast.success("Aluno cadastrado com sucesso");
-
-      setAluno(initialAlunoState);
+      toast.success(response.data.mensagemStatus);
+      setAluno({
+        id_aluno: "", nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
+        altura_aluno: "", peso_aluno: "", t_sanguineo: "",
+        tel_aluno: "", email_aluno: "", endereco_aluno: "",
+        data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: ""
+      });
       setIdade(null);
     } catch (error) {
       console.error("Erro ao cadastrar o aluno:", error);
@@ -150,10 +197,25 @@ const Formu = () => {
   return (
     <FormContainer>
       <form onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>Nome Completo:</Label>
-          <Input type="text" name="nome_aluno" value={aluno.nome_aluno} onChange={handleChange} required />
-        </FormGroup>
+        <FormRow>
+          <SmallFormGroup>
+            <Label>Matrícula:</Label>
+            <Input 
+              type="text" 
+              name="id_aluno" 
+              value={aluno.id_aluno} 
+              onChange={handleChange} 
+              maxLength={4} 
+              required 
+              error={!!idError}
+            />
+            {idError && <ErrorText>{idError}</ErrorText>}
+          </SmallFormGroup>
+          <FormGroup>
+            <Label>Nome Completo:</Label>
+            <Input type="text" name="nome_aluno" value={aluno.nome_aluno} onChange={handleChange} required />
+          </FormGroup>
+        </FormRow>
         <FormRow>
           <FormGroup>
             <Label>Data de Nascimento:</Label>
@@ -169,7 +231,6 @@ const Formu = () => {
             </Select>
           </FormGroup>
         </FormRow>
-
         <FormRow>
           <FormGroup>
             <Label>Altura (cm):</Label>
@@ -197,12 +258,12 @@ const Formu = () => {
         {idade !== null && idade < 18 ? (
           <>
             <FormGroup>
-              <Label>Nome Completo do responsonsável:</Label>
+              <Label>Nome Completo do responsável:</Label>
               <Input type="text" name="nome_respons" value={aluno.nome_respons} onChange={handleChange} required />
             </FormGroup>
             <FormRow>
               <FormGroup>
-                <Label>Telefone (responsonsável):</Label>
+                <Label>Telefone (responsável):</Label>
                 <Input type="tel" name="tel_respons" value={aluno.tel_respons} onChange={handleChange} required />
               </FormGroup>
               <FormGroup>
@@ -227,7 +288,6 @@ const Formu = () => {
             </FormGroup>
           </FormRow>
         )}
-
         <FormGroup>
           <Label>Endereço Completo:</Label>
           <Input
@@ -260,15 +320,15 @@ const Formu = () => {
           </FormGroup>
         </FormRow>
         <ButtonContainer>
-          <Button type="submit">Cadastrar</Button>
+          <Button type="submit" disabled={!!idError}>Cadastrar</Button>
         </ButtonContainer>
       </form>
       <ToastContainer
         style={{
           color: '#808080',
-          position: 'fixed', // Fixa o container em relação à tela
-          right: '-400%', // Distância da direita
-          zIndex: 9999 // Garante que o toast fique acima de outros elementos
+          position: 'fixed',
+          right: '-400%',
+          zIndex: 9999
         }}
         autoClose={3000}
       />
