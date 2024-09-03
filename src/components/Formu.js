@@ -111,7 +111,7 @@ const Formu = () => {
     id_aluno: "", nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
     altura_aluno: "", peso_aluno: "", t_sanguineo: "",
     tel_aluno: "", email_aluno: "", endereco_aluno: "",
-    data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: ""
+    data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: "", is_adm: false
   });
 
   const [idade, setIdade] = useState(null);
@@ -174,6 +174,7 @@ const Formu = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+
     if (idError) {
       return; // Não permite o envio se houver erro
     }
@@ -182,12 +183,13 @@ const Formu = () => {
       const response = await axios.post(`${config.urlRoot}/cadastrarAlunos`, aluno);
       toast.success(response.data.mensagemStatus);
       setAluno({
-        id_aluno: "", nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
+        nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
         altura_aluno: "", peso_aluno: "", t_sanguineo: "",
         tel_aluno: "", email_aluno: "", endereco_aluno: "",
-        data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: ""
+        data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: "", is_adm: false
       });
       setIdade(null);
+      getAlunos()
     } catch (error) {
       console.error("Erro ao cadastrar o aluno:", error);
       // Aqui você pode tratar o erro, como exibir uma mensagem para o usuário
@@ -200,13 +202,13 @@ const Formu = () => {
         <FormRow>
           <SmallFormGroup>
             <Label>Matrícula:</Label>
-            <Input 
-              type="text" 
-              name="id_aluno" 
-              value={aluno.id_aluno} 
-              onChange={handleChange} 
-              maxLength={4} 
-              required 
+            <Input
+              type="text"
+              name="id_aluno"
+              value={aluno.id_aluno}
+              onChange={handleChange}
+              maxLength={4}
+              required
               error={!!idError}
             />
             {idError && <ErrorText>{idError}</ErrorText>}
@@ -318,6 +320,14 @@ const Formu = () => {
               <option value="Faixa-Preta">Faixa-Preta</option>
             </Select>
           </FormGroup>
+          <SmallFormGroup>
+            <Label>Administrador:</Label>
+            <Select name="is_adm" value={aluno.is_adm} onChange={handleChange} required>
+              <option value={false}>Não</option>
+              <option value={true}>Sim</option>
+            </Select>
+
+          </SmallFormGroup>
         </FormRow>
         <ButtonContainer>
           <Button type="submit" disabled={!!idError}>Cadastrar</Button>

@@ -95,6 +95,10 @@ const Button = styled.button`
   }
 `;
 
+const SmallFormGroup = styled(FormGroup)`
+  flex: 0 0 0%;
+`;
+
 const EdicaoAluno = ({ id }) => {
   const [aluno, setAluno] = useState({});
 
@@ -151,10 +155,25 @@ const EdicaoAluno = ({ id }) => {
   return (
     <FormContainer>
       <form onSubmit={handleSubmit}>
+        <FormRow>
+        <SmallFormGroup>
+            <Label>Matrícula:</Label>
+            <Input
+              type="text"
+              name="id_aluno"
+              value={aluno.id_aluno}
+              onChange={handleChange}
+              maxLength={4}
+              required
+              // error={!!idError}
+            />
+            {/* {idError && <ErrorText>{idError}</ErrorText>} */}
+          </SmallFormGroup>
         <FormGroup>
           <Label>Nome Completo:</Label>
           <Input type="text" name="nome_aluno" value={aluno.nome_aluno || ""} onChange={handleChange} required />
         </FormGroup>
+        </FormRow>
         <FormRow>
           <FormGroup>
             <Label>Data de Nascimento:</Label>
@@ -252,6 +271,14 @@ const EdicaoAluno = ({ id }) => {
               <option value="Faixa-Preta">Faixa-Preta</option>
             </Select>
           </FormGroup>
+          <SmallFormGroup>
+            <Label>Administrador:</Label>
+            <Select name="is_adm" value={aluno.is_adm} onChange={handleChange} required>
+              <option value={false}>Não</option>
+              <option value={true}>Sim</option>
+            </Select>
+
+          </SmallFormGroup>
         </FormRow>
         <ButtonContainer>
           <Button type="submit">Editar</Button>
