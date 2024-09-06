@@ -109,10 +109,16 @@ const Aluno = ({ id }) => {
   return (
     <ProfileContainer>
       <ProfileTitle>Perfil do Aluno</ProfileTitle>
+      <ProfileRow>
+      <ProfileGroup>
+        <Label>Matrícula:</Label>
+        <Info>{aluno.matricula_aluno || "N/A"}</Info>
+      </ProfileGroup>
       <ProfileGroup>
         <Label>Nome Completo:</Label>
         <Info>{aluno.nome_aluno || "N/A"}</Info>
       </ProfileGroup>
+      </ProfileRow> 
       <ProfileRow>
         <ProfileGroup>
           <Label>Data de Nascimento:</Label>

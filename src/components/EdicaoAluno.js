@@ -73,6 +73,12 @@ const Select = styled.select`
   }
 `;
 
+const ErrorText = styled.p`
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin: 5px 0 0;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -102,6 +108,11 @@ const SmallFormGroup = styled(FormGroup)`
 const EdicaoAluno = ({ id }) => {
   const [aluno, setAluno] = useState({});
 
+  const [alunos, setAlunos] = useState([]);
+  const [idError, setIdError] = useState("");
+
+
+
   const getAluno = async () => {
     try {
       const response = await axios.get(`${config.urlRoot}/listarAlunoPK/${id}`);
@@ -111,9 +122,24 @@ const EdicaoAluno = ({ id }) => {
     }
   };
 
+  const getAlunos = async () => {
+    try {
+      const response = await axios.get(`${config.urlRoot}/listarAlunos`);
+      const alunosData = response.data.data;
+      setAlunos(alunosData);
+
+    } catch (error) {
+      console.error("Erro ao buscar alunos:", error);
+    }
+  };
+
   useEffect(() => {
     getAluno();
+    getAlunos();
   }, []);
+
+
+ 
 
   const [idade, setIdade] = useState(null);
 
@@ -132,12 +158,28 @@ const EdicaoAluno = ({ id }) => {
     }
   }, [aluno.nasc_aluno]);
 
-  const handleChange = (e) =>
-    setAluno({ ...aluno, [e.target.name]: e.target.value });
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+    setAluno({ ...aluno, [name]: value });
+
+    if (name === "matricula_aluno") {
+      const existingAluno = alunos.find(a => a.matricula_aluno === value);
+      if (existingAluno) {
+        setIdError("Esta matrícula já está em uso.");
+      } else {
+        setIdError("");
+      }
+    }
+  };
+    
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (idError) {
+      return; // Não permite o envio se houver erro
+    }
+
     try {
       const response = await axios.put(`${config.urlRoot}/alterarAlunos`, aluno);
       toast.success("Aluno editado com sucesso!");
@@ -160,14 +202,14 @@ const EdicaoAluno = ({ id }) => {
             <Label>Matrícula:</Label>
             <Input
               type="text"
-              name="id_aluno"
-              value={aluno.id_aluno}
+              name="matricula_aluno"
+              value={aluno.matricula_aluno}
               onChange={handleChange}
               maxLength={4}
               required
-              // error={!!idError}
+              error={!!idError}
             />
-            {/* {idError && <ErrorText>{idError}</ErrorText>} */}
+            {idError && <ErrorText>{idError}</ErrorText>}
           </SmallFormGroup>
         <FormGroup>
           <Label>Nome Completo:</Label>

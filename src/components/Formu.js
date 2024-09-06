@@ -108,7 +108,7 @@ const SmallFormGroup = styled(FormGroup)`
 const Formu = () => {
 
   const [aluno, setAluno] = useState({
-    id_aluno: "", nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
+    matricula_aluno: "", matricula_aluno: "", nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
     altura_aluno: "", peso_aluno: "", t_sanguineo: "",
     tel_aluno: "", email_aluno: "", endereco_aluno: "",
     data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: "", is_adm: false
@@ -124,13 +124,13 @@ const Formu = () => {
       const alunosData = response.data.data;
       setAlunos(alunosData);
 
-      const ids = alunosData.map(a => parseInt(a.id_aluno, 10)).filter(id => !isNaN(id));
+      const ids = alunosData.map(a => parseInt(a.matricula_aluno, 10)).filter(id => !isNaN(id));
       const maxId = Math.max(...ids, 0);
       const nextId = (maxId + 1).toString().padStart(4, '0');
 
       setAluno(prevState => ({
         ...prevState,
-        id_aluno: nextId
+        matricula_aluno: nextId
       }));
 
     } catch (error) {
@@ -161,10 +161,10 @@ const Formu = () => {
     const { name, value } = e.target;
     setAluno({ ...aluno, [name]: value });
 
-    if (name === "id_aluno") {
-      const existingAluno = alunos.find(a => a.id_aluno === value);
+    if (name === "matricula_aluno") {
+      const existingAluno = alunos.find(a => a.matricula_aluno === value);
       if (existingAluno) {
-        setIdError("Este ID já está em uso.");
+        setIdError("Esta matrícula já está em uso.");
       } else {
         setIdError("");
       }
@@ -204,8 +204,8 @@ const Formu = () => {
             <Label>Matrícula:</Label>
             <Input
               type="text"
-              name="id_aluno"
-              value={aluno.id_aluno}
+              name="matricula_aluno"
+              value={aluno.matricula_aluno}
               onChange={handleChange}
               maxLength={4}
               required

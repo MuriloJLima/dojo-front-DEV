@@ -62,7 +62,7 @@ const List = ({ onAlunoSelect }) => {
 
   const getAlunos = async () => {
     const response = await axios.get(`${config.urlRoot}/listarAlunos`);
-    console.log(response.data.data);
+    // console.log(response.data.data);
     setAlunos(response.data.data);
   };
 
@@ -70,9 +70,7 @@ const List = ({ onAlunoSelect }) => {
     getAlunos();
   }, []);
 
-  const formatId = (id) => {
-    return id.toString().padStart(4, '0');
-  };
+  
 
   const calculateAge = (birthDate) => {
     const today = new Date();
@@ -135,7 +133,7 @@ const List = ({ onAlunoSelect }) => {
             <Td alignCenter width="5%">
               <FaSearch onClick={() => handleAlunoClick(`S:${item.id_aluno}`)} />
             </Td>
-            <Td>{formatId(item.id_aluno)}</Td>
+            <Td>{item.matricula_aluno}</Td>
             <Td>{item.nome_aluno}</Td>
             <Td>{calculateAge(item.nasc_aluno)}</Td>
             <Td>{item.tel_aluno}</Td>

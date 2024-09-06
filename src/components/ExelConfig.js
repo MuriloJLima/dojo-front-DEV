@@ -60,7 +60,7 @@ const ExportButton = styled.button`
 `;
 
 const fieldTitles = {
-  id_aluno: "ID do Aluno",
+  matricula_aluno: "Matrícula",
   nome_aluno: "Nome do Aluno",
   nasc_aluno: "Data de Nascimento",
   idade: "Idade",
@@ -110,7 +110,7 @@ const formatSexoAluno = (sexo) => {
 const ExcelEdit = () => {
   const [alunos, setAlunos] = useState([]);
   const [selectedFields, setSelectedFields] = useState({
-    id_aluno: true,
+    matricula_aluno: true,
     nome_aluno: true,
     nasc_aluno: true,
     idade: true,
@@ -131,7 +131,7 @@ const ExcelEdit = () => {
     const response = await axios.get(`${config.urlRoot}/listarAlunos`);
     const alunosComDadosTratados = response.data.data.map((aluno) => ({
       ...aluno,
-      id_aluno: padIdAluno(aluno.id_aluno),
+      matricula_aluno: padIdAluno(aluno.matricula_aluno),
       nasc_aluno: formatDateToBrazilian(aluno.nasc_aluno),
       data_insc: formatDateToBrazilian(aluno.data_insc),
       idade: calculateAge(aluno.nasc_aluno),
@@ -145,7 +145,7 @@ const ExcelEdit = () => {
   }, []);
 
   const handleCheckboxChange = (field) => {
-    if (field === "id_aluno") return;
+    if (field === "matricula_aluno") return;
 
     setSelectedFields((prev) => ({
       ...prev,
@@ -158,7 +158,7 @@ const ExcelEdit = () => {
     setSelectedFields((prev) => {
       const updatedFields = { ...prev };
       Object.keys(updatedFields).forEach((field) => {
-        if (field !== "id_aluno") {
+        if (field !== "matricula_aluno") {
           updatedFields[field] = isChecked;
         }
       });
@@ -201,7 +201,7 @@ const ExcelEdit = () => {
               type="checkbox"
               checked={selectedFields[field]}
               onChange={() => handleCheckboxChange(field)}
-              disabled={field === "id_aluno"}
+              disabled={field === "matricula_aluno"}
             />
             {fieldTitles[field]}
           </CheckboxLabel>
