@@ -42,6 +42,8 @@ function App() {
       ) : (
         <Login onLogin={handleLogin} />
       )}
+
+      {/* <Home onLogout={handleLogout} /> */}
       <GlobalStyle />
     </>
   );

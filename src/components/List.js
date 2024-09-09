@@ -62,13 +62,15 @@ const List = ({ onAlunoSelect }) => {
 
   const getAlunos = async () => {
     const response = await axios.get(`${config.urlRoot}/listarAlunos`);
-    // console.log(response.data.data);
-    setAlunos(response.data.data);
+    // Ordenar os dados pelo campo matricula_aluno
+    const sortedData = response.data.data.sort((a, b) => a.matricula_aluno - b.matricula_aluno);
+    setAlunos(sortedData);
   };
-
+  
   useEffect(() => {
     getAlunos();
   }, []);
+  
 
   
 

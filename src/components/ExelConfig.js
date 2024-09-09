@@ -2,61 +2,99 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import config from '../config/config.json';
 import axios from "axios";
-import * as XLSX from "xlsx";  // Importa a biblioteca xlsx
+import * as XLSX from "xlsx";
 
 const Container = styled.div`
   width: 600%;
   max-height: 570px;
-  padding: 20px; 
+  padding: 20px;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
-  background-color: #ffffff; 
+  background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
 `;
 
 const Title = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #007BFF;
-  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
   margin-bottom: 20px;
+  color: #007bff;
+  margin-left: 10px
+`;
+
+const Content = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+`;
+
+const FieldSelection = styled.div`
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  @media (max-width: 700px) {
+    flex-direction: column;
+  }
+  
+`;
+
+const FieldGroup = styled.div`
+  flex: 1;
+  padding: 10px;
+`;
+
+const FieldGroupTitle = styled.h3`
+  font-size: 1.2rem;
+  color: #343a40;
+  margin-bottom: 10px;
 `;
 
 const CheckboxContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
-  margin-bottom: 20px;
 `;
 
 const CheckboxLabel = styled.label`
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 0.9rem;
+  gap: 10px;
+  font-size: 1rem;
+  color: #495057;
 `;
 
-const FieldList = styled.div`
-  margin-top: 20px;
-  background-color: #f8f8f8;
-  padding: 10px;
-  border-radius: 8px;
+const ExportSection = styled.div`
+  text-align: center;
 `;
 
 const ExportButton = styled.button`
-  background-color: #28a745;
+  background-color: #007bff;
   color: white;
-  padding: 10px 20px;
+  padding: 15px 30px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
-  margin-top: 20px;
-  
+  font-weight: 600;
+  margin-top: 40px;
+  transition: background-color 0.2s;
+
   &:hover {
-    background-color: #218838;
+    background-color: #0056b3;
   }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+`;
+
+const LoadingText = styled.span`
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 1rem;
+  color: #fff;
 `;
 
 const fieldTitles = {
@@ -127,6 +165,8 @@ const ExcelEdit = () => {
     grad_aluno: true,
   });
 
+  const [loading, setLoading] = useState(false);
+
   const getAlunos = async () => {
     const response = await axios.get(`${config.urlRoot}/listarAlunos`);
     const alunosComDadosTratados = response.data.data.map((aluno) => ({
@@ -167,6 +207,7 @@ const ExcelEdit = () => {
   };
 
   const exportToExcel = () => {
+    setLoading(true);
     const filteredAlunos = alunos.map((aluno) => {
       const filtered = {};
       Object.keys(selectedFields).forEach((field) => {
@@ -181,35 +222,83 @@ const ExcelEdit = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Alunos");
     XLSX.writeFile(workbook, "Alunos.xlsx");
+    setLoading(false);
   };
 
   return (
     <Container>
-      <Title>Exportar para excel</Title>
-      <CheckboxLabel>
-        <input
-          type="checkbox"
-          checked={Object.values(selectedFields).every(Boolean)}
-          onChange={handleSelectAllChange}
-        />
-        Selecionar Todos
-      </CheckboxLabel>
-      <CheckboxContainer>
-        {Object.keys(selectedFields).map((field) => (
-          <CheckboxLabel key={field}>
-            <input
-              type="checkbox"
-              checked={selectedFields[field]}
-              onChange={() => handleCheckboxChange(field)}
-              disabled={field === "matricula_aluno"}
-            />
-            {fieldTitles[field]}
-          </CheckboxLabel>
-        ))}
-      </CheckboxContainer>
-      <ExportButton onClick={exportToExcel}>
-        Exportar para Excel
-      </ExportButton>
+      <Title>Exportar para Excel</Title>
+      <CheckboxLabel style={{ marginLeft: '10px' }}>
+              <input
+                type="checkbox"
+                checked={Object.values(selectedFields).every(Boolean)}
+                onChange={handleSelectAllChange}
+              />
+              Selecionar Todos
+            </CheckboxLabel>
+      <Content>
+        
+        <FieldSelection>
+        
+          <FieldGroup>
+           
+
+            <FieldGroupTitle>Informações Pessoais</FieldGroupTitle>
+            <CheckboxContainer>
+              {["matricula_aluno", "nome_aluno", "nasc_aluno", "idade", "sexo_aluno"].map((field) => (
+                <CheckboxLabel key={field}>
+                  <input
+                    type="checkbox"
+                    checked={selectedFields[field]}
+                    onChange={() => handleCheckboxChange(field)}
+                    disabled={field === "matricula_aluno"}
+                  />
+                  {fieldTitles[field]}
+                </CheckboxLabel>
+              ))}
+            </CheckboxContainer>
+          </FieldGroup>
+
+          <FieldGroup>
+            <FieldGroupTitle>Contato</FieldGroupTitle>
+            <CheckboxContainer>
+              {["tel_aluno", "email_aluno", "endereco_aluno", "nome_respons", "tel_respons"].map((field) => (
+                <CheckboxLabel key={field}>
+                  <input
+                    type="checkbox"
+                    checked={selectedFields[field]}
+                    onChange={() => handleCheckboxChange(field)}
+                  />
+                  {fieldTitles[field]}
+                </CheckboxLabel>
+              ))}
+            </CheckboxContainer>
+          </FieldGroup>
+     
+          <FieldGroup>
+            <FieldGroupTitle>Outras Informações</FieldGroupTitle>
+            <CheckboxContainer>
+              {["t_sanguineo", "altura_aluno", "peso_aluno", "data_insc", "grad_aluno"].map((field) => (
+                <CheckboxLabel key={field}>
+                  <input
+                    type="checkbox"
+                    checked={selectedFields[field]}
+                    onChange={() => handleCheckboxChange(field)}
+                  />
+                  {fieldTitles[field]}
+                </CheckboxLabel>
+              ))}
+            </CheckboxContainer>
+          </FieldGroup>
+        </FieldSelection>
+      </Content>
+
+      <ExportSection>
+        <ExportButton onClick={exportToExcel} disabled={loading}>
+          {loading ? "Exportando..." : "Exportar para Excel"}
+          {loading && <LoadingText>Processando...</LoadingText>}
+        </ExportButton>
+      </ExportSection>
     </Container>
   );
 };
