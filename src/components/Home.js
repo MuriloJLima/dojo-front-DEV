@@ -128,7 +128,7 @@ function Home({ onLogout }) {
   return (
     <>
       <Container>
-      <button onClick={onLogout}>Logout</button>
+      <button onClick={onLogout}>Sair</button>
         <Title>Alunos</Title>
         <ButtonGroup>
           <Button onClick={handleAddStudent}>Cadastrar Aluno</Button>

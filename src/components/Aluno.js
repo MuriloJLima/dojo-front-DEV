@@ -136,29 +136,19 @@ const Aluno = ({ id }) => {
         </ProfileGroup>
         <ProfileGroup>
           <Label>Tipo Sanguíneo:</Label>
-          <Info>{aluno.t_sanguineo || "N/A"}</Info>
+          <Info>{aluno.t_sanguineo || "--"}</Info>
         </ProfileGroup>
       </ProfileRow>
       <ProfileRow>
         <ProfileGroup>
           <Label>Altura (cm):</Label>
-          <Info>{aluno.altura_aluno || "N/A"}</Info>
+          <Info>{aluno.altura_aluno || "--"}</Info>
         </ProfileGroup>
         <ProfileGroup>
           <Label>Peso (kg):</Label>
-          <Info>{aluno.peso_aluno || "N/A"}</Info>
+          <Info>{aluno.peso_aluno || "--"}</Info>
         </ProfileGroup>
       </ProfileRow>
-      {/* <ProfileRow>
-          <ProfileGroup>
-            <Label>Telefone:</Label>
-            <Info>{aluno.tel_aluno || aluno.tel_resp || "N/A"}</Info>
-          </ProfileGroup>
-          <ProfileGroup>
-            <Label>Email:</Label>
-            <Info>{aluno.email_aluno || "N/A"}</Info>
-          </ProfileGroup>
-        </ProfileRow> */}
       {idade !== null && idade < 18 ? (
         <>
           <ProfileGroup>
@@ -172,7 +162,7 @@ const Aluno = ({ id }) => {
             </ProfileGroup>
             <ProfileGroup>
               <Label>Telefone (aluno):</Label>
-              <Info>{aluno.tel_aluno || "N/A"}</Info>
+              <Info>{aluno.tel_aluno || "--"}</Info>
             </ProfileGroup>
           </ProfileRow>
           <ProfileRow>

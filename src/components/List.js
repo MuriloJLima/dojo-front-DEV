@@ -10,13 +10,17 @@ import { toast, ToastContainer } from "react-toastify";
 import Aluno from "./Aluno";
 
 const Table = styled.table`
-  width: 100%;
-  padding: 30px;
+  width: 120%;
+  padding: 20px;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-collapse: collapse;
+  @media (max-width: 968px) {
+     width: 90%;
+    }
+  }
 `;
 
 export const Thead = styled.thead``;
@@ -42,7 +46,7 @@ export const Th = styled.th`
 
 export const Td = styled.td`
   text-align: center;
-  padding: 15px 10px;
+  padding: 10px 10px;
   border-bottom: 1px solid #e0e0e0;
   @media (max-width: 768px) {
     &:nth-child(n+5):not(:nth-last-child(2)):not(:last-child) {
@@ -133,18 +137,18 @@ const List = ({ onAlunoSelect }) => {
         {alunos.map((item, i) => (
           <Tr key={i}>
             <Td alignCenter width="5%">
-              <FaSearch onClick={() => handleAlunoClick(`S:${item.id_aluno}`)} />
+              <FaSearch onClick={() => handleAlunoClick(`S:${item._id}`)} />
             </Td>
             <Td>{item.matricula_aluno}</Td>
             <Td>{item.nome_aluno}</Td>
             <Td>{calculateAge(item.nasc_aluno)}</Td>
-            <Td>{item.tel_aluno}</Td>
+            <Td>{item.tel_respons || item.tel_aluno}</Td>
             <Td>{item.grad_aluno}</Td>
             <Td alignCenter width="5%">
-              <FaEdit onClick={() => handleAlunoClick(`E:${item.id_aluno}`)} />
+              <FaEdit onClick={() => handleAlunoClick(`E:${item._id}`)} />
             </Td>
             <Td alignCenter width="5%">
-              <FaTrash onClick={() => handleDelete(item.id_aluno)} />
+              <FaTrash onClick={() => handleDelete(item._id)} />
             </Td>
           </Tr>
         ))}

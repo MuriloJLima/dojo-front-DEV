@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import config from '../config/config.json';
 import { toast, ToastContainer } from "react-toastify";
+import InputMask from 'react-input-mask';
 
 const FormContainer = styled.div`
   width: 600%;
@@ -171,6 +172,10 @@ const Formu = () => {
     }
   };
 
+  //captura a data de hoje para validação no campo de data
+  const hoje = new Date().toISOString().split('T')[0];
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -207,6 +212,9 @@ const Formu = () => {
               name="matricula_aluno"
               value={aluno.matricula_aluno}
               onChange={handleChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+              }}
               maxLength={4}
               required
               error={!!idError}
@@ -221,7 +229,7 @@ const Formu = () => {
         <FormRow>
           <FormGroup>
             <Label>Data de Nascimento:</Label>
-            <Input type="date" name="nasc_aluno" value={aluno.nasc_aluno} onChange={handleChange} required />
+            <Input type="date" name="nasc_aluno" value={aluno.nasc_aluno} onChange={handleChange} max={hoje} required />
           </FormGroup>
           <FormGroup>
             <Label>Sexo:</Label>
@@ -236,15 +244,31 @@ const Formu = () => {
         <FormRow>
           <FormGroup>
             <Label>Altura (cm):</Label>
-            <Input type="number" name="altura_aluno" value={aluno.altura_aluno} onChange={handleChange} placeholder="ex: 150" required />
+            <Input type="text"
+              name="altura_aluno"
+              value={aluno.altura_aluno}
+              onChange={handleChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+              }}
+              placeholder="ex: 150"
+              maxLength={3} />
           </FormGroup>
           <FormGroup>
             <Label>Peso (kg):</Label>
-            <Input type="number" name="peso_aluno" value={aluno.peso_aluno} onChange={handleChange} placeholder="ex: 50" required />
+            <Input type="text"
+              name="peso_aluno"
+              value={aluno.peso_aluno}
+              onChange={handleChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+              }}
+              placeholder="ex: 50"
+              maxLength={3} />
           </FormGroup>
           <FormGroup>
             <Label>Tipo Sanguíneo:</Label>
-            <Select name="t_sanguineo" value={aluno.t_sanguineo} onChange={handleChange} required>
+            <Select name="t_sanguineo" value={aluno.t_sanguineo} onChange={handleChange}>
               <option value="">Selecione</option>
               <option value="A+">A+</option>
               <option value="A-">A-</option>
@@ -264,14 +288,26 @@ const Formu = () => {
               <Input type="text" name="nome_respons" value={aluno.nome_respons} onChange={handleChange} required />
             </FormGroup>
             <FormRow>
+            <FormGroup>
+              <Label>Telefone (responsável):</Label>
+              <InputMask
+                mask="(99) 99999 9999"
+                value={aluno.tel_respons}
+                onChange={handleChange}
+              >
+                {(inputProps) => <Input {...inputProps} type="tel" name="tel_respons" required />}
+              </InputMask>
+            </FormGroup>
               <FormGroup>
-                <Label>Telefone (responsável):</Label>
-                <Input type="tel" name="tel_respons" value={aluno.tel_respons} onChange={handleChange} required />
-              </FormGroup>
-              <FormGroup>
-                <Label>Telefone (Aluno):</Label>
-                <Input type="tel" name="tel_aluno" value={aluno.tel_aluno} onChange={handleChange} required />
-              </FormGroup>
+              <Label>Telefone (aluno):</Label>
+              <InputMask
+                mask="(99) 99999 9999"
+                value={aluno.tel_aluno}
+                onChange={handleChange}
+              >
+                {(inputProps) => <Input {...inputProps} type="tel" name="tel_aluno" />}
+              </InputMask>
+            </FormGroup>
             </FormRow>
             <FormGroup>
               <Label>Email:</Label>
@@ -282,7 +318,13 @@ const Formu = () => {
           <FormRow>
             <FormGroup>
               <Label>Telefone:</Label>
-              <Input type="tel" name="tel_aluno" value={aluno.tel_aluno} onChange={handleChange} required />
+              <InputMask
+                mask="(99) 99999 9999"
+                value={aluno.tel_aluno}
+                onChange={handleChange}
+              >
+                {(inputProps) => <Input {...inputProps} type="tel" name="tel_aluno" required />}
+              </InputMask>
             </FormGroup>
             <FormGroup>
               <Label>Email:</Label>
@@ -304,7 +346,7 @@ const Formu = () => {
         <FormRow>
           <FormGroup>
             <Label>Data de Inscrição:</Label>
-            <Input type="date" name="data_insc" value={aluno.data_insc} onChange={handleChange} required />
+            <Input type="date" name="data_insc" value={aluno.data_insc} onChange={handleChange} max={hoje} required />
           </FormGroup>
           <FormGroup>
             <Label>Graduação:</Label>

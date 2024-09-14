@@ -117,7 +117,7 @@ const Login = ({ onLogin }) => {
       <LoginForm onSubmit={handleSubmit}>
         <Label>Email:</Label>
         <Input
-          type="text"
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
