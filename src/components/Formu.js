@@ -109,10 +109,39 @@ const SmallFormGroup = styled(FormGroup)`
 const Formu = () => {
 
   const [aluno, setAluno] = useState({
-    matricula_aluno: "", matricula_aluno: "", nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
-    altura_aluno: "", peso_aluno: "", t_sanguineo: "",
-    tel_aluno: "", email_aluno: "", endereco_aluno: "",
-    data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: "", is_adm: false
+    dados_aluno: {
+      nome_aluno: "",
+      nasc_aluno: "",
+      sexo_aluno: "",
+      altura_aluno: "",
+      peso_aluno: "",
+      t_sanguineo: "",
+      tel_aluno: "",
+      email_aluno: "",
+      endereco_aluno: "",
+    },
+    dados_respons: {
+      nome_respons: "",
+      tel_respons: "",
+    },
+    dados_matricula: {
+      matri_dojo: "",
+      dados_modalidades: {
+        dados_karate: {
+          is_aluno: false,
+          matri_federacao: "",
+          data_insc: "",
+          grad_aluno: "",
+        },
+        dados_muaythai: {
+          is_aluno: false,
+          matri_federacao: "",
+          data_insc: "",
+          grad_aluno: "",
+        }
+      }
+    },
+    is_adm: false
   });
 
   const [idade, setIdade] = useState(null);
@@ -125,14 +154,18 @@ const Formu = () => {
       const alunosData = response.data.data;
       setAlunos(alunosData);
 
-      const ids = alunosData.map(a => parseInt(a.matricula_aluno, 10)).filter(id => !isNaN(id));
+      const ids = alunosData.map(a => parseInt(a.dados_matricula.matri_dojo, 10)).filter(id => !isNaN(id));
       const maxId = Math.max(...ids, 0);
       const nextId = (maxId + 1).toString().padStart(4, '0');
 
       setAluno(prevState => ({
         ...prevState,
-        matricula_aluno: nextId
+        dados_matricula: {
+          ...prevState.dados_matricula,
+          matri_dojo: nextId
+        }
       }));
+
 
     } catch (error) {
       console.error("Erro ao buscar alunos:", error);
@@ -144,8 +177,8 @@ const Formu = () => {
   }, []);
 
   useEffect(() => {
-    if (aluno.nasc_aluno) {
-      const birthDate = new Date(aluno.nasc_aluno);
+    if (aluno.dados_aluno.nasc_aluno) {
+      const birthDate = new Date(aluno.dados_aluno.nasc_aluno);
       const today = new Date();
       let age = today.getFullYear() - birthDate.getFullYear();
       const monthDifference = today.getMonth() - birthDate.getMonth();
@@ -156,14 +189,35 @@ const Formu = () => {
 
       setIdade(age);
     }
-  }, [aluno.nasc_aluno]);
+  }, [aluno.dados_aluno.nasc_aluno]);
+
+  // Função para atualizar um campo aninhado baseado no caminho do name
+  const updateNestedState = (obj, path, value) => {
+    const fields = path.split('.');
+    return fields.reduce((acc, field, index) => {
+      if (index === fields.length - 1) {
+        acc[field] = value;  // Atualiza o campo no último nível
+      } else {
+        acc[field] = acc[field] || {};  // Garante que o nível intermediário exista
+      }
+      return acc[field];
+    }, obj);
+  };
+
+
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
-    setAluno({ ...aluno, [name]: value });
 
-    if (name === "matricula_aluno") {
-      const existingAluno = alunos.find(a => a.matricula_aluno === value);
+    // Atualiza o estado do aluno de forma dinâmica para qualquer campo aninhado
+    setAluno(prevState => {
+      const updatedAluno = { ...prevState };  // Cria uma cópia do estado anterior
+      updateNestedState(updatedAluno, name, value);  // Atualiza o campo aninhado
+      return updatedAluno;  // Retorna o novo estado atualizado
+    });
+
+    if (name === "dados_matricula.matri_dojo") {
+      const existingAluno = alunos.find(a => a.dados_matricula.matri_dojo === value);
       if (existingAluno) {
         setIdError("Esta matrícula já está em uso.");
       } else {
@@ -174,7 +228,7 @@ const Formu = () => {
 
   //captura a data de hoje para validação no campo de data
   const hoje = new Date().toISOString().split('T')[0];
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -188,10 +242,38 @@ const Formu = () => {
       const response = await axios.post(`${config.urlRoot}/cadastrarAlunos`, aluno);
       toast.success(response.data.mensagemStatus);
       setAluno({
-        nome_aluno: "", nasc_aluno: "", sexo_aluno: "",
-        altura_aluno: "", peso_aluno: "", t_sanguineo: "",
-        tel_aluno: "", email_aluno: "", endereco_aluno: "",
-        data_insc: "", grad_aluno: "", nome_respons: "", tel_respons: "", is_adm: false
+        dados_aluno: {
+          nome_aluno: "",
+          nasc_aluno: "",
+          sexo_aluno: "",
+          altura_aluno: "",
+          peso_aluno: "",
+          t_sanguineo: "",
+          tel_aluno: "",
+          email_aluno: "",
+          endereco_aluno: "",
+        },
+        dados_respons: {
+          nome_respons: "",
+          tel_respons: "",
+        },
+        dados_matricula: {
+          dados_modalidades: {
+            dados_karate: {
+              is_aluno: false,
+              matri_federacao: "",
+              data_insc: "",
+              grad_aluno: "",
+            },
+            dados_muaythai: {
+              is_aluno: false,
+              matri_federacao: "",
+              data_insc: "",
+              grad_aluno: "",
+            }
+          }
+        },
+        is_adm: false
       });
       setIdade(null);
       getAlunos()
@@ -209,8 +291,8 @@ const Formu = () => {
             <Label>Matrícula:</Label>
             <Input
               type="text"
-              name="matricula_aluno"
-              value={aluno.matricula_aluno}
+              name="dados_matricula.matri_dojo"
+              value={aluno.dados_matricula.matri_dojo}
               onChange={handleChange}
               onInput={(e) => {
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
@@ -223,17 +305,17 @@ const Formu = () => {
           </SmallFormGroup>
           <FormGroup>
             <Label>Nome Completo:</Label>
-            <Input type="text" name="nome_aluno" value={aluno.nome_aluno} onChange={handleChange} required />
+            <Input type="text" name="dados_aluno.nome_aluno" value={aluno.dados_aluno.nome_aluno} onChange={handleChange} required />
           </FormGroup>
         </FormRow>
         <FormRow>
           <FormGroup>
             <Label>Data de Nascimento:</Label>
-            <Input type="date" name="nasc_aluno" value={aluno.nasc_aluno} onChange={handleChange} max={hoje} required />
+            <Input type="date" name="dados_aluno.nasc_aluno" value={aluno.dados_aluno.nasc_aluno} onChange={handleChange} max={hoje} required />
           </FormGroup>
           <FormGroup>
             <Label>Sexo:</Label>
-            <Select name="sexo_aluno" value={aluno.sexo_aluno} onChange={handleChange} required>
+            <Select name="dados_aluno.sexo_aluno" value={aluno.dados_aluno.sexo_aluno} onChange={handleChange} required>
               <option value="">Selecione</option>
               <option value="M">Masculino</option>
               <option value="F">Feminino</option>
@@ -245,8 +327,8 @@ const Formu = () => {
           <FormGroup>
             <Label>Altura (cm):</Label>
             <Input type="text"
-              name="altura_aluno"
-              value={aluno.altura_aluno}
+              name="dados_aluno.altura_aluno"
+              value={aluno.dados_aluno.altura_aluno}
               onChange={handleChange}
               onInput={(e) => {
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
@@ -257,8 +339,8 @@ const Formu = () => {
           <FormGroup>
             <Label>Peso (kg):</Label>
             <Input type="text"
-              name="peso_aluno"
-              value={aluno.peso_aluno}
+              name="dados_aluno.peso_aluno"
+              value={aluno.dados_aluno.peso_aluno}
               onChange={handleChange}
               onInput={(e) => {
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
@@ -268,7 +350,7 @@ const Formu = () => {
           </FormGroup>
           <FormGroup>
             <Label>Tipo Sanguíneo:</Label>
-            <Select name="t_sanguineo" value={aluno.t_sanguineo} onChange={handleChange}>
+            <Select name="dados_aluno.t_sanguineo" value={aluno.dados_aluno.t_sanguineo} onChange={handleChange}>
               <option value="">Selecione</option>
               <option value="A+">A+</option>
               <option value="A-">A-</option>
@@ -285,33 +367,33 @@ const Formu = () => {
           <>
             <FormGroup>
               <Label>Nome Completo do responsável:</Label>
-              <Input type="text" name="nome_respons" value={aluno.nome_respons} onChange={handleChange} required />
+              <Input type="text" name="dados_respons.nome_respons" value={aluno.dados_respons.nome_respons} onChange={handleChange} required />
             </FormGroup>
             <FormRow>
-            <FormGroup>
-              <Label>Telefone (responsável):</Label>
-              <InputMask
-                mask="(99) 99999 9999"
-                value={aluno.tel_respons}
-                onChange={handleChange}
-              >
-                {(inputProps) => <Input {...inputProps} type="tel" name="tel_respons" required />}
-              </InputMask>
-            </FormGroup>
               <FormGroup>
-              <Label>Telefone (aluno):</Label>
-              <InputMask
-                mask="(99) 99999 9999"
-                value={aluno.tel_aluno}
-                onChange={handleChange}
-              >
-                {(inputProps) => <Input {...inputProps} type="tel" name="tel_aluno" />}
-              </InputMask>
-            </FormGroup>
+                <Label>Telefone (responsável):</Label>
+                <InputMask
+                  mask="(99) 99999 9999"
+                  value={aluno.dados_respons.tel_respons}
+                  onChange={handleChange}
+                >
+                  {(inputProps) => <Input {...inputProps} type="tel" name="dados_respons.tel_respons" required />}
+                </InputMask>
+              </FormGroup>
+              <FormGroup>
+                <Label>Telefone (aluno):</Label>
+                <InputMask
+                  mask="(99) 99999 9999"
+                  value={aluno.dados_aluno.tel_aluno}
+                  onChange={handleChange}
+                >
+                  {(inputProps) => <Input {...inputProps} type="tel" name="dados_aluno.tel_aluno" />}
+                </InputMask>
+              </FormGroup>
             </FormRow>
             <FormGroup>
               <Label>Email:</Label>
-              <Input type="email" name="email_aluno" value={aluno.email_aluno} onChange={handleChange} required />
+              <Input type="email" name="dados_aluno.email_aluno" value={aluno.dados_aluno.email_aluno} onChange={handleChange} required />
             </FormGroup>
           </>
         ) : (
@@ -320,15 +402,15 @@ const Formu = () => {
               <Label>Telefone:</Label>
               <InputMask
                 mask="(99) 99999 9999"
-                value={aluno.tel_aluno}
+                value={aluno.dados_aluno.tel_aluno}
                 onChange={handleChange}
               >
-                {(inputProps) => <Input {...inputProps} type="tel" name="tel_aluno" required />}
+                {(inputProps) => <Input {...inputProps} type="tel" name="dados_aluno.tel_aluno" required />}
               </InputMask>
             </FormGroup>
             <FormGroup>
               <Label>Email:</Label>
-              <Input type="email" name="email_aluno" value={aluno.email_aluno} onChange={handleChange} required />
+              <Input type="email" name="dados_aluno.email_aluno" value={aluno.dados_aluno.email_aluno} onChange={handleChange} required />
             </FormGroup>
           </FormRow>
         )}
@@ -336,8 +418,8 @@ const Formu = () => {
           <Label>Endereço Completo:</Label>
           <Input
             type="text"
-            name="endereco_aluno"
-            value={aluno.endereco_aluno}
+            name="dados_aluno.endereco_aluno"
+            value={aluno.dados_aluno.endereco_aluno}
             onChange={handleChange}
             placeholder="ex: Rua das Flores, 123"
             required
@@ -346,11 +428,11 @@ const Formu = () => {
         <FormRow>
           <FormGroup>
             <Label>Data de Inscrição:</Label>
-            <Input type="date" name="data_insc" value={aluno.data_insc} onChange={handleChange} max={hoje} required />
+            <Input type="date" name="dados_matricula.dados_modalidades.dados_karate.data_insc" value={aluno.dados_matricula.dados_modalidades.dados_karate.data_insc} onChange={handleChange} max={hoje} required />
           </FormGroup>
           <FormGroup>
             <Label>Graduação:</Label>
-            <Select name="grad_aluno" value={aluno.grad_aluno} onChange={handleChange} required>
+            <Select name="dados_matricula.dados_modalidades.dados_karate.grad_aluno" value={aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno} onChange={handleChange} required>
               <option value="">Selecione</option>
               <option value="Faixa-Branca">Faixa-Branca</option>
               <option value="Faixa-Amarela">Faixa-Amarela</option>

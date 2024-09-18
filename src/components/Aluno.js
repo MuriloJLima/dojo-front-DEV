@@ -79,8 +79,8 @@ const Aluno = ({ id }) => {
   }, []);
 
   useEffect(() => {
-    if (aluno.nasc_aluno) {
-      const birthDate = new Date(aluno.nasc_aluno);
+    if (aluno.dados_aluno.nasc_aluno) {
+      const birthDate = new Date(aluno.dados_aluno.nasc_aluno);
       const today = new Date();
       let age = today.getFullYear() - birthDate.getFullYear();
       const monthDifference = today.getMonth() - birthDate.getMonth();
@@ -91,7 +91,7 @@ const Aluno = ({ id }) => {
 
       setIdade(age);
     }
-  }, [aluno.nasc_aluno]);
+  }, [aluno.dados_aluno.nasc_aluno]);
 
   const getSexoRepresentativo = (sexo) => {
     switch (sexo) {
@@ -112,17 +112,17 @@ const Aluno = ({ id }) => {
       <ProfileRow>
       <ProfileGroup>
         <Label>Matrícula:</Label>
-        <Info>{aluno.matricula_aluno || "N/A"}</Info>
+        <Info>{aluno.dados_matricula.matricula_aluno || "N/A"}</Info>
       </ProfileGroup>
       <ProfileGroup>
         <Label>Nome Completo:</Label>
-        <Info>{aluno.nome_aluno || "N/A"}</Info>
+        <Info>{aluno.dados_aluno.nome_aluno || "N/A"}</Info>
       </ProfileGroup>
       </ProfileRow> 
       <ProfileRow>
         <ProfileGroup>
           <Label>Data de Nascimento:</Label>
-          <Info>{aluno.nasc_aluno ? new Date(aluno.nasc_aluno).toLocaleDateString() : "N/A"}</Info>
+          <Info>{aluno.dados_aluno.nasc_aluno ? new Date(aluno.dados_aluno.nasc_aluno).toLocaleDateString() : "N/A"}</Info>
         </ProfileGroup>
         <ProfileGroup>
           <Label>Idade:</Label>
@@ -132,47 +132,47 @@ const Aluno = ({ id }) => {
       <ProfileRow>
         <ProfileGroup>
           <Label>Sexo:</Label>
-          <Info>{getSexoRepresentativo(aluno.sexo_aluno)}</Info>
+          <Info>{getSexoRepresentativo(aluno.dados_aluno.sexo_aluno)}</Info>
         </ProfileGroup>
         <ProfileGroup>
           <Label>Tipo Sanguíneo:</Label>
-          <Info>{aluno.t_sanguineo || "--"}</Info>
+          <Info>{aluno.dados_aluno.t_sanguineo || "--"}</Info>
         </ProfileGroup>
       </ProfileRow>
       <ProfileRow>
         <ProfileGroup>
           <Label>Altura (cm):</Label>
-          <Info>{aluno.altura_aluno || "--"}</Info>
+          <Info>{aluno.dados_aluno.altura_aluno || "--"}</Info>
         </ProfileGroup>
         <ProfileGroup>
           <Label>Peso (kg):</Label>
-          <Info>{aluno.peso_aluno || "--"}</Info>
+          <Info>{aluno.dados_aluno.peso_aluno || "--"}</Info>
         </ProfileGroup>
       </ProfileRow>
       {idade !== null && idade < 18 ? (
         <>
           <ProfileGroup>
             <Label>Nome do Responsável:</Label>
-            <Info>{aluno.nome_respons || "N/A"}</Info>
+            <Info>{aluno.dados_respons.nome_respons || "N/A"}</Info>
           </ProfileGroup>
           <ProfileRow>
             <ProfileGroup>
               <Label>Telefone (responsonsável):</Label>
-              <Info>{aluno.tel_respons || "N/A"}</Info>
+              <Info>{aluno.dados_respons.tel_respons || "N/A"}</Info>
             </ProfileGroup>
             <ProfileGroup>
               <Label>Telefone (aluno):</Label>
-              <Info>{aluno.tel_aluno || "--"}</Info>
+              <Info>{aluno.dados_aluno.tel_aluno || "--"}</Info>
             </ProfileGroup>
           </ProfileRow>
           <ProfileRow>
         <ProfileGroup>
           <Label>Email:</Label>
-          <Info>{aluno.email_aluno || "N/A"}</Info>
+          <Info>{aluno.dados_aluno.email_aluno || "N/A"}</Info>
         </ProfileGroup>
         <ProfileGroup>
           <Label>Endereço:</Label>
-          <Info>{aluno.endereco_aluno || "N/A"}</Info>
+          <Info>{aluno.dados_aluno.endereco_aluno || "N/A"}</Info>
         </ProfileGroup>
       </ProfileRow>
 
@@ -182,31 +182,31 @@ const Aluno = ({ id }) => {
         <ProfileRow>
           <ProfileGroup>
             <Label>Telefone:</Label>
-            <Info>{aluno.tel_aluno || aluno.tel_resp || "N/A"}</Info>
+            <Info>{aluno.dados_aluno.tel_aluno || aluno.dados_respons.tel_resp || "N/A"}</Info>
           </ProfileGroup>
           <ProfileGroup>
             <Label>Email:</Label>
-            <Info>{aluno.email_aluno || "N/A"}</Info>
+            <Info>{aluno.dados_aluno.email_aluno || "N/A"}</Info>
           </ProfileGroup>
         </ProfileRow>
         <ProfileGroup>
           <Label>Endereço:</Label>
-          <Info>{aluno.endereco_aluno || "N/A"}</Info>
+          <Info>{aluno.dados_aluno.endereco_aluno || "N/A"}</Info>
         </ProfileGroup>
         </>
         
       )}
       
-      <ProfileRow>
+      {/* <ProfileRow>
         <ProfileGroup>
           <Label>Data de Inscrição:</Label>
-          <Info>{aluno.data_insc ? new Date(aluno.data_insc).toLocaleDateString() : "N/A"}</Info>
+          <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.data_insc ? new Date(aluno.data_insc).toLocaleDateString() : "N/A"}</Info>
         </ProfileGroup>
         <ProfileGroup>
           <Label>Graduação:</Label>
           <Info>{aluno.grad_aluno || "N/A"}</Info>
         </ProfileGroup>
-      </ProfileRow>
+      </ProfileRow> */}
     </ProfileContainer>
   );
 };

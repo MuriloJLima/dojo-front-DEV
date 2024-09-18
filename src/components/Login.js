@@ -96,7 +96,7 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
 
     const alunoEncontrado = alunos.find(aluno => 
-      aluno.matricula_aluno === matricula && aluno.email_aluno === email
+      aluno.dados_matricula.matri_dojo === matricula && aluno.dados_aluno.email_aluno === email
     );
 
     if (alunoEncontrado) {

@@ -66,8 +66,8 @@ const List = ({ onAlunoSelect }) => {
 
   const getAlunos = async () => {
     const response = await axios.get(`${config.urlRoot}/listarAlunos`);
-    // Ordenar os dados pelo campo matricula_aluno
-    const sortedData = response.data.data.sort((a, b) => a.matricula_aluno - b.matricula_aluno);
+    // Ordenar os dados pelo campo matri_dojo
+    const sortedData = response.data.data.sort((a, b) => a.dados_matricula.matri_dojo - b.dados_matricula.matri_dojo);
     setAlunos(sortedData);
   };
   
@@ -139,11 +139,11 @@ const List = ({ onAlunoSelect }) => {
             <Td alignCenter width="5%">
               <FaSearch onClick={() => handleAlunoClick(`S:${item._id}`)} />
             </Td>
-            <Td>{item.matricula_aluno}</Td>
-            <Td>{item.nome_aluno}</Td>
-            <Td>{calculateAge(item.nasc_aluno)}</Td>
-            <Td>{item.tel_respons || item.tel_aluno}</Td>
-            <Td>{item.grad_aluno}</Td>
+            <Td>{item.dados_matricula.matri_dojo}</Td>
+            <Td>{item.dados_aluno.nome_aluno}</Td>
+            <Td>{calculateAge(item.dados_aluno.nasc_aluno)}</Td>
+            <Td>{item.dados_respons.tel_respons || item.dados_aluno.tel_aluno}</Td>
+            <Td>{item.dados_matricula.matri_dojo}</Td>
             <Td alignCenter width="5%">
               <FaEdit onClick={() => handleAlunoClick(`E:${item._id}`)} />
             </Td>
