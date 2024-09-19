@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { FaTrash, FaEdit, FaSearch, FaSort } from "react-icons/fa";
+import { FaTrash, FaEdit, FaSearch, FaFilter } from "react-icons/fa";
 import { confirmAlert } from 'react-confirm-alert'; // Importa o react-confirm-alert
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Importa o CSS do react-confirm-alert
 import config from '../config/config.json';
@@ -32,8 +32,8 @@ export const Tr = styled.tr`
 export const Th = styled.th`
   text-align: center;
   padding: 15px 10px;
-  @media (max-width: 768px) {
-    &:nth-child(n+5):not(:last-child) {
+   @media (max-width: 768px) {
+    &:nth-child(n+5):not(:nth-last-child(2)):not(:last-child) {
       display: none;
     }
   }
@@ -54,7 +54,7 @@ export const Td = styled.td`
     }
   }
   @media (max-width: 500px) {
-    &:nth-child(n+4):not(:nth-last-child(2)):not(:last-child) {
+    &:nth-child(n+4):not(:last-child) {
       display: none;
     }
   }
@@ -118,6 +118,17 @@ const List = ({ onAlunoSelect }) => {
     onAlunoSelect(id);
   };
 
+  // Função para verificar as modalidades
+  const getModalidades = (modalidades) => {
+    const { dados_karate, dados_muaythai } = modalidades;
+    let inscricoes = [];
+
+    if (dados_karate.is_aluno) inscricoes.push("Karate");
+    if (dados_muaythai.is_aluno) inscricoes.push("Muay Thai");
+
+    return inscricoes.length > 0 ? inscricoes.join(", ") : "Nenhuma";
+  };
+
   return (
     <Table>
       <Thead>
@@ -127,10 +138,8 @@ const List = ({ onAlunoSelect }) => {
           <Th>Nome Completo</Th>
           <Th>Idade</Th>
           <Th>Telefone</Th>
-          <Th>Graduação</Th>
-          <Th alignCenter width="5%">
-            <FaSort style={{ paddingInline: "100%" }} />
-          </Th>
+          <Th>Modalidades</Th> 
+          <Th style={{ color: '#808080' }}>Filtrar</Th>
         </Tr>
       </Thead>
       <tbody>
@@ -143,12 +152,14 @@ const List = ({ onAlunoSelect }) => {
             <Td>{item.dados_aluno.nome_aluno}</Td>
             <Td>{calculateAge(item.dados_aluno.nasc_aluno)}</Td>
             <Td>{item.dados_respons.tel_respons || item.dados_aluno.tel_aluno}</Td>
-            <Td>{item.dados_matricula.matri_dojo}</Td>
+            <Td>{getModalidades(item.dados_matricula.dados_modalidades)}</Td>
+            <Td>
             <Td alignCenter width="5%">
               <FaEdit onClick={() => handleAlunoClick(`E:${item._id}`)} />
             </Td>
             <Td alignCenter width="5%">
               <FaTrash onClick={() => handleDelete(item._id)} />
+            </Td>
             </Td>
           </Tr>
         ))}

@@ -148,6 +148,13 @@ const StyledCheckbox = styled.input`
     border-color: #0056b3;  // Cor ao passar o mouse por cima
   }
 `
+const CustomHR = styled.hr`
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 0;
+  height: 1px; /* Ajuste a espessura */
+  background-color: #e0e0e0; /* Cor desejada */
+`;
 
 const SmallFormGroup = styled(FormGroup)`
   flex: 0 0 0%;
@@ -194,6 +201,8 @@ const Formu = () => {
   const [idade, setIdade] = useState(null);
   const [alunos, setAlunos] = useState([]);
   const [idError, setIdError] = useState("");
+
+  const [modalidadeError, setModalidadeError] = useState('');
 
   const getAlunos = async () => {
     try {
@@ -272,6 +281,7 @@ const Formu = () => {
   const handleChange = async (e) => {
     const { name, value } = e.target;
 
+
     // Atualiza o estado do aluno de forma dinâmica para qualquer campo aninhado
     setAluno(prevState => {
       const updatedAluno = { ...prevState };  // Cria uma cópia do estado anterior
@@ -288,6 +298,8 @@ const Formu = () => {
         setIdError("");
       }
     }
+
+
   };
 
   //captura a data de hoje para validação no campo de data
@@ -297,6 +309,14 @@ const Formu = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const { dados_karate, dados_muaythai } = aluno.dados_matricula.dados_modalidades;
+
+    if (!dados_karate.is_aluno && !dados_muaythai.is_aluno) {
+      setModalidadeError('Por favor, selecione pelo menos uma modalidade.');
+      return
+    }
+
+    setModalidadeError('')
 
     if (idError) {
       return; // Não permite o envio se houver erro
@@ -535,10 +555,22 @@ const Formu = () => {
                     <option value="Faixa-Preta">Faixa-Preta</option>
                   </Select>
                 </FormGroup>
+                <SmallFormGroup>
+                  <Label>Matrícula da federação:</Label>
+                  <Input
+                    type="text"
+                    name="dados_matricula.dados_modalidades.dados_karate.matri_federacao"
+                    value={aluno.dados_matricula.dados_modalidades.dados_karate.matri_federacao}
+                    onChange={handleChange}
+                    onInput={(e) => {
+                      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    }}
+                  />
 
+                </SmallFormGroup>
               </FormRow>
 
-              <hr style={{ marginTop: '20px', marginBottom: '20px' }} />
+              <CustomHR />
             </>
 
 
@@ -565,22 +597,36 @@ const Formu = () => {
                   <Label>Graduação:</Label>
                   <Select name="dados_matricula.dados_modalidades.dados_muaythai.grad_aluno" value={aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno} onChange={handleChange} required>
                     <option value="">Selecione</option>
-                    <option value="Faixa-Branca">Faixa-Branca</option>
-                    <option value="Faixa-Amarela">Faixa-Amarela</option>
-                    <option value="Faixa-Vermelha">Faixa-Vermelha</option>
-                    <option value="Faixa-Laranja">Faixa-Laranja</option>
-                    <option value="Faixa-Verde">Faixa-Verde</option>
-                    <option value="Faixa-Roxa">Faixa-Roxa</option>
-                    <option value="Faixa-Marrom">Faixa-Marrom</option>
-                    <option value="Faixa-Preta">Faixa-Preta</option>
+                    <option value="Branca">Branca</option>
+                    <option value="Branca ponta Vermelha">Branca ponta Vermelha</option>
+                    <option value="Vermelha">Vermelha</option>
+                    <option value="Vermelha ponta Azul clara">Vermelha ponta Azul clara</option>
+                    <option value="Azul clara">Azul clara</option>
+                    <option value="Azul clara ponta Azul escura">Azul clara ponta Azul escura</option>
+                    <option value="Azul escura">Azul escura</option>
+                    <option value="Azul escura ponta Preta">Azul escura ponta Preta</option>
+                    <option value="Preta">Preta</option>
+
                   </Select>
                 </FormGroup>
 
+                <SmallFormGroup>
+                  <Label>Matrícula da federação:</Label>
+                  <Input
+                    type="text"
+                    name="dados_matricula.dados_modalidades.dados_muaythai.matri_federacao"
+                    value={aluno.dados_matricula.dados_modalidades.dados_muaythai.matri_federacao}
+                    onChange={handleChange}
+                    onInput={(e) => {
+                      e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    }}
+                  />
+
+                </SmallFormGroup>
               </FormRow>
             </>
-
-
           )}
+          {modalidadeError && <ErrorText>{modalidadeError}</ErrorText>}
         </FormGroup>
 
 

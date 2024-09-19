@@ -14,8 +14,29 @@ const ProfileContainer = styled.div`
   overflow-y: auto;
 `;
 
+const ProfileTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #007BFF;
+  text-align: center;
+  margin-bottom: 20px;
+`;
+
+const ProfileSection = styled.div`
+  margin-bottom: 30px;
+`;
+
+const SectionTitle = styled.h3`
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 5px;
+`;
+
 const ProfileRow = styled.div`
-   display: flex;
+  display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 
@@ -32,7 +53,6 @@ const ProfileGroup = styled.div`
 
   &:not(:last-child) {
     @media (max-width: 600px) {
-      margin-right: 0;
       margin-bottom: 15px;
     }
   }
@@ -53,14 +73,6 @@ const Info = styled.span`
   margin-bottom: 12px;
 `;
 
-const ProfileTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #007BFF;
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
 const Aluno = ({ id }) => {
   const [aluno, setAluno] = useState({});
   const [idade, setIdade] = useState(null);
@@ -79,7 +91,7 @@ const Aluno = ({ id }) => {
   }, []);
 
   useEffect(() => {
-    if (aluno.dados_aluno.nasc_aluno) {
+    if (aluno.dados_aluno?.nasc_aluno) {
       const birthDate = new Date(aluno.dados_aluno.nasc_aluno);
       const today = new Date();
       let age = today.getFullYear() - birthDate.getFullYear();
@@ -91,7 +103,7 @@ const Aluno = ({ id }) => {
 
       setIdade(age);
     }
-  }, [aluno.dados_aluno.nasc_aluno]);
+  }, [aluno.dados_aluno]);
 
   const getSexoRepresentativo = (sexo) => {
     switch (sexo) {
@@ -106,107 +118,150 @@ const Aluno = ({ id }) => {
     }
   };
 
+  const getModalidades = () => {
+    const modalidades = aluno.dados_matricula?.dados_modalidades || {};
+    const inscricoes = [];
+
+    if (modalidades.dados_karate?.is_aluno) inscricoes.push("Karate");
+    if (modalidades.dados_muaythai?.is_aluno) inscricoes.push("Muay Thai");
+
+    return inscricoes.length ? inscricoes.join(", ") : "Nenhuma";
+  };
+
   return (
     <ProfileContainer>
-      <ProfileTitle>Perfil do Aluno</ProfileTitle>
-      <ProfileRow>
-      <ProfileGroup>
-        <Label>Matrícula:</Label>
-        <Info>{aluno.dados_matricula.matricula_aluno || "N/A"}</Info>
-      </ProfileGroup>
-      <ProfileGroup>
-        <Label>Nome Completo:</Label>
-        <Info>{aluno.dados_aluno.nome_aluno || "N/A"}</Info>
-      </ProfileGroup>
-      </ProfileRow> 
-      <ProfileRow>
-        <ProfileGroup>
-          <Label>Data de Nascimento:</Label>
-          <Info>{aluno.dados_aluno.nasc_aluno ? new Date(aluno.dados_aluno.nasc_aluno).toLocaleDateString() : "N/A"}</Info>
-        </ProfileGroup>
-        <ProfileGroup>
-          <Label>Idade:</Label>
-          <Info>{idade !== null ? `${idade} anos` : "N/A"}</Info>
-        </ProfileGroup>
-      </ProfileRow>
-      <ProfileRow>
-        <ProfileGroup>
-          <Label>Sexo:</Label>
-          <Info>{getSexoRepresentativo(aluno.dados_aluno.sexo_aluno)}</Info>
-        </ProfileGroup>
-        <ProfileGroup>
-          <Label>Tipo Sanguíneo:</Label>
-          <Info>{aluno.dados_aluno.t_sanguineo || "--"}</Info>
-        </ProfileGroup>
-      </ProfileRow>
-      <ProfileRow>
-        <ProfileGroup>
-          <Label>Altura (cm):</Label>
-          <Info>{aluno.dados_aluno.altura_aluno || "--"}</Info>
-        </ProfileGroup>
-        <ProfileGroup>
-          <Label>Peso (kg):</Label>
-          <Info>{aluno.dados_aluno.peso_aluno || "--"}</Info>
-        </ProfileGroup>
-      </ProfileRow>
-      {idade !== null && idade < 18 ? (
-        <>
-          <ProfileGroup>
-            <Label>Nome do Responsável:</Label>
-            <Info>{aluno.dados_respons.nome_respons || "N/A"}</Info>
-          </ProfileGroup>
-          <ProfileRow>
-            <ProfileGroup>
-              <Label>Telefone (responsonsável):</Label>
-              <Info>{aluno.dados_respons.tel_respons || "N/A"}</Info>
-            </ProfileGroup>
-            <ProfileGroup>
-              <Label>Telefone (aluno):</Label>
-              <Info>{aluno.dados_aluno.tel_aluno || "--"}</Info>
-            </ProfileGroup>
-          </ProfileRow>
-          <ProfileRow>
-        <ProfileGroup>
-          <Label>Email:</Label>
-          <Info>{aluno.dados_aluno.email_aluno || "N/A"}</Info>
-        </ProfileGroup>
-        <ProfileGroup>
-          <Label>Endereço:</Label>
-          <Info>{aluno.dados_aluno.endereco_aluno || "N/A"}</Info>
-        </ProfileGroup>
-      </ProfileRow>
+      <ProfileTitle>Perfil do Atleta</ProfileTitle>
 
-        </>
-      ) : (
-        <>
+      <ProfileSection>
+
         <ProfileRow>
           <ProfileGroup>
-            <Label>Telefone:</Label>
-            <Info>{aluno.dados_aluno.tel_aluno || aluno.dados_respons.tel_resp || "N/A"}</Info>
+            <Label>Nome completo:</Label>
+            <Info>{aluno.dados_aluno?.nome_aluno || "N/A"}</Info>
+
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Matrícula:</Label>
+            <Info>{aluno.dados_matricula?.matri_dojo || "N/A"}</Info>
+
+          </ProfileGroup>
+        </ProfileRow>
+      </ProfileSection>
+      {/* Seção de Dados Pessoais */}
+      <ProfileSection>
+        <SectionTitle>Dados Pessoais</SectionTitle>
+        <ProfileRow>
+          <ProfileGroup>
+            <Label>Data de Nascimento:</Label>
+            <Info>{aluno.dados_aluno?.nasc_aluno ? new Date(aluno.dados_aluno.nasc_aluno).toLocaleDateString() : "N/A"}</Info>
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Idade:</Label>
+            <Info>{idade !== null ? `${idade} anos` : "N/A"}</Info>
+          </ProfileGroup>
+        </ProfileRow>
+        <ProfileRow>
+          <ProfileGroup>
+            <Label>Sexo:</Label>
+            <Info>{getSexoRepresentativo(aluno.dados_aluno?.sexo_aluno)}</Info>
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Tipo Sanguíneo:</Label>
+            <Info>{aluno.dados_aluno?.t_sanguineo || "--"}</Info>
+          </ProfileGroup>
+        </ProfileRow>
+        <ProfileRow>
+          <ProfileGroup>
+            <Label>Altura (cm):</Label>
+            <Info>{aluno.dados_aluno?.altura_aluno || "--"}</Info>
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Peso (kg):</Label>
+            <Info>{aluno.dados_aluno?.peso_aluno || "--"}</Info>
+          </ProfileGroup>
+        </ProfileRow>
+      </ProfileSection>
+
+      {/* Seção de Contato */}
+      <ProfileSection>
+        <SectionTitle>Contato</SectionTitle>
+        <ProfileRow>
+          <ProfileGroup>
+            <Label>Telefone (Aluno):</Label>
+            <Info>{aluno.dados_aluno?.tel_aluno || "N/A"}</Info>
           </ProfileGroup>
           <ProfileGroup>
             <Label>Email:</Label>
-            <Info>{aluno.dados_aluno.email_aluno || "N/A"}</Info>
+            <Info>{aluno.dados_aluno?.email_aluno || "N/A"}</Info>
           </ProfileGroup>
         </ProfileRow>
-        <ProfileGroup>
-          <Label>Endereço:</Label>
-          <Info>{aluno.dados_aluno.endereco_aluno || "N/A"}</Info>
-        </ProfileGroup>
-        </>
-        
+        <ProfileRow>
+          <ProfileGroup>
+            <Label>Endereço:</Label>
+            <Info>{aluno.dados_aluno?.endereco_aluno || "N/A"}</Info>
+          </ProfileGroup>
+        </ProfileRow>
+      </ProfileSection>
+
+      {/* Seção de Dados do Responsável */}
+      {idade !== null && idade < 18 && (
+        <ProfileSection>
+          <SectionTitle>Dados do Responsável</SectionTitle>
+          <ProfileRow>
+            <ProfileGroup>
+              <Label>Nome do Responsável:</Label>
+              <Info>{aluno.dados_respons?.nome_respons || "N/A"}</Info>
+            </ProfileGroup>
+            <ProfileGroup>
+              <Label>Telefone (Responsável):</Label>
+              <Info>{aluno.dados_respons?.tel_respons || "N/A"}</Info>
+            </ProfileGroup>
+          </ProfileRow>
+        </ProfileSection>
+      )}
+
+      {aluno.dados_matricula?.dados_modalidades.dados_karate.is_aluno === true && (
+        <ProfileSection>
+        <SectionTitle>Modalidade: Karatê</SectionTitle>
+        <ProfileRow>
+          <ProfileGroup>
+            <Label>Matrícula (Federação):</Label>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.matri_federacao || "--"}</Info>
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Data de Inscrição:</Label>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.data_insc ? new Date(aluno.dados_matricula.dados_modalidades.dados_karate.data_insc).toLocaleDateString() : "N/A"}</Info>
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Graduação:</Label>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno || "N/A"}</Info>
+          </ProfileGroup>
+
+        </ProfileRow>
+      </ProfileSection>
       )}
       
-      {/* <ProfileRow>
-        <ProfileGroup>
-          <Label>Data de Inscrição:</Label>
-          <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.data_insc ? new Date(aluno.data_insc).toLocaleDateString() : "N/A"}</Info>
-        </ProfileGroup>
-        <ProfileGroup>
-          <Label>Graduação:</Label>
-          <Info>{aluno.grad_aluno || "N/A"}</Info>
-        </ProfileGroup>
-      </ProfileRow> */}
+      {aluno.dados_matricula?.dados_modalidades.dados_muaythai.is_aluno === true && (
+        <ProfileSection>
+        <SectionTitle>Modalidade: Muay Thai</SectionTitle>
+        <ProfileRow>
+          <ProfileGroup>
+            <Label>Matrícula (Federação):</Label>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_muaythai.matri_federacao || "--"}</Info>
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Data de Inscrição:</Label>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc ? new Date(aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc).toLocaleDateString() : "N/A"}</Info>
+          </ProfileGroup>
+          <ProfileGroup>
+            <Label>Graduação:</Label>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno || "N/A"}</Info>
+          </ProfileGroup>
+
+        </ProfileRow>
+      </ProfileSection>
+      )}
+      
     </ProfileContainer>
   );
 };
