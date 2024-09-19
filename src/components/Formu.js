@@ -102,6 +102,53 @@ const Button = styled.button`
   }
 `;
 
+const CheckboxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  label {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #333;  // Cor do texto harmoniosa
+    cursor: pointer;
+  }
+`;
+
+const StyledCheckbox = styled.input`
+  position: relative;
+  width: 18px;
+  height: 18px;
+  -webkit-appearance: none;
+  appearance: none;
+  border: 2px solid #007BFF;  // Cor de destaque para combinar com o projeto
+  border-radius: 50%;  // Deixa a checkbox arredondada
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:checked {
+    background-color: #007BFF;  // Cor de fundo quando selecionada
+    border-color: #007BFF;
+  }
+
+  &:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+
+  &:hover {
+    border-color: #0056b3;  // Cor ao passar o mouse por cima
+  }
+`
+
 const SmallFormGroup = styled(FormGroup)`
   flex: 0 0 0%;
 `;
@@ -204,6 +251,22 @@ const Formu = () => {
     }, obj);
   };
 
+  const handleCheckboxChange = async (e) => {
+    const { name, checked } = e.target;  // Pega o nome do checkbox e se está checado
+
+    setAluno(prevState => {
+      const updatedAluno = { ...prevState };  // Cria uma cópia do estado anterior
+
+      // Atualiza apenas os campos de karate.is_aluno ou muaythai.is_aluno
+      if (name === "dados_karate.is_aluno") {
+        updatedAluno.dados_matricula.dados_modalidades.dados_karate.is_aluno = checked;
+      } else if (name === "dados_muaythai.is_aluno") {
+        updatedAluno.dados_matricula.dados_modalidades.dados_muaythai.is_aluno = checked;
+      }
+
+      return updatedAluno;  // Retorna o novo estado atualizado
+    });
+  };
 
 
   const handleChange = async (e) => {
@@ -213,6 +276,7 @@ const Formu = () => {
     setAluno(prevState => {
       const updatedAluno = { ...prevState };  // Cria uma cópia do estado anterior
       updateNestedState(updatedAluno, name, value);  // Atualiza o campo aninhado
+
       return updatedAluno;  // Retorna o novo estado atualizado
     });
 
@@ -414,35 +478,17 @@ const Formu = () => {
             </FormGroup>
           </FormRow>
         )}
-        <FormGroup>
-          <Label>Endereço Completo:</Label>
-          <Input
-            type="text"
-            name="dados_aluno.endereco_aluno"
-            value={aluno.dados_aluno.endereco_aluno}
-            onChange={handleChange}
-            placeholder="ex: Rua das Flores, 123"
-            required
-          />
-        </FormGroup>
         <FormRow>
           <FormGroup>
-            <Label>Data de Inscrição:</Label>
-            <Input type="date" name="dados_matricula.dados_modalidades.dados_karate.data_insc" value={aluno.dados_matricula.dados_modalidades.dados_karate.data_insc} onChange={handleChange} max={hoje} required />
-          </FormGroup>
-          <FormGroup>
-            <Label>Graduação:</Label>
-            <Select name="dados_matricula.dados_modalidades.dados_karate.grad_aluno" value={aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno} onChange={handleChange} required>
-              <option value="">Selecione</option>
-              <option value="Faixa-Branca">Faixa-Branca</option>
-              <option value="Faixa-Amarela">Faixa-Amarela</option>
-              <option value="Faixa-Vermelha">Faixa-Vermelha</option>
-              <option value="Faixa-Laranja">Faixa-Laranja</option>
-              <option value="Faixa-Verde">Faixa-Verde</option>
-              <option value="Faixa-Roxa">Faixa-Roxa</option>
-              <option value="Faixa-Marrom">Faixa-Marrom</option>
-              <option value="Faixa-Preta">Faixa-Preta</option>
-            </Select>
+            <Label>Endereço Completo:</Label>
+            <Input
+              type="text"
+              name="dados_aluno.endereco_aluno"
+              value={aluno.dados_aluno.endereco_aluno}
+              onChange={handleChange}
+              placeholder="ex: Rua das Flores, 123"
+              required
+            />
           </FormGroup>
           <SmallFormGroup>
             <Label>Administrador:</Label>
@@ -453,6 +499,92 @@ const Formu = () => {
 
           </SmallFormGroup>
         </FormRow>
+
+
+        <FormGroup>
+          <Label>Modalidades:</Label>
+
+          <CheckboxContainer>
+            <StyledCheckbox
+              type="checkbox"
+              name="dados_karate.is_aluno"
+              onChange={handleCheckboxChange}
+              checked={aluno.dados_matricula.dados_modalidades.dados_karate.is_aluno || false}
+            />
+            <Label>Karate</Label>
+          </CheckboxContainer>
+
+          {aluno.dados_matricula.dados_modalidades.dados_karate.is_aluno === true && (
+            <>
+              <FormRow>
+                <FormGroup>
+                  <Label>Data de Inscrição:</Label>
+                  <Input type="date" name="dados_matricula.dados_modalidades.dados_karate.data_insc" value={aluno.dados_matricula.dados_modalidades.dados_karate.data_insc} onChange={handleChange} max={hoje} required />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Graduação:</Label>
+                  <Select name="dados_matricula.dados_modalidades.dados_karate.grad_aluno" value={aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno} onChange={handleChange} required>
+                    <option value="">Selecione</option>
+                    <option value="Faixa-Branca">Faixa-Branca</option>
+                    <option value="Faixa-Amarela">Faixa-Amarela</option>
+                    <option value="Faixa-Vermelha">Faixa-Vermelha</option>
+                    <option value="Faixa-Laranja">Faixa-Laranja</option>
+                    <option value="Faixa-Verde">Faixa-Verde</option>
+                    <option value="Faixa-Roxa">Faixa-Roxa</option>
+                    <option value="Faixa-Marrom">Faixa-Marrom</option>
+                    <option value="Faixa-Preta">Faixa-Preta</option>
+                  </Select>
+                </FormGroup>
+
+              </FormRow>
+
+              <hr style={{ marginTop: '20px', marginBottom: '20px' }} />
+            </>
+
+
+          )}
+
+          <CheckboxContainer>
+            <StyledCheckbox
+              type="checkbox"
+              name="dados_muaythai.is_aluno"
+              onChange={handleCheckboxChange}
+              checked={aluno.dados_matricula.dados_modalidades.dados_muaythai.is_aluno || false}
+            />
+            <Label>Muay Thai</Label>
+          </CheckboxContainer>
+
+          {aluno.dados_matricula.dados_modalidades.dados_muaythai.is_aluno === true && (
+            <>
+              <FormRow>
+                <FormGroup>
+                  <Label>Data de Inscrição:</Label>
+                  <Input type="date" name="dados_matricula.dados_modalidades.dados_muaythai.data_insc" value={aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc} onChange={handleChange} max={hoje} required />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Graduação:</Label>
+                  <Select name="dados_matricula.dados_modalidades.dados_muaythai.grad_aluno" value={aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno} onChange={handleChange} required>
+                    <option value="">Selecione</option>
+                    <option value="Faixa-Branca">Faixa-Branca</option>
+                    <option value="Faixa-Amarela">Faixa-Amarela</option>
+                    <option value="Faixa-Vermelha">Faixa-Vermelha</option>
+                    <option value="Faixa-Laranja">Faixa-Laranja</option>
+                    <option value="Faixa-Verde">Faixa-Verde</option>
+                    <option value="Faixa-Roxa">Faixa-Roxa</option>
+                    <option value="Faixa-Marrom">Faixa-Marrom</option>
+                    <option value="Faixa-Preta">Faixa-Preta</option>
+                  </Select>
+                </FormGroup>
+
+              </FormRow>
+            </>
+
+
+          )}
+        </FormGroup>
+
+
+
         <ButtonContainer>
           <Button type="submit" disabled={!!idError}>Cadastrar</Button>
         </ButtonContainer>
