@@ -20,7 +20,8 @@ const Title = styled.h2`
   font-weight: 600;
   margin-bottom: 20px;
   color: #007bff;
-  margin-left: 10px
+  align-items: center;
+  text-align: center;
 `;
 
 const Content = styled.div`

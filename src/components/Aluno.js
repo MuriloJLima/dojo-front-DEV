@@ -114,7 +114,7 @@ const Aluno = ({ id }) => {
       case 'O':
         return 'Outro';
       default:
-        return 'N/A';
+        return '--';
     }
   };
 
@@ -137,12 +137,12 @@ const Aluno = ({ id }) => {
         <ProfileRow>
           <ProfileGroup>
             <Label>Nome completo:</Label>
-            <Info>{aluno.dados_aluno?.nome_aluno || "N/A"}</Info>
+            <Info>{aluno.dados_aluno?.nome_aluno || "--"}</Info>
 
           </ProfileGroup>
           <ProfileGroup>
             <Label>Matrícula:</Label>
-            <Info>{aluno.dados_matricula?.matri_dojo || "N/A"}</Info>
+            <Info>{aluno.dados_matricula?.matri_dojo || "--"}</Info>
 
           </ProfileGroup>
         </ProfileRow>
@@ -153,11 +153,11 @@ const Aluno = ({ id }) => {
         <ProfileRow>
           <ProfileGroup>
             <Label>Data de Nascimento:</Label>
-            <Info>{aluno.dados_aluno?.nasc_aluno ? new Date(aluno.dados_aluno.nasc_aluno).toLocaleDateString() : "N/A"}</Info>
+            <Info>{aluno.dados_aluno?.nasc_aluno ? new Date(aluno.dados_aluno.nasc_aluno).toLocaleDateString() : "--"}</Info>
           </ProfileGroup>
           <ProfileGroup>
             <Label>Idade:</Label>
-            <Info>{idade !== null ? `${idade} anos` : "N/A"}</Info>
+            <Info>{idade !== null ? `${idade} anos` : "--"}</Info>
           </ProfileGroup>
         </ProfileRow>
         <ProfileRow>
@@ -188,17 +188,17 @@ const Aluno = ({ id }) => {
         <ProfileRow>
           <ProfileGroup>
             <Label>Telefone (Aluno):</Label>
-            <Info>{aluno.dados_aluno?.tel_aluno || "N/A"}</Info>
+            <Info>{aluno.dados_aluno?.tel_aluno || "--"}</Info>
           </ProfileGroup>
           <ProfileGroup>
             <Label>Email:</Label>
-            <Info>{aluno.dados_aluno?.email_aluno || "N/A"}</Info>
+            <Info>{aluno.dados_aluno?.email_aluno || "--"}</Info>
           </ProfileGroup>
         </ProfileRow>
         <ProfileRow>
           <ProfileGroup>
             <Label>Endereço:</Label>
-            <Info>{aluno.dados_aluno?.endereco_aluno || "N/A"}</Info>
+            <Info>{aluno.dados_aluno?.endereco_aluno || "--"}</Info>
           </ProfileGroup>
         </ProfileRow>
       </ProfileSection>
@@ -210,11 +210,11 @@ const Aluno = ({ id }) => {
           <ProfileRow>
             <ProfileGroup>
               <Label>Nome do Responsável:</Label>
-              <Info>{aluno.dados_respons?.nome_respons || "N/A"}</Info>
+              <Info>{aluno.dados_respons?.nome_respons || "--"}</Info>
             </ProfileGroup>
             <ProfileGroup>
               <Label>Telefone (Responsável):</Label>
-              <Info>{aluno.dados_respons?.tel_respons || "N/A"}</Info>
+              <Info>{aluno.dados_respons?.tel_respons || "--"}</Info>
             </ProfileGroup>
           </ProfileRow>
         </ProfileSection>
@@ -230,11 +230,11 @@ const Aluno = ({ id }) => {
           </ProfileGroup>
           <ProfileGroup>
             <Label>Data de Inscrição:</Label>
-            <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.data_insc ? new Date(aluno.dados_matricula.dados_modalidades.dados_karate.data_insc).toLocaleDateString() : "N/A"}</Info>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.data_insc ? new Date(aluno.dados_matricula.dados_modalidades.dados_karate.data_insc).toLocaleDateString() : "--"}</Info>
           </ProfileGroup>
           <ProfileGroup>
             <Label>Graduação:</Label>
-            <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno || "N/A"}</Info>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno || "--"}</Info>
           </ProfileGroup>
 
         </ProfileRow>
@@ -251,11 +251,11 @@ const Aluno = ({ id }) => {
           </ProfileGroup>
           <ProfileGroup>
             <Label>Data de Inscrição:</Label>
-            <Info>{aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc ? new Date(aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc).toLocaleDateString() : "N/A"}</Info>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc ? new Date(aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc).toLocaleDateString() : "--"}</Info>
           </ProfileGroup>
           <ProfileGroup>
             <Label>Graduação:</Label>
-            <Info>{aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno || "N/A"}</Info>
+            <Info>{aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno || "--"}</Info>
           </ProfileGroup>
 
         </ProfileRow>

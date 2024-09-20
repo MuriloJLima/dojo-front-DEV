@@ -37,13 +37,13 @@ function App() {
 
   return (
     <>
-      {/* {isLoggedIn ? (
+      {isLoggedIn ? (
         <Home onLogout={handleLogout} />
       ) : (
         <Login onLogin={handleLogin} />
-      )} */}
+      )}
 
-      <Home onLogout={handleLogout} />
+      {/* <Home onLogout={handleLogout} /> */}
       <GlobalStyle />
     </>
   );

@@ -296,11 +296,11 @@ const EdicaoAluno = ({ id }) => {
 
     if (name === "dados_matricula.matri_dojo") {
       
-      const existingAluno = alunos.find(a => a.dados_matricula.matri_dojo === value);
+      const existingAluno = alunos.find(a => a.dados_matricula.matri_dojo === value)?.dados_matricula.matri_dojo;
 
 
-      console.log(existingAluno, aluno)
-      if (existingAluno !== aluno){
+      console.log(existingAluno, alunoId)
+      if (existingAluno !== alunoId){
         if (existingAluno ) {
           setIdError("Esta matrícula já está em uso.");
         } else {
