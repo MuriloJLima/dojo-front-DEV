@@ -146,88 +146,89 @@ const formatSexoAluno = (sexo) => {
 };
 
 const ExcelEdit = () => {
-  const [alunos, setAlunos] = useState([]);
-  const [selectedFields, setSelectedFields] = useState({
-    matricula_aluno: true,
-    nome_aluno: true,
-    nasc_aluno: true,
-    idade: true,
-    sexo_aluno: true,
-    t_sanguineo: true,
-    altura_aluno: true,
-    peso_aluno: true,
-    nome_respons: true,
-    tel_respons: true,
-    tel_aluno: true,
-    email_aluno: true,
-    endereco_aluno: true,
-    data_insc: true,
-    grad_aluno: true,
-  });
+  // const [alunos, setAlunos] = useState([]);
+  // const [selectedFields, setSelectedFields] = useState({
+  //   matricula_aluno: true,
+  //   nome_aluno: true,
+  //   nasc_aluno: true,
+  //   idade: true,
+  //   sexo_aluno: true,
+  //   t_sanguineo: true,
+  //   altura_aluno: true,
+  //   peso_aluno: true,
+  //   nome_respons: true,
+  //   tel_respons: true,
+  //   tel_aluno: true,
+  //   email_aluno: true,
+  //   endereco_aluno: true,
+  //   data_insc: true,
+  //   grad_aluno: true,
+  // });
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
-  const getAlunos = async () => {
-    const response = await axios.get(`${config.urlRoot}/listarAlunos`);
-    const alunosComDadosTratados = response.data.data.map((aluno) => ({
-      ...aluno,
-      matricula_aluno: padIdAluno(aluno.matricula_aluno),
-      nasc_aluno: formatDateToBrazilian(aluno.nasc_aluno),
-      data_insc: formatDateToBrazilian(aluno.data_insc),
-      idade: calculateAge(aluno.nasc_aluno),
-      sexo_aluno: formatSexoAluno(aluno.sexo_aluno),
-    }));
-    setAlunos(alunosComDadosTratados);
-  };
+  // const getAlunos = async () => {
+  //   const response = await axios.get(`${config.urlRoot}/listarAlunos`);
+  //   const alunosComDadosTratados = response.data.data.map((aluno) => ({
+  //     ...aluno,
+  //     matricula_aluno: padIdAluno(aluno.matricula_aluno),
+  //     nasc_aluno: formatDateToBrazilian(aluno.nasc_aluno),
+  //     data_insc: formatDateToBrazilian(aluno.data_insc),
+  //     idade: calculateAge(aluno.nasc_aluno),
+  //     sexo_aluno: formatSexoAluno(aluno.sexo_aluno),
+  //   }));
+  //   setAlunos(alunosComDadosTratados);
+  // };
 
-  useEffect(() => {
-    getAlunos();
-  }, []);
+  // useEffect(() => {
+  //   getAlunos();
+  // }, []);
 
-  const handleCheckboxChange = (field) => {
-    if (field === "matricula_aluno") return;
+  // const handleCheckboxChange = (field) => {
+  //   if (field === "matricula_aluno") return;
 
-    setSelectedFields((prev) => ({
-      ...prev,
-      [field]: !prev[field],
-    }));
-  };
+  //   setSelectedFields((prev) => ({
+  //     ...prev,
+  //     [field]: !prev[field],
+  //   }));
+  // };
 
-  const handleSelectAllChange = (e) => {
-    const isChecked = e.target.checked;
-    setSelectedFields((prev) => {
-      const updatedFields = { ...prev };
-      Object.keys(updatedFields).forEach((field) => {
-        if (field !== "matricula_aluno") {
-          updatedFields[field] = isChecked;
-        }
-      });
-      return updatedFields;
-    });
-  };
+  // const handleSelectAllChange = (e) => {
+  //   const isChecked = e.target.checked;
+  //   setSelectedFields((prev) => {
+  //     const updatedFields = { ...prev };
+  //     Object.keys(updatedFields).forEach((field) => {
+  //       if (field !== "matricula_aluno") {
+  //         updatedFields[field] = isChecked;
+  //       }
+  //     });
+  //     return updatedFields;
+  //   });
+  // };
 
-  const exportToExcel = () => {
-    setLoading(true);
-    const filteredAlunos = alunos.map((aluno) => {
-      const filtered = {};
-      Object.keys(selectedFields).forEach((field) => {
-        if (selectedFields[field]) {
-          filtered[fieldTitles[field]] = aluno[field];
-        }
-      });
-      return filtered;
-    });
+  // const exportToExcel = () => {
+  //   setLoading(true);
+  //   const filteredAlunos = alunos.map((aluno) => {
+  //     const filtered = {};
+  //     Object.keys(selectedFields).forEach((field) => {
+  //       if (selectedFields[field]) {
+  //         filtered[fieldTitles[field]] = aluno[field];
+  //       }
+  //     });
+  //     return filtered;
+  //   });
 
-    const worksheet = XLSX.utils.json_to_sheet(filteredAlunos);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Alunos");
-    XLSX.writeFile(workbook, "Alunos.xlsx");
-    setLoading(false);
-  };
+  //   const worksheet = XLSX.utils.json_to_sheet(filteredAlunos);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Alunos");
+  //   XLSX.writeFile(workbook, "Alunos.xlsx");
+  //   setLoading(false);
+  // };
 
   return (
     <Container>
-      <Title>Exportar para Excel</Title>
+      <Title>Em manutenção</Title>
+      {/* <Title>Exportar para Excel</Title>
       <CheckboxLabel style={{ marginLeft: '10px' }}>
               <input
                 type="checkbox"
@@ -298,7 +299,7 @@ const ExcelEdit = () => {
           {loading ? "Exportando..." : "Exportar para Excel"}
           {loading && <LoadingText>Processando...</LoadingText>}
         </ExportButton>
-      </ExportSection>
+      </ExportSection> */}
     </Container>
   );
 };

@@ -47,7 +47,7 @@ export const Th = styled.th`
 export const Td = styled.td`
   text-align: center;
   padding: 10px 10px;
-  border-bottom: 1px solid #e0e0e0;
+  
   @media (max-width: 768px) {
     &:nth-child(n+5):not(:nth-last-child(2)):not(:last-child) {
       display: none;
@@ -154,12 +154,12 @@ const List = ({ onAlunoSelect }) => {
             <Td>{item.dados_respons.tel_respons || item.dados_aluno.tel_aluno}</Td>
             <Td>{getModalidades(item.dados_matricula.dados_modalidades)}</Td>
             <Td>
-            <Td alignCenter width="5%">
+              <Td alignCenter width="5%">
               <FaEdit onClick={() => handleAlunoClick(`E:${item._id}`)} />
-            </Td>
-            <Td alignCenter width="5%">
+              </Td>
+              <Td alignCenter width="5%">
               <FaTrash onClick={() => handleDelete(item._id)} />
-            </Td>
+              </Td>
             </Td>
           </Tr>
         ))}
