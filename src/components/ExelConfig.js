@@ -3,6 +3,7 @@ import styled from "styled-components";
 import config from '../config/config.json';
 import axios from "axios";
 import * as XLSX from "xlsx";
+import { BiBorderTop } from "react-icons/bi";
 
 const Container = styled.div`
   width: 600%;
@@ -28,6 +29,7 @@ const Content = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 20px;
+  margin-bottom: 20px;
 `;
 
 const FieldSelection = styled.div`
@@ -36,13 +38,16 @@ const FieldSelection = styled.div`
   gap: 20px;
   @media (max-width: 700px) {
     flex-direction: column;
+    border-top: 1px solid #e0e0e0
   }
-  
 `;
 
 const FieldGroup = styled.div`
   flex: 1;
   padding: 10px;
+  @media (max-width: 700px) {
+    border-top: 1px solid #e0e0e0
+  }
 `;
 
 const FieldGroupTitle = styled.h3`
@@ -99,21 +104,26 @@ const LoadingText = styled.span`
 `;
 
 const fieldTitles = {
-  matricula_aluno: "Matrícula",
-  nome_aluno: "Nome do Aluno",
+  nome_aluno: "Nome Completo",
   nasc_aluno: "Data de Nascimento",
   idade: "Idade",
   sexo_aluno: "Sexo",
-  t_sanguineo: "Tipo Sanguíneo",
   altura_aluno: "Altura",
   peso_aluno: "Peso",
-  nome_respons: "Nome do Responsável",
-  tel_respons: "Telefone do Responsável",
-  tel_aluno: "Telefone do Aluno",
+  t_sanguineo: "Tipo Sanguíneo",
+  tel_aluno: "Telefone do Atleta",
   email_aluno: "Email",
   endereco_aluno: "Endereço",
-  data_insc: "Data de Inscrição",
-  grad_aluno: "Graduação",
+  nome_respons: "Nome do Responsável",
+  tel_respons: "Telefone do Responsável",
+  matri_dojo: "Matrícula do Dojo",
+  modalidades: "Modalidades Inscritas",
+  matri_federacao_karate: "Matr. da federação - karate",
+  data_insc_karate: "Data Inscrição - Karate",
+  grad_aluno_karate: "Graduação - Karate",
+  matri_federacao_muaythai: "Matr. da federação - Muay Thai",
+  data_insc_muaythai: "Data Inscrição - Muay Thai",
+  grad_aluno_muaythai: "Graduação - Muay Thai",
 };
 
 const padIdAluno = (id) => {
@@ -147,113 +157,148 @@ const formatSexoAluno = (sexo) => {
 };
 
 const ExcelEdit = () => {
-  // const [alunos, setAlunos] = useState([]);
-  // const [selectedFields, setSelectedFields] = useState({
-  //   matricula_aluno: true,
-  //   nome_aluno: true,
-  //   nasc_aluno: true,
-  //   idade: true,
-  //   sexo_aluno: true,
-  //   t_sanguineo: true,
-  //   altura_aluno: true,
-  //   peso_aluno: true,
-  //   nome_respons: true,
-  //   tel_respons: true,
-  //   tel_aluno: true,
-  //   email_aluno: true,
-  //   endereco_aluno: true,
-  //   data_insc: true,
-  //   grad_aluno: true,
-  // });
+  const [alunos, setAlunos] = useState([]);
+  const [selectedFields, setSelectedFields] = useState({
+    nome_aluno: true,
+    nasc_aluno: true,
+    idade: true,
+    sexo_aluno: true,
+    altura_aluno: true,
+    peso_aluno: true,
+    t_sanguineo: true,
+    tel_aluno: true,
+    email_aluno: true,
+    endereco_aluno: true,
+    nome_respons: true,
+    tel_respons: true,
+    matri_dojo: true,
+    modalidades: true,
+    matri_federacao_karate: true,
+    data_insc_karate: true,
+    grad_aluno_karate: true,
+    matri_federacao_muaythai: true,
+    data_insc_muaythai: true,
+    grad_aluno_muaythai: true,
 
-  // const [loading, setLoading] = useState(false);
+  });
 
-  // const getAlunos = async () => {
-  //   const response = await axios.get(`${config.urlRoot}/listarAlunos`);
-  //   const alunosComDadosTratados = response.data.data.map((aluno) => ({
-  //     ...aluno,
-  //     matricula_aluno: padIdAluno(aluno.matricula_aluno),
-  //     nasc_aluno: formatDateToBrazilian(aluno.nasc_aluno),
-  //     data_insc: formatDateToBrazilian(aluno.data_insc),
-  //     idade: calculateAge(aluno.nasc_aluno),
-  //     sexo_aluno: formatSexoAluno(aluno.sexo_aluno),
-  //   }));
-  //   setAlunos(alunosComDadosTratados);
-  // };
+  // Função para retornar as modalidades inscritas
+  const getModalidadesInscritas = (modalidades) => {
+    const inscricoes = [];
+    if (modalidades.dados_karate.is_aluno) {
+      inscricoes.push("Karate");
+    }
+    if (modalidades.dados_muaythai.is_aluno) {
+      inscricoes.push("Muay Thai");
+    }
+    return inscricoes.length > 0 ? inscricoes.join(", ") : "Nenhuma";
+  };
 
-  // useEffect(() => {
-  //   getAlunos();
-  // }, []);
+  // Função para calcular a idade já existente
+  const calculateAge = (birthdate) => {
+    const [year, month, day] = birthdate.split("-");
+    const birthDateObj = new Date(year, month - 1, day);
+    const ageDifMs = Date.now() - birthDateObj.getTime();
+    const ageDate = new Date(ageDifMs);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  };
 
-  // const handleCheckboxChange = (field) => {
-  //   if (field === "matricula_aluno") return;
+  const [loading, setLoading] = useState(false);
 
-  //   setSelectedFields((prev) => ({
-  //     ...prev,
-  //     [field]: !prev[field],
-  //   }));
-  // };
+  const getAlunos = async () => {
+    const response = await axios.get(`${config.urlRoot}/listarAlunos`);
+    const alunosComDadosTratados = response.data.data.map((aluno) => ({
+      nome_aluno: aluno.dados_aluno.nome_aluno,
+      nasc_aluno: formatDateToBrazilian(aluno.dados_aluno.nasc_aluno),
+      idade: calculateAge(aluno.dados_aluno.nasc_aluno), // Calculo da idade
+      sexo_aluno: formatSexoAluno(aluno.dados_aluno.sexo_aluno),
+      altura_aluno: aluno.dados_aluno.altura_aluno,
+      peso_aluno: aluno.dados_aluno.peso_aluno,
+      t_sanguineo: aluno.dados_aluno.t_sanguineo,
+      tel_aluno: aluno.dados_aluno.tel_aluno,
+      email_aluno: aluno.dados_aluno.email_aluno,
+      endereco_aluno: aluno.dados_aluno.endereco_aluno,
+      nome_respons: aluno.dados_respons.nome_respons,
+      tel_respons: aluno.dados_respons.tel_respons,
+      matri_dojo: padIdAluno(aluno.dados_matricula.matri_dojo),
+      data_insc_karate: aluno.dados_matricula.dados_modalidades.dados_karate.data_insc
+        ? formatDateToBrazilian(aluno.dados_matricula.dados_modalidades.dados_karate.data_insc)
+        : "",
+      grad_aluno_karate: aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno,
+      data_insc_muaythai: aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc
+        ? formatDateToBrazilian(aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc)
+        : "",
+      grad_aluno_muaythai: aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno,
+      matri_federacao_karate: aluno.dados_matricula.dados_modalidades.dados_karate.matri_federacao,
+      matri_federacao_muaythai: aluno.dados_matricula.dados_modalidades.dados_muaythai.matri_federacao,
+      modalidades: getModalidadesInscritas(aluno.dados_matricula.dados_modalidades) // Modalidades inscritas
+    }));
+    setAlunos(alunosComDadosTratados);
+  };
 
-  // const handleSelectAllChange = (e) => {
-  //   const isChecked = e.target.checked;
-  //   setSelectedFields((prev) => {
-  //     const updatedFields = { ...prev };
-  //     Object.keys(updatedFields).forEach((field) => {
-  //       if (field !== "matricula_aluno") {
-  //         updatedFields[field] = isChecked;
-  //       }
-  //     });
-  //     return updatedFields;
-  //   });
-  // };
+  useEffect(() => {
+    getAlunos();
+  }, []);
 
-  // const exportToExcel = () => {
-  //   setLoading(true);
-  //   const filteredAlunos = alunos.map((aluno) => {
-  //     const filtered = {};
-  //     Object.keys(selectedFields).forEach((field) => {
-  //       if (selectedFields[field]) {
-  //         filtered[fieldTitles[field]] = aluno[field];
-  //       }
-  //     });
-  //     return filtered;
-  //   });
+  const handleCheckboxChange = (field) => {
+    setSelectedFields((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
 
-  //   const worksheet = XLSX.utils.json_to_sheet(filteredAlunos);
-  //   const workbook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Alunos");
-  //   XLSX.writeFile(workbook, "Alunos.xlsx");
-  //   setLoading(false);
-  // };
+  const handleSelectAllChange = (e) => {
+    const isChecked = e.target.checked;
+    setSelectedFields((prev) => {
+      const updatedFields = { ...prev };
+      Object.keys(updatedFields).forEach((field) => {
+        updatedFields[field] = isChecked;
+      });
+      return updatedFields;
+    });
+  };
+
+  const exportToExcel = () => {
+    setLoading(true);
+    const filteredAlunos = alunos.map((aluno) => {
+      const filtered = {};
+      Object.keys(selectedFields).forEach((field) => {
+        if (selectedFields[field]) {
+          filtered[fieldTitles[field]] = aluno[field];
+        }
+      });
+      return filtered;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(filteredAlunos);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Alunos");
+    XLSX.writeFile(workbook, "Atletas.xlsx");
+    setLoading(false);
+  };
 
   return (
     <Container>
-      <Title>Em manutenção</Title>
-      {/* <Title>Exportar para Excel</Title>
+      <Title>Exportar para Excel</Title>
       <CheckboxLabel style={{ marginLeft: '10px' }}>
-              <input
-                type="checkbox"
-                checked={Object.values(selectedFields).every(Boolean)}
-                onChange={handleSelectAllChange}
-              />
-              Selecionar Todos
-            </CheckboxLabel>
+        <input
+          type="checkbox"
+          checked={Object.values(selectedFields).every((field) => field)}
+          onChange={handleSelectAllChange}
+        />
+        Selecionar todos os campos
+      </CheckboxLabel>
       <Content>
-        
         <FieldSelection>
-        
           <FieldGroup>
-           
-
-            <FieldGroupTitle>Informações Pessoais</FieldGroupTitle>
+            <FieldGroupTitle>Informações do Atleta</FieldGroupTitle>
             <CheckboxContainer>
-              {["matricula_aluno", "nome_aluno", "nasc_aluno", "idade", "sexo_aluno"].map((field) => (
+              {["matri_dojo", "nome_aluno", "nasc_aluno", "idade", "modalidades"].map((field) => (
                 <CheckboxLabel key={field}>
                   <input
                     type="checkbox"
                     checked={selectedFields[field]}
                     onChange={() => handleCheckboxChange(field)}
-                    disabled={field === "matricula_aluno"}
                   />
                   {fieldTitles[field]}
                 </CheckboxLabel>
@@ -276,11 +321,52 @@ const ExcelEdit = () => {
               ))}
             </CheckboxContainer>
           </FieldGroup>
-     
+
           <FieldGroup>
-            <FieldGroupTitle>Outras Informações</FieldGroupTitle>
+            <FieldGroupTitle>Informações adicionais</FieldGroupTitle>
             <CheckboxContainer>
-              {["t_sanguineo", "altura_aluno", "peso_aluno", "data_insc", "grad_aluno"].map((field) => (
+              {["sexo_aluno", "altura_aluno", "peso_aluno", "t_sanguineo"].map((field) => (
+                <CheckboxLabel key={field}>
+                  <input
+                    type="checkbox"
+                    checked={selectedFields[field]}
+                    onChange={() => handleCheckboxChange(field)}
+                  />
+                  {fieldTitles[field]}
+                </CheckboxLabel>
+              ))}
+            </CheckboxContainer>
+          </FieldGroup>
+
+
+        </FieldSelection>
+
+      </Content>
+
+      <Content>
+      <FieldSelection style={{ borderTop: "1px solid #e0e0e0" }}>
+
+
+          <FieldGroup>
+            <FieldGroupTitle>Informações - Karate</FieldGroupTitle>
+            <CheckboxContainer>
+              {["matri_federacao_karate", "data_insc_karate", "grad_aluno_karate"].map((field) => (
+                <CheckboxLabel key={field}>
+                  <input
+                    type="checkbox"
+                    checked={selectedFields[field]}
+                    onChange={() => handleCheckboxChange(field)}
+                  />
+                  {fieldTitles[field]}
+                </CheckboxLabel>
+              ))}
+            </CheckboxContainer>
+          </FieldGroup>
+
+          <FieldGroup>
+            <FieldGroupTitle>Informações - Muay Thai</FieldGroupTitle>
+            <CheckboxContainer>
+              {["matri_federacao_muaythai", "data_insc_muaythai", "grad_aluno_muaythai"].map((field) => (
                 <CheckboxLabel key={field}>
                   <input
                     type="checkbox"
@@ -294,13 +380,12 @@ const ExcelEdit = () => {
           </FieldGroup>
         </FieldSelection>
       </Content>
-
       <ExportSection>
         <ExportButton onClick={exportToExcel} disabled={loading}>
-          {loading ? "Exportando..." : "Exportar para Excel"}
-          {loading && <LoadingText>Processando...</LoadingText>}
+          Exportar para Excel
+          {loading && <LoadingText>Exportando...</LoadingText>}
         </ExportButton>
-      </ExportSection> */}
+      </ExportSection>
     </Container>
   );
 };

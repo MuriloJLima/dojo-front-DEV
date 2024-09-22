@@ -153,7 +153,11 @@ const Aluno = ({ id }) => {
         <ProfileRow>
           <ProfileGroup>
             <Label>Data de Nascimento:</Label>
-            <Info>{aluno.dados_aluno?.nasc_aluno ? new Date(aluno.dados_aluno.nasc_aluno).toLocaleDateString() : "--"}</Info>
+            <Info>
+              {aluno.dados_aluno?.nasc_aluno
+                ? new Date(aluno.dados_aluno?.nasc_aluno).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                : "--"}
+            </Info>
           </ProfileGroup>
           <ProfileGroup>
             <Label>Idade:</Label>
@@ -230,7 +234,11 @@ const Aluno = ({ id }) => {
           </ProfileGroup>
           <ProfileGroup>
             <Label>Data de Inscrição:</Label>
-            <Info>{aluno.dados_matricula.dados_modalidades.dados_karate.data_insc ? new Date(aluno.dados_matricula.dados_modalidades.dados_karate.data_insc).toLocaleDateString() : "--"}</Info>
+            <Info>
+              {aluno.dados_matricula.dados_modalidades.dados_karate.data_insc
+                ? new Date(aluno.dados_matricula.dados_modalidades.dados_karate.data_insc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                : "--"}
+            </Info>
           </ProfileGroup>
           <ProfileGroup>
             <Label>Graduação:</Label>
@@ -251,7 +259,11 @@ const Aluno = ({ id }) => {
           </ProfileGroup>
           <ProfileGroup>
             <Label>Data de Inscrição:</Label>
-            <Info>{aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc ? new Date(aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc).toLocaleDateString() : "--"}</Info>
+            <Info>
+              {aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc
+                ? new Date(aluno.dados_matricula.dados_modalidades.dados_muaythai.data_insc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                : "--"}
+            </Info>
           </ProfileGroup>
           <ProfileGroup>
             <Label>Graduação:</Label>

@@ -71,6 +71,15 @@ const Overlay = styled.div`
   z-index: 999;
 `;
 
+const VersionText = styled.p`
+  font-size: 12px;
+  color: #888;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  margin: 0;
+`;
+
 
 function Home({ onLogout }) {
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -174,6 +183,8 @@ function Home({ onLogout }) {
       )}
 
       <ToastContainer autoClose={3000} />
+
+      <VersionText>Versão: 1.0.2</VersionText>
       <GlobalStyle />
     </>
   );
