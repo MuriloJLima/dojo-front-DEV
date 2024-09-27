@@ -44,6 +44,7 @@ export const Th = styled.th`
   }
 `;
 
+
 export const Td = styled.td`
   text-align: center;
   padding: 10px 10px;
@@ -60,9 +61,33 @@ export const Td = styled.td`
   }
 `;
 
+const FilterWrapper = styled.div`
+  display: inline-block;
+  position: relative;
+`;
+
+const FilterLabel = styled.span`
+  color: #808080;
+
+  cursor: pointer; /* Faz com que o cursor indique que é clicável */
+`;
+
+const FilterSelect = styled.select`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0; /* Deixa o select invisível */
+  cursor: pointer; /* Mantém o cursor como pointer */
+`;
+
+
 
 const List = ({ onAlunoSelect }) => {
   const [alunos, setAlunos] = useState([]);
+  const [filterModalidade, setFilterModalidade] = useState("todos");
+ 
 
   const getAlunos = async () => {
     const response = await axios.get(`${config.urlRoot}/listarAlunos`);
@@ -77,7 +102,7 @@ const List = ({ onAlunoSelect }) => {
   
 
   
-
+  // calcula a idade do aluno
   const calculateAge = (birthDate) => {
     const today = new Date();
     const birthDateObj = new Date(birthDate);
@@ -91,6 +116,7 @@ const List = ({ onAlunoSelect }) => {
     return age;
   };
 
+  //função para deletar o aluno através do id
   const handleDelete = async (id) => {
     confirmAlert({
       message: 'Você tem certeza que deseja excluir este aluno?',
@@ -129,6 +155,24 @@ const List = ({ onAlunoSelect }) => {
     return inscricoes.length > 0 ? inscricoes.join(", ") : "Nenhuma";
   };
 
+  // Função para filtrar alunos com base na modalidade
+  const filtrarAlunosPorModalidade = (aluno) => {
+    const modalidades = getModalidades(aluno.dados_matricula.dados_modalidades);
+    switch (filterModalidade) {
+      case "Karate":
+        return modalidades.includes("Karate");
+      case "Muay Thai":
+        return modalidades.includes("Muay Thai");
+      case "Karate e Muay Thai":
+        return modalidades.includes("Karate") && modalidades.includes("Muay Thai");
+      default:
+        return true; // Exibe todos os alunos
+    }
+  };
+
+
+ 
+
   return (
     <Table>
       <Thead>
@@ -139,30 +183,47 @@ const List = ({ onAlunoSelect }) => {
           <Th>Idade</Th>
           <Th>Telefone</Th>
           <Th>Modalidades</Th> 
-          <Th style={{ color: '#808080' }}>Filtrar</Th>
+
+         
+            <Th style={{ color: '#808080', cursor: 'pointer' }}>
+              <FilterWrapper>
+                 <FilterLabel>Filtrar</FilterLabel>
+                 <FilterSelect
+                   value={filterModalidade}
+                   onChange={(e) => setFilterModalidade(e.target.value)}
+                 >
+                   <option value="Todos">Todos</option>
+                   <option value="Karate">Karate</option>
+                   <option value="Muay Thai">Muay Thai</option>
+                   <option value="Karate e Muay Thai">Karate e Muay Thai</option>
+                 </FilterSelect>
+               </FilterWrapper>
+            </Th>
         </Tr>
+        
       </Thead>
+      
       <tbody>
-        {alunos.map((item, i) => (
-          <Tr key={i}>
-            <Td alignCenter width="5%">
-              <FaSearch onClick={() => handleAlunoClick(`S:${item._id}`)} />
-            </Td>
-            <Td>{item.dados_matricula.matri_dojo}</Td>
-            <Td>{item.dados_aluno.nome_aluno}</Td>
-            <Td>{calculateAge(item.dados_aluno.nasc_aluno)}</Td>
-            <Td>{item.dados_respons.tel_respons || item.dados_aluno.tel_aluno}</Td>
-            <Td>{getModalidades(item.dados_matricula.dados_modalidades)}</Td>
-            <Td>
+      {alunos.filter(filtrarAlunosPorModalidade).map((item, i) => (
+            <Tr key={i}>
               <Td alignCenter width="5%">
-              <FaEdit onClick={() => handleAlunoClick(`E:${item._id}`)} />
+                <FaSearch onClick={() => handleAlunoClick(`S:${item._id}`)} />
               </Td>
-              <Td alignCenter width="5%">
-              <FaTrash onClick={() => handleDelete(item._id)} />
+              <Td>{item.dados_matricula.matri_dojo}</Td>
+              <Td>{item.dados_aluno.nome_aluno}</Td>
+              <Td>{calculateAge(item.dados_aluno.nasc_aluno)}</Td>
+              <Td>{item.dados_respons.tel_respons || item.dados_aluno.tel_aluno}</Td>
+              <Td>{getModalidades(item.dados_matricula.dados_modalidades)}</Td>
+              <Td>
+                <Td alignCenter width="5%">
+                  <FaEdit onClick={() => handleAlunoClick(`E:${item._id}`)} />
+                </Td>
+                <Td alignCenter width="5%">
+                  <FaTrash onClick={() => handleDelete(item._id)} />
+                </Td>
               </Td>
-            </Td>
-          </Tr>
-        ))}
+            </Tr>
+          ))}
       </tbody>
       <ToastContainer
         style={{

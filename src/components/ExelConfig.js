@@ -104,6 +104,7 @@ const LoadingText = styled.span`
 `;
 
 const fieldTitles = {
+  matri_dojo: "Matrícula do Dojo",
   nome_aluno: "Nome Completo",
   nasc_aluno: "Data de Nascimento",
   idade: "Idade",
@@ -116,7 +117,6 @@ const fieldTitles = {
   endereco_aluno: "Endereço",
   nome_respons: "Nome do Responsável",
   tel_respons: "Telefone do Responsável",
-  matri_dojo: "Matrícula do Dojo",
   modalidades: "Modalidades Inscritas",
   matri_federacao_karate: "Matr. da federação - karate",
   data_insc_karate: "Data Inscrição - Karate",
@@ -159,20 +159,20 @@ const formatSexoAluno = (sexo) => {
 const ExcelEdit = () => {
   const [alunos, setAlunos] = useState([]);
   const [selectedFields, setSelectedFields] = useState({
+    matri_dojo: true, 
     nome_aluno: true,
     nasc_aluno: true,
     idade: true,
-    sexo_aluno: true,
-    altura_aluno: true,
-    peso_aluno: true,
-    t_sanguineo: true,
+    modalidades: true,
     tel_aluno: true,
     email_aluno: true,
     endereco_aluno: true,
     nome_respons: true,
     tel_respons: true,
-    matri_dojo: true,
-    modalidades: true,
+    sexo_aluno: true,
+    altura_aluno: true,
+    peso_aluno: true,
+    t_sanguineo: true,
     matri_federacao_karate: true,
     data_insc_karate: true,
     grad_aluno_karate: true,
