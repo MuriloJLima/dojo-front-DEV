@@ -98,7 +98,20 @@ export function Alunos({calculateAge, alunos, filterModalidade, getAlunoshome, s
                         .map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    <img className={styles.avatar} src={noProfile} alt="cd-alcateia" />
+                                    {item.image_url ? (
+                                         <img 
+                                         className={styles.avatar} 
+                                         src={`http://localhost:3001/${item.image_url}`}
+                                         
+                                         />
+                                    ):(
+                                        <img 
+                                        className={styles.avatar} 
+                                        src={noProfile}
+                                        
+                                        />
+                                    )}
+                                   
                                 </td>
                                 <td>{item.dados_matricula.matri_dojo}</td>
                                 <td>{item.dados_aluno.nome_aluno}</td>
