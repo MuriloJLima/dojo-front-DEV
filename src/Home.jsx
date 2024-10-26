@@ -31,6 +31,27 @@ export function Home() {
         return inscricoes.length > 0 ? inscricoes.join(", ") : "Nenhuma";
     };
 
+    const calculateAge = (birthDate) => {
+        const today = new Date();
+        const birthDateObj = new Date(birthDate);
+        let age = today.getFullYear() - birthDateObj.getFullYear();
+        const monthDiff = today.getMonth() - birthDateObj.getMonth();
+    
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) {
+          age--;
+        }
+    
+        return age;
+      };
+
+    function onExportExcel(){
+        console.log("aluno exportado")
+    }
+
+    function onAddAluno(){
+        console.log("aluno adicionado")
+    }
+
     // Retornar o JSX
     return (
         <div>
@@ -46,7 +67,12 @@ export function Home() {
                     alunos={alunos} 
                     filterModalidade={filterModalidade} 
                     setFilterModalidade={setFilterModalidade}
-                    getModalidades={getModalidades} // Passar a função
+                    getModalidades={getModalidades} 
+                    onAddAluno={onAddAluno}
+                    onExportExcel={onExportExcel}
+                    getAlunoshome={getAlunos}
+                    calculateAge={calculateAge}
+                    // Passar a função
                 />
             </div>
         </div>

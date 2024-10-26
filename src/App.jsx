@@ -1,9 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { Home } from "./Home"
+import { Newaluno } from "./components/Newaluno"
 
 
 
 import './global.css'
+
 
 export function App() {
 
@@ -12,8 +14,6 @@ export function App() {
       <Routes>
         <Route path='/' element={<Home/>}/>
         {/* <Route path='/home' element={}/>
-        <Route path='/aluno' element={}/>
-        <Route path='/novoaluno' element={}/>
         <Route path='/editaraluno' element={}/>
         <Route path='/exportar' element={}/> */}
         <Route path='*' element={<h1>Not Found</h1>}/>

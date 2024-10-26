@@ -1,7 +1,63 @@
-.alunos {
+.alunosContainer {
+  padding: 2rem;
   background: var(--white);
   border-radius: 8px;
-  padding: 2.5rem;
+}
+
+.alunos {
+  width: 100%;
+  background: var(--white);
+  
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.searchContainer {
+  display: flex;
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 8px;
+  margin: 0 1rem;
+  font-size: 1rem;
+  align-items: center; /* Ajusta o alinhamento vertical */
+  justify-content: space-between; /* Espaço entre os itens */
+}
+
+.searchInput {
+  width: 100%;
+  flex: 1;
+  border: none;
+  margin-left: 1rem;
+}
+
+.searchInput:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.addButton, .exportButton, .filterWrapper {
+  padding: 0.5rem 1rem;
+  background-color: var(--brown-800);
+  color: var(--white);
+  margin: 0 1rem 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.addButton:hover, .exportButton:hover {
+  background-color: var(--white);
+  color: var(--brown-800);
+  border: 1px solid var(--brown-800);
+  border-radius: 8px;
 }
 
 .avatar {
@@ -13,6 +69,8 @@
 tr {
   border-bottom: 1px solid var(--gray-900);
 }
+
+
 
 .alunos th {
   text-align: center;
@@ -35,12 +93,12 @@ tr {
 .filterWrapper {
   display: inline-block;
   position: relative;
+  background: transparent;
 }
 
 .filterWrapper span {
   color: var(--brown-800);
 
-  cursor: pointer;
 }
 
 .filterWrapper select {
@@ -71,3 +129,5 @@ tr {
     }
   }
 }
+
+
