@@ -3,8 +3,9 @@ import { PencilLine } from 'phosphor-react'
 
 import { Avatar } from './Avatar'
 import styles from './Sidebar.module.css'
+import noProfile from '../assets/noProfile.jpg';
 
-export function Sidebar() {
+export function Sidebar({ aluno }) {
     return (
         <aside className={styles.sidebar}>
             <img
@@ -16,16 +17,28 @@ export function Sidebar() {
 
             <div className={styles.profile}>
 
-                <Avatar src="https://github.com/muriloJLima.png" />
+                {aluno?.image_url ? (
+                    <Avatar
+                        className={styles.avatar}
+                        src={`http://localhost:3001/${aluno.image_url}`}
 
-                <strong>Murilo Lima</strong>
-                <span>0005</span>
+                    />
+                ) : (
+                    <Avatar
+                        className={styles.avatar}
+                        src={noProfile}
+
+                    />
+                )}
+
+                <strong>{aluno.dados_aluno?.nome_aluno}</strong>
+                <span>{aluno.dados_matricula?.matri_dojo}</span>
 
             </div>
 
             <footer>
                 <a href="#">
-                    <PencilLine size={20}/>
+                    <PencilLine size={20} />
                     Editar perfil
                 </a>
             </footer>

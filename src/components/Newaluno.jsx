@@ -26,24 +26,23 @@ export function Newaluno({ onClose }) {
         },
         dados_matricula: {
             matri_dojo: "",
+            mensalidades: [],
             dados_modalidades: {
                 dados_karate: {
                     is_aluno: false,
                     matri_federacao: "",
                     data_insc: "",
-                    grad_aluno: [],
-                    mensalidades: []
+                    grad_aluno: []
                 },
                 dados_muaythai: {
                     is_aluno: false,
                     matri_federacao: "",
                     data_insc: "",
-                    grad_aluno: [],
-                    mensalidades: []
+                    grad_aluno: []
                 }
             }
         },
-        is_adm: false,
+        is_adm: false
     });
 
 
@@ -302,23 +301,22 @@ export function Newaluno({ onClose }) {
                 },
                 dados_matricula: {
                     dados_modalidades: {
+                        mensalidades: [],
                         dados_karate: {
                             is_aluno: false,
                             matri_federacao: "",
                             data_insc: "",
-                            grad_aluno: [],
-                            mensalidades: []
+                            grad_aluno: []
                         },
                         dados_muaythai: {
                             is_aluno: false,
                             matri_federacao: "",
                             data_insc: "",
-                            grad_aluno: [],
-                            mensalidades: []
+                            grad_aluno: []
                         }
                     }
                 },
-                is_adm: false
+                is_adm: false,
             });
             setIdade(null);
             setImagem(null)
@@ -353,7 +351,7 @@ export function Newaluno({ onClose }) {
                                 }}
                                 maxLength={4}
                                 required
-                                error={!!idError}
+
                             />
                             {idError && <p>{idError}</p>}
                         </div>

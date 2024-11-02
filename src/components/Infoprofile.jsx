@@ -1,10 +1,12 @@
 import styles from './Infoprofile.module.css'
 
-export function Infoprofile() {
+export function Infoprofile({aluno}) {
+
+  console.log(aluno)
   return (
     <div className={styles.infoprofile}>
       {/* Título centralizado */}
-      <h1 className={styles.title}>Perfil do Administrador</h1>
+      <h1 className={styles.title}>Informações gerais</h1>
       
       {/* Descrição do Atleta */}
       <p className={styles.description}>
