@@ -6,6 +6,8 @@ import styles from './Sidebar.module.css'
 import noProfile from '../assets/noProfile.jpg';
 
 export function Sidebar({ aluno }) {
+
+    
     return (
         <aside className={styles.sidebar}>
             <img
@@ -29,10 +31,14 @@ export function Sidebar({ aluno }) {
                         src={noProfile}
 
                     />
-                )}
+                ) || <Avatar
+                    className={styles.avatar}
+                    src={noProfile}
 
-                <strong>{aluno.dados_aluno?.nome_aluno}</strong>
-                <span>{aluno.dados_matricula?.matri_dojo}</span>
+                />}
+
+                <strong>{aluno?.dados_aluno?.nome_aluno}</strong>
+                <span>{aluno?.dados_matricula?.matri_dojo || "000"}</span>
 
             </div>
 
@@ -40,6 +46,10 @@ export function Sidebar({ aluno }) {
                 <a href="#">
                     <PencilLine size={20} />
                     Editar perfil
+                </a>
+                <a href="#">
+                    <PencilLine size={20} />
+                    Excluir Perfil
                 </a>
             </footer>
         </aside>

@@ -10,13 +10,21 @@ import config from './config/config.json';
 import { useNavigate } from 'react-router-dom';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
-export function Home() {
+
+
+export function Home({ onLogout }) {
     const [alunos, setAlunos] = useState([]);
     const [filterModalidade, setFilterModalidade] = useState("Todos"); // Corrigido para "Todos"
-    const [alunoId, setAlunoId] = useState("");
     const [aluno, setAluno] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          setAluno(JSON.parse(token))
+        }
+      }, []);
 
     const getAlunos = async () => {
         const response = await axios.get(`${config.urlRoot}/listarAlunos`);
@@ -28,47 +36,35 @@ export function Home() {
         getAlunos();
     }, []);
 
-    const handleIdUrl = async () => {
+    async function handleIdUrl(id) {
 
-        if (alunoId !== "") {
-            navigate(`/?id=${alunoId}`);
-            window.location.reload()
+        navigate(`/home?id=${id}`);
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth' // Adiciona um efeito de rolagem suave
             });
-        }
 
-        return
+      
+            try {
+                // Realiza a requisição GET com os query parameters
+                const response = await axios.get(`${config.urlRoot}/dadosAluno`, {
+                    params: { id }
+                });
+    
+                setAluno(response.data.data)
+    
+            
+                
+            } catch (error) {
+                console.error("Erro ao buscar dados:", error);
+            }
         
     };
 
-    const handleAluno = async () =>{
-        const queryParams = new URLSearchParams(location.search);
-        const id = queryParams.get('id');
+   
 
-         try {
-            // Realiza a requisição GET com os query parameters
-            const response = await axios.get(`${config.urlRoot}/dadosAluno`, {
-                params: { id }
-            });
+    
 
-            setAluno(response.data.data)
-
-            
-            
-        } catch (error) {
-            console.error("Erro ao buscar dados:", error);
-        }
-    }
-
-    useEffect(() => {
-        handleIdUrl();
-    }, [alunoId]);
-
-    useEffect(() => {
-        handleAluno();
-    }, [handleIdUrl]);
 
     // Função para verificar as modalidades
     const getModalidades = (modalidades) => {
@@ -105,7 +101,7 @@ export function Home() {
     // Retornar o JSX
     return (
         <div>
-            <Header />
+            <Header onLogout={onLogout}/>
             <div className={styles.container}>
                 <div className={styles.wrapper}>
                     <Sidebar aluno={aluno}/>
@@ -122,7 +118,7 @@ export function Home() {
                     onExportExcel={onExportExcel}
                     getAlunoshome={getAlunos}
                     calculateAge={calculateAge}
-                    setAlunoId={setAlunoId}
+                    handleIdUrl={handleIdUrl}
                 // Passar a função
                 />
             </div>

@@ -33,8 +33,9 @@
 .sidebar footer {
     border-top: 1px solid var(--gray-100);
     margin-top: 1.25rem;
-    padding: 1.5rem 2rem 2rem;
+    padding: 0 2rem 1rem;
 }
+
 
 .sidebar footer a {
     background: transparent;
@@ -46,6 +47,8 @@
     font-weight: bold;
     display: block;
     text-decoration: none;
+    margin-top: 1rem;
+   
 
     display: flex;
     align-items: center;

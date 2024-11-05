@@ -1,13 +1,12 @@
 import styles from './Infoprofile.module.css'
 
-export function Infoprofile({aluno}) {
-
+export function Infoprofile({ aluno }) {
   console.log(aluno)
   return (
     <div className={styles.infoprofile}>
       {/* Título centralizado */}
       <h1 className={styles.title}>Informações gerais</h1>
-      
+
       {/* Descrição do Atleta */}
       <p className={styles.description}>
         Atleta dedicado com experiência em múltiplas modalidades, incluindo Karatê e Muay Thai.
@@ -43,6 +42,12 @@ export function Infoprofile({aluno}) {
       <div className={styles.history}>
         <h2>Histórico do Muay Thai</h2>
         <p>Alteta faixa azul com participação em 2 campeonatos, 2º lugar no Campeonato Nacional</p>
+      </div>
+
+      <div className={styles.buttonContainer}>
+        <button  className={styles.infoButton}>
+          Perfil completo
+        </button>
       </div>
     </div>
   )

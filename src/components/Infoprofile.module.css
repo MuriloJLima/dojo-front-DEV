@@ -36,4 +36,32 @@
     margin-bottom: 1rem;
 }
 
+.buttonContainer {
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--gray-400);
+    text-align: center;
+}
+
+.infoButton {
+    padding: 0.5rem 1rem;
+    background-color: var(--brown-800);
+    color: var(--white);
+    margin: 0 1rem 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    
+    
+  }
+  
+  .infoButton:hover {
+    background-color: var(--white);
+    color: var(--brown-800);
+    border: 1px solid var(--brown-800);
+    border-radius: 8px;
+  }
+
 

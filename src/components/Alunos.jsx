@@ -8,7 +8,7 @@ import axios from 'axios'
 import config from '../config/config.json';
 // import { MensalidadeStatusUpdater } from './MensalidadeStatusUpdater';
 
-export function Alunos({ setAlunoId, calculateAge, alunos, filterModalidade, getAlunoshome, setFilterModalidade, getModalidades, onExportExcel, onAddAluno }) {
+export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, getAlunoshome, setFilterModalidade, getModalidades, onExportExcel }) {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [showModal, setShowModal] = useState(false);
@@ -83,7 +83,8 @@ export function Alunos({ setAlunoId, calculateAge, alunos, filterModalidade, get
 
 
     const openProfille = (id)=>{
-       setAlunoId(id)
+       handleIdUrl(id)
+       
     }
 
 

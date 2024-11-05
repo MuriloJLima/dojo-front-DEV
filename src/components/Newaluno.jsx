@@ -42,6 +42,7 @@ export function Newaluno({ onClose }) {
                 }
             }
         },
+        senha_aluno: "",
         is_adm: false
     });
 
@@ -316,6 +317,7 @@ export function Newaluno({ onClose }) {
                         }
                     }
                 },
+                senha_aluno: "",
                 is_adm: false,
             });
             setIdade(null);
