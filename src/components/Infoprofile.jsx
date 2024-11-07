@@ -1,11 +1,23 @@
+import { AlunoCompleto } from './AlunoCompleto';
 import styles from './Infoprofile.module.css'
+import { useState } from 'react';
 
-export function Infoprofile({ aluno }) {
-  console.log(aluno)
+export function Infoprofile({ aluno, handleIdUrl }) {
+
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => setShowModal(true);
+  // const closeModal = () => setShowModal(false);
+
+  function closeModal() {
+
+    setShowModal(false)
+  }
+
   return (
     <div className={styles.infoprofile}>
       {/* Título centralizado */}
-      <h1 className={styles.title}>Informações gerais</h1>
+      <h1 className={styles.title}>Perfil do atleta</h1>
 
       {/* Descrição do Atleta */}
       <p className={styles.description}>
@@ -45,9 +57,15 @@ export function Infoprofile({ aluno }) {
       </div>
 
       <div className={styles.buttonContainer}>
-        <button  className={styles.infoButton}>
+        <button onClick={openModal} className={styles.infoButton}>
           Perfil completo
         </button>
+        {showModal &&
+          <AlunoCompleto
+            onClose={closeModal}
+            aluno={aluno}
+            handleIdUrl={handleIdUrl}
+          />}
       </div>
     </div>
   )

@@ -1,0 +1,174 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    max-height: calc(100vh * 0.90);
+    min-height: calc(100vh * 0.90);
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    width: calc(100% * 0.7);
+    position: relative;
+    overflow-y: auto;
+}
+
+.profileSection h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #444;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.modal h1 {
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.2rem;
+}
+
+.tabHeader {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+}
+
+.tabButton {
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    padding: 0.75rem 1.2rem;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.tabButton:not(:last-child) {
+    margin-right: 5px;
+}
+
+.tabButton:hover {
+    background-color: #e0e0e0;
+}
+
+.activeTab {
+    background-color: var(--brown-500);
+    color: white;
+    cursor: default;
+}
+
+.closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    border: none;
+    background: none;
+    font-size: 20px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.profileSection {
+    margin-bottom: 2rem;
+}
+
+.profileHeader {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid hsl(0, 0%, 88%);
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    @media (max-width: 700px) {
+        flex-direction: column;
+    }
+}
+
+.profileGroup label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 0.3rem;
+}
+
+.profileRow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr ));
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 2rem;
+}
+
+
+
+
+
+.formRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.formGroup {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+
+
+.modal input, .modal select {
+    font-size: 1rem;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #ffffff;
+    transition: border-color 0.3s ease;
+}
+
+.modal input:focus, .modal select:focus {
+    border-color: #888;
+    outline: none;
+}
+
+.profileGroup span {
+    font-size: 0.95rem;
+    color: #444;
+    display: block;
+    
+}
+
+.profileGroup .highlight {
+    font-weight: 700;
+    color: #333;
+}
+
+
+.mensalidades .competicaoItem {
+    padding: 1rem;
+    background-color: #fdfdfd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+

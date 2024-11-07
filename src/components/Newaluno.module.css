@@ -13,6 +13,7 @@
 
 .modal {
     max-height: calc(100vh * 0.90);
+    min-height: calc(100vh * 0.90);
     background: var(--white);
     padding: 2rem;
     border-radius: 12px;
@@ -77,6 +78,38 @@
     gap: 20px;
 }
 
+.tabHeader {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tabButton {
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.tabButton:not(:last-child) {
+    margin-right: 5px;
+}
+
+.tabButton:hover {
+    background-color: #e0e0e0;
+}
+
+.activeTab {
+    background-color: var(--brown-500);
+    color: white;
+    cursor: default;
+}
+
 
 
 .overlay label {
@@ -121,8 +154,10 @@ select:focus {
 
 .checkboxContainer {
     display: flex;
- 
-    margin-bottom: 10px;
+    border-top: 1px solid var(--gray-400);
+    padding-top: 1rem;
+    margin: 1rem 0 0;
+
 
 
 }

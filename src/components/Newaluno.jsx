@@ -32,13 +32,15 @@ export function Newaluno({ onClose }) {
                     is_aluno: false,
                     matri_federacao: "",
                     data_insc: "",
-                    grad_aluno: []
+                    grad_aluno: [],
+                    competicoes: []
                 },
                 dados_muaythai: {
                     is_aluno: false,
                     matri_federacao: "",
                     data_insc: "",
-                    grad_aluno: []
+                    grad_aluno: [],
+                    competicoes: []
                 }
             }
         },
@@ -56,6 +58,15 @@ export function Newaluno({ onClose }) {
     const [alunos, setAlunos] = useState([]);
     const [idError, setIdError] = useState("");
     const [modalidadeError, setModalidadeError] = useState('');
+
+    const [activeTab, setActiveTab] = useState('informacoes')
+
+    const [continuarClicked, setContinuarClicked] = useState(false);
+
+    const handleContinuar = () => {
+        setContinuarClicked(true);
+        setActiveTab('modalidades');
+    };
 
     //busca os alunos no bd para verificar no numero de matricula
     const getAlunos = async () => {
@@ -202,6 +213,78 @@ export function Newaluno({ onClose }) {
         { graduacao: "Preta", data_graduacao: "" }
     ];
 
+    const [newCompetitionKarate, setNewCompetitionKarate] = useState({
+        titulo: "",
+        premiacao: ""
+    });
+
+    const [newCompetitionMuayThai, setNewCompetitionMuayThai] = useState({
+        titulo: "",
+        premiacao: ""
+    });
+
+    const handleCompetitionKarateChange = (e) => {
+        const { name, value } = e.target;
+        setNewCompetitionKarate((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+
+        
+    };
+
+    const handleCompetitionMuayThaiChange = (e) => {
+        const { name, value } = e.target;
+        setNewCompetitionMuayThai((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+
+        
+    };
+
+    const handleAddCompetitionKarate = () => {
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_karate: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_karate,
+                        competicoes: [
+                            ...prevData.dados_matricula.dados_modalidades.dados_karate.competicoes,
+                            { titulo: newCompetitionKarate.titulo, premiacao: newCompetitionKarate.premiacao }
+                        ]
+                    }
+                }
+            }
+        }));
+        // Limpar os campos de nova competição
+        setNewCompetitionKarate({ titulo: "", premiacao: "" });
+    };
+
+    const handleAddCompetitionMuayThai = () => {
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_muaythai: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_muaythai,
+                        competicoes: [
+                            ...prevData.dados_matricula.dados_modalidades.dados_muaythai.competicoes,
+                            { titulo: newCompetitionMuayThai.titulo, premiacao: newCompetitionMuayThai.premiacao }
+                        ]
+                    }
+                }
+            }
+        }));
+        // Limpar os campos de nova competição
+        setNewCompetitionMuayThai({ titulo: "", premiacao: "" });
+    };
+
     //inserindo as faixas de karatê e muay thai no objeto
     const handleKarateChange = (event) => {
         const selectedGraduacao = event.target.value;
@@ -307,13 +390,15 @@ export function Newaluno({ onClose }) {
                             is_aluno: false,
                             matri_federacao: "",
                             data_insc: "",
-                            grad_aluno: []
+                            grad_aluno: [],
+                            competicoes: []
                         },
                         dados_muaythai: {
                             is_aluno: false,
                             matri_federacao: "",
                             data_insc: "",
-                            grad_aluno: []
+                            grad_aluno: [],
+                            competicoes: []
                         }
                     }
                 },
@@ -324,6 +409,7 @@ export function Newaluno({ onClose }) {
             setImagem(null)
             document.querySelector('input[name="imagem"]').value = '';
             getAlunos()
+            setActiveTab('informacoes')
         } catch (error) {
             console.error("Erro ao cadastrar o aluno:", error);
             // Aqui você pode tratar o erro, como exibir uma mensagem para o usuário
@@ -334,269 +420,329 @@ export function Newaluno({ onClose }) {
         <div className={styles.overlay}>
             <div className={styles.modal}>
 
+                {/* Header com abas */}
+                <div className={styles.tabHeader}>
+                    <button
+                        className={`${styles.tabButton} ${activeTab === 'informacoes' && styles.activeTab}`}
+                        onClick={() => setActiveTab('informacoes')}
+                    >
+                        Informações Gerais
+                    </button>
+                    <button
+                        className={`${styles.tabButton} ${activeTab === 'modalidades' && styles.activeTab}`}
+                        onClick={() => setActiveTab('modalidades')}
+                    >
+                        Modalidades
+                    </button>
+                </div>
+
+
 
                 <form onSubmit={handleSubmit}>
                     <button onClick={onClose} className={styles.closeButton}>X</button>
-                    <div className={styles.formRow}>
-                        <div>
-                            <input type="file" name="imagem" onChange={handleImageChange} />
-                        </div>
-                        <div className={styles.smalldiv}>
-                            <label>Matrícula:</label>
-                            <input
-                                type="text"
-                                name="dados_matricula.matri_dojo"
-                                value={formData.dados_matricula.matri_dojo}
-                                onChange={handleChange}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                                }}
-                                maxLength={4}
-                                required
 
-                            />
-                            {idError && <p>{idError}</p>}
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label>Nome Completo:</label>
-                            <input type="text" name="dados_aluno.nome_aluno" value={formData.dados_aluno.nome_aluno} onChange={handleChange} required />
-                        </div>
-                    </div>
-                    <div className={styles.formRow}>
-                        <div className={styles.formGroup}>
-                            <label>Data de Nascimento:</label>
-                            <input type="date" name="dados_aluno.nasc_aluno" value={formData.dados_aluno.nasc_aluno} onChange={handleChange} max={hoje} required />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label>Sexo:</label>
-                            <select name="dados_aluno.sexo_aluno" value={formData.dados_aluno.sexo_aluno} onChange={handleChange} required>
-                                <option value="">Selecione</option>
-                                <option value="M">Masculino</option>
-                                <option value="F">Feminino</option>
-                                <option value="O">Outro</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className={styles.formRow}>
-                        <div className={styles.formGroup}>
-                            <label>Altura (cm):</label>
-                            <input type="text"
-                                name="dados_aluno.altura_aluno"
-                                value={formData.dados_aluno.altura_aluno}
-                                onChange={handleChange}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                                }}
-                                placeholder="ex: 150"
-                                maxLength={3} />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label>Peso (kg):</label>
-                            <input type="text"
-                                name="dados_aluno.peso_aluno"
-                                value={formData.dados_aluno.peso_aluno}
-                                onChange={handleChange}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                                }}
-                                placeholder="ex: 50"
-                                maxLength={3} />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label>Tipo Sanguíneo:</label>
-                            <select name="dados_aluno.t_sanguineo" value={formData.dados_aluno.t_sanguineo} onChange={handleChange}>
-                                <option value="">Selecione</option>
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="B+">B+</option>
-                                <option value="B-">B-</option>
-                                <option value="AB+">AB+</option>
-                                <option value="AB-">AB-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
-                            </select>
-                        </div>
-                    </div>
-                    {idade !== null && idade < 18 ? (
+                    {/* Conteúdo da aba "Informações Pessoais" */}
+                    {activeTab === 'informacoes' && (
                         <>
-                            <div className={styles.formGroup}>
-                                <label>Nome Completo do responsável:</label>
-                                <input type="text" name="dados_respons.nome_respons" value={formData.dados_respons.nome_respons} onChange={handleChange} required />
+                            <div className={styles.formRow}>
+                                <div>
+                                    <input type="file" name="imagem" onChange={handleImageChange} />
+                                </div>
+                                <div className={styles.smalldiv}>
+                                    <label>Matrícula:</label>
+                                    <input
+                                        type="text"
+                                        name="dados_matricula.matri_dojo"
+                                        value={formData.dados_matricula.matri_dojo}
+                                        onChange={handleChange}
+                                        onInput={(e) => {
+                                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                                        }}
+                                        maxLength={4}
+                                        required
+
+                                    />
+                                    {idError && <p>{idError}</p>}
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Nome Completo:</label>
+                                    <input type="text" name="dados_aluno.nome_aluno" value={formData.dados_aluno.nome_aluno} onChange={handleChange} required />
+                                </div>
                             </div>
                             <div className={styles.formRow}>
                                 <div className={styles.formGroup}>
-                                    <label>Telefone (responsável):</label>
-                                    <InputMask
-                                        mask="(99) 99999 9999"
-                                        value={formData.dados_respons.tel_respons}
-                                        onChange={handleChange}
-                                    >
-                                        {(inputProps) => <input {...inputProps} type="tel" name="dados_respons.tel_respons" required />}
-                                    </InputMask>
+                                    <label>Data de Nascimento:</label>
+                                    <input type="date" name="dados_aluno.nasc_aluno" value={formData.dados_aluno.nasc_aluno} onChange={handleChange} max={hoje} required />
                                 </div>
                                 <div className={styles.formGroup}>
-                                    <label>Telefone (aluno):</label>
-                                    <InputMask
-                                        mask="(99) 99999 9999"
-                                        value={formData.dados_aluno.tel_aluno}
-                                        onChange={handleChange}
-                                    >
-                                        {(inputProps) => <input {...inputProps} type="tel" name="dados_aluno.tel_aluno" />}
-                                    </InputMask>
+                                    <label>Sexo:</label>
+                                    <select name="dados_aluno.sexo_aluno" value={formData.dados_aluno.sexo_aluno} onChange={handleChange} required>
+                                        <option value="">Selecione</option>
+                                        <option value="M">Masculino</option>
+                                        <option value="F">Feminino</option>
+                                        <option value="O">Outro</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div className={styles.formGroup}>
-                                <label>Email:</label>
-                                <input type="email" name="dados_aluno.email_aluno" value={formData.dados_aluno.email_aluno} onChange={handleChange} required />
+                            <div className={styles.formRow}>
+                                <div className={styles.formGroup}>
+                                    <label>Altura (cm):</label>
+                                    <input type="text"
+                                        name="dados_aluno.altura_aluno"
+                                        value={formData.dados_aluno.altura_aluno}
+                                        onChange={handleChange}
+                                        onInput={(e) => {
+                                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                                        }}
+                                        placeholder="ex: 150"
+                                        maxLength={3} />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Peso (kg):</label>
+                                    <input type="text"
+                                        name="dados_aluno.peso_aluno"
+                                        value={formData.dados_aluno.peso_aluno}
+                                        onChange={handleChange}
+                                        onInput={(e) => {
+                                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                                        }}
+                                        placeholder="ex: 50"
+                                        maxLength={3} />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Tipo Sanguíneo:</label>
+                                    <select name="dados_aluno.t_sanguineo" value={formData.dados_aluno.t_sanguineo} onChange={handleChange}>
+                                        <option value="">Selecione</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+                            </div>
+                            {idade !== null && idade < 18 ? (
+                                <>
+                                    <div className={styles.formGroup}>
+                                        <label>Nome Completo do responsável:</label>
+                                        <input type="text" name="dados_respons.nome_respons" value={formData.dados_respons.nome_respons} onChange={handleChange} required />
+                                    </div>
+                                    <div className={styles.formRow}>
+                                        <div className={styles.formGroup}>
+                                            <label>Telefone (responsável):</label>
+                                            <InputMask
+                                                mask="(99) 99999 9999"
+                                                value={formData.dados_respons.tel_respons}
+                                                onChange={handleChange}
+                                            >
+                                                {(inputProps) => <input {...inputProps} type="tel" name="dados_respons.tel_respons" required />}
+                                            </InputMask>
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label>Telefone (aluno):</label>
+                                            <InputMask
+                                                mask="(99) 99999 9999"
+                                                value={formData.dados_aluno.tel_aluno}
+                                                onChange={handleChange}
+                                            >
+                                                {(inputProps) => <input {...inputProps} type="tel" name="dados_aluno.tel_aluno" />}
+                                            </InputMask>
+                                        </div>
+                                    </div>
+                                    <div className={styles.formGroup}>
+                                        <label>Email:</label>
+                                        <input type="email" name="dados_aluno.email_aluno" value={formData.dados_aluno.email_aluno} onChange={handleChange} required />
+                                    </div>
+                                </>
+                            ) : (
+                                <div className={styles.formRow}>
+                                    <div className={styles.formGroup}>
+                                        <label>Telefone:</label>
+                                        <InputMask
+                                            mask="(99) 99999 9999"
+                                            value={formData.dados_aluno.tel_aluno}
+                                            onChange={handleChange}
+                                        >
+                                            {(inputProps) => <input {...inputProps} type="tel" name="dados_aluno.tel_aluno" required />}
+                                        </InputMask>
+                                    </div>
+                                    <div className={styles.formGroup}>
+                                        <label>Email:</label>
+                                        <input type="email" name="dados_aluno.email_aluno" value={formData.dados_aluno.email_aluno} onChange={handleChange} required />
+                                    </div>
+                                </div>
+                            )}
+                            <div className={styles.formRow}>
+                                <div className={styles.formGroup}>
+                                    <label>Endereço Completo:</label>
+                                    <input
+                                        type="text"
+                                        name="dados_aluno.endereco_aluno"
+                                        value={formData.dados_aluno.endereco_aluno}
+                                        onChange={handleChange}
+                                        placeholder="ex: Rua das Flores, 123"
+                                        required
+                                    />
+                                </div>
+                                <div className={styles.smalldiv}>
+                                    <label>Administrador:</label>
+                                    <select name="is_adm" value={formData.is_adm} onChange={handleChange} required>
+                                        <option value={false}>Não</option>
+                                        <option value={true}>Sim</option>
+                                    </select>
+
+                                </div>
+
+                            </div>
+                            <div className={styles.buttonContainer}>
+                                <button type="submit" onClick={handleContinuar}>
+                                    Continuar
+                                </button>
                             </div>
                         </>
-                    ) : (
-                        <div className={styles.formRow}>
-                            <div className={styles.formGroup}>
-                                <label>Telefone:</label>
-                                <InputMask
-                                    mask="(99) 99999 9999"
-                                    value={formData.dados_aluno.tel_aluno}
-                                    onChange={handleChange}
-                                >
-                                    {(inputProps) => <input {...inputProps} type="tel" name="dados_aluno.tel_aluno" required />}
-                                </InputMask>
+                    )}
+
+
+                    {/* Conteúdo da aba "Modalidades" */}
+                    {activeTab === 'modalidades' && (
+                        <div className={styles.formGroup}>
+                            <label>Modalidades:</label>
+                            <div className={styles.checkboxContainer}>
+                                <input
+                                    type="checkbox"
+                                    name="dados_karate.is_aluno"
+                                    onChange={handleCheckboxChange}
+                                    checked={formData.dados_matricula.dados_modalidades.dados_karate.is_aluno || false}
+                                />
+                                <label>Karate</label>
                             </div>
-                            <div className={styles.formGroup}>
-                                <label>Email:</label>
-                                <input type="email" name="dados_aluno.email_aluno" value={formData.dados_aluno.email_aluno} onChange={handleChange} required />
+                            {formData.dados_matricula.dados_modalidades.dados_karate.is_aluno && (
+                                <>
+                                    <div className={styles.formRow}>
+                                        <div className={styles.formGroup}>
+                                            <label>Data de Inscrição:</label>
+                                            <input
+                                                type="date"
+                                                name="dados_matricula.dados_modalidades.dados_karate.data_insc"
+                                                value={formData.dados_matricula.dados_modalidades.dados_karate.data_insc}
+                                                onChange={handleChange}
+                                                max={hoje}
+                                                required
+                                            />
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label htmlFor="karateSelect">Selecione uma graduação:</label>
+                                            <select id="karateSelect" onChange={handleKarateChange} defaultValue="">
+                                                <option value="" disabled>Escolha uma Faixa</option>
+                                                {karateFaixas.map((faixa, index) => (
+                                                    <option key={index} value={faixa.graduacao}>{faixa.graduacao}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <div>
+                                        <h3>Competições - Karate</h3>
+                                        <input
+                                            type="text"
+                                            name="titulo"
+                                            value={newCompetitionKarate.titulo}
+                                            onChange={handleCompetitionKarateChange}
+                                            placeholder="Título da Competição"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="premiacao"
+                                            value={newCompetitionKarate.premiacao}
+                                            onChange={handleCompetitionKarateChange}
+                                            placeholder="Premiações"
+                                        />
+                                        <button type="button" onClick={() => handleAddCompetitionKarate()}>
+                                            Adicionar Competição
+                                        </button>
+                                        <ul>
+                                            {formData.dados_matricula.dados_modalidades.dados_karate.competicoes.map((comp, index) => (
+                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </>
+                            )}
+                            <div className={styles.checkboxContainer}>
+                                <input
+                                    type="checkbox"
+                                    name="dados_muaythai.is_aluno"
+                                    onChange={handleCheckboxChange}
+                                    checked={formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno || false}
+                                />
+                                <label>Muay Thai</label>
+                            </div>
+                            {formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno && (
+                                <>
+                                    <div className={styles.formRow}>
+                                        <div className={styles.formGroup}>
+                                            <label>Data de Inscrição:</label>
+                                            <input
+                                                type="date"
+                                                name="dados_matricula.dados_modalidades.dados_muaythai.data_insc"
+                                                value={formData.dados_matricula.dados_modalidades.dados_muaythai.data_insc}
+                                                onChange={handleChange}
+                                                max={hoje}
+                                                required
+                                            />
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label htmlFor="muayThaiSelect">Selecione uma graduação:</label>
+                                            <select id="muayThaiSelect" onChange={handleMuayThaiChange} defaultValue="">
+                                                <option value="" disabled>Escolha uma Faixa</option>
+                                                {muayThaiFaixas.map((faixa, index) => (
+                                                    <option key={index} value={faixa.graduacao}>{faixa.graduacao}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3>Competições - Muay Thai</h3>
+                                        <input
+                                            type="text"
+                                            name="titulo"
+                                            value={newCompetitionMuayThai.titulo}
+                                            onChange={handleCompetitionMuayThaiChange}
+                                            placeholder="Título da Competição"
+                                        />
+                                        <input
+                                            type="text"
+                                            name="premiacao"
+                                            value={newCompetitionMuayThai.premiacao}
+                                            onChange={handleCompetitionMuayThaiChange}
+                                            placeholder="Premiações"
+                                        />
+                                        <button type="button" onClick={() => handleAddCompetitionMuayThai()}>
+                                            Adicionar Competição
+                                        </button>
+                                        <ul>
+                                            {formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes.map((comp, index) => (
+                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </>
+                            )}
+                            {modalidadeError && <p>{modalidadeError}</p>}
+                            <div className={styles.buttonContainer}>
+                                <button type="submit" disabled={!continuarClicked}>
+                                    Cadastrar
+                                </button>
                             </div>
                         </div>
                     )}
-                    <div className={styles.formRow}>
-                        <div className={styles.formGroup}>
-                            <label>Endereço Completo:</label>
-                            <input
-                                type="text"
-                                name="dados_aluno.endereco_aluno"
-                                value={formData.dados_aluno.endereco_aluno}
-                                onChange={handleChange}
-                                placeholder="ex: Rua das Flores, 123"
-                                required
-                            />
-                        </div>
-                        <div className={styles.smalldiv}>
-                            <label>Administrador:</label>
-                            <select name="is_adm" value={formData.is_adm} onChange={handleChange} required>
-                                <option value={false}>Não</option>
-                                <option value={true}>Sim</option>
-                            </select>
-
-                        </div>
-                    </div>
-
-
-                    <div className={styles.formGroup}>
-                        <label>Modalidades:</label>
-
-                        <div className={styles.checkboxContainer}>
-                            <input
-                                type="checkbox"
-                                name="dados_karate.is_aluno"
-                                onChange={handleCheckboxChange}
-                                checked={formData.dados_matricula.dados_modalidades.dados_karate.is_aluno || false}
-                            />
-                            <label>Karate</label>
-                        </div>
-
-                        {formData.dados_matricula.dados_modalidades.dados_karate.is_aluno === true && (
-                            <>
-                                <div className={styles.formRow}>
-                                    <div className={styles.formGroup}>
-                                        <label>Data de Inscrição:</label>
-                                        <input type="date" name="dados_matricula.dados_modalidades.dados_karate.data_insc" value={formData.dados_matricula.dados_modalidades.dados_karate.data_insc} onChange={handleChange} max={hoje} required />
-                                    </div>
-                                    <div className={styles.formGroup}>
-                                        <label htmlFor="karateSelect">Selecione uma graduação:</label>
-                                        <select id="karateSelect" onChange={handleKarateChange} defaultValue="">
-                                            <option value="" disabled>Escolha uma Faixa</option>
-                                            {karateFaixas.map((faixa, index) => (
-                                                <option key={index} value={faixa.graduacao}>
-                                                    {faixa.graduacao}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className={styles.smalldiv}>
-                                        <label>Matrícula da federação:</label>
-                                        <input
-                                            type="text"
-                                            name="dados_matricula.dados_modalidades.dados_karate.matri_federacao"
-                                            value={formData.dados_matricula.dados_modalidades.dados_karate.matri_federacao}
-                                            onChange={handleChange}
-                                            onInput={(e) => {
-                                                e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                                            }}
-                                        />
-
-                                    </div>
-                                    <span></span>
-                                </div>
-
-
-                            </>
-
-
-                        )}
-
-                        <div className={styles.checkboxContainer}>
-                            <input
-                                type="checkbox"
-                                name="dados_muaythai.is_aluno"
-                                onChange={handleCheckboxChange}
-                                checked={formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno || false}
-                            />
-                            <label>Muay Thai</label>
-                        </div>
-
-                        {formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno === true && (
-                            <>
-                                <div className={styles.formRow}>
-                                    <div className={styles.formGroup}>
-                                        <label>Data de Inscrição:</label>
-                                        <input type="date" name="dados_matricula.dados_modalidades.dados_muaythai.data_insc" value={formData.dados_matricula.dados_modalidades.dados_muaythai.data_insc} onChange={handleChange} max={hoje} required />
-                                    </div>
-                                    <div className={styles.formGroup}>
-                                        <label htmlFor="muayThaiSelect">Selecione uma graduação:</label>
-                                        <select id="muayThaiSelect" onChange={handleMuayThaiChange} defaultValue="">
-                                            <option value="" disabled>Escolha uma Faixa</option>
-                                            {muayThaiFaixas.map((faixa, index) => (
-                                                <option key={index} value={faixa.graduacao}>
-                                                    {faixa.graduacao}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-
-                                    <div className={styles.smalldiv}>
-                                        <label>Matrícula da federação:</label>
-                                        <input
-                                            type="text"
-                                            name="dados_matricula.dados_modalidades.dados_muaythai.matri_federacao"
-                                            value={formData.dados_matricula.dados_modalidades.dados_muaythai.matri_federacao}
-                                            onChange={handleChange}
-                                            onInput={(e) => {
-                                                e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                                            }}
-                                        />
-
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                        {modalidadeError && <p>{modalidadeError}</p>}
-                    </div>
 
 
 
-                    <div className={styles.buttonContainer}>
-                        <button type="submit" disabled={!!idError}>Cadastrar</button>
-                    </div>
+
                 </form>
 
                 <ToastContainer

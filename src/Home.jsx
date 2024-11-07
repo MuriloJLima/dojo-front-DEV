@@ -58,6 +58,8 @@ export function Home({ onLogout }) {
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
             }
+
+          
         
     };
 
@@ -106,7 +108,8 @@ export function Home({ onLogout }) {
                 <div className={styles.wrapper}>
                     <Sidebar aluno={aluno}/>
                     <main>
-                        <Infoprofile aluno={aluno} />
+                        <Infoprofile aluno={aluno} 
+                        handleIdUrl={handleIdUrl}/>
                     </main>
                 </div>
                 <Alunos

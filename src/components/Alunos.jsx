@@ -2,10 +2,7 @@ import styles from './Alunos.module.css';
 import noProfile from '../assets/noProfile.jpg';
 import { useState, useEffect } from 'react';
 import { MagnifyingGlass } from 'phosphor-react'
-import { Link } from 'react-router-dom';
 import { Newaluno } from './Newaluno';
-import axios from 'axios'
-import config from '../config/config.json';
 // import { MensalidadeStatusUpdater } from './MensalidadeStatusUpdater';
 
 export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, getAlunoshome, setFilterModalidade, getModalidades, onExportExcel }) {
@@ -49,8 +46,14 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
         const { dados_matricula } = aluno;
         const { mensalidades } = dados_matricula.dados_modalidades;
 
+    
+        const dataAtual = new Date();
+        const primeiroDiaDoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
+        const decimoDiaDoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 10);
+
         if (!mensalidades || mensalidades.length === 0) {
-            return "regular"; // Sem mensalidades registradas
+            
+            return "Sem mensalidade"; // Sem mensalidades registradas
         }
 
         // Ordenar por data para obter a última
@@ -58,9 +61,7 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
             .map(mensalidade => ({ ...mensalidade, data_vencimento: new Date(mensalidade.data_vencimento) }))
             .sort((a, b) => b.data_vencimento - a.data_vencimento)[0].data_vencimento;
 
-        const dataAtual = new Date();
-        const primeiroDiaDoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
-        const decimoDiaDoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 10);
+       
 
         // Calcular a diferença em meses entre a última data correspondente e o dia 10 do mês atual
         const diffAnos = dataAtual.getFullYear() - ultimaMensalidade.getFullYear();
