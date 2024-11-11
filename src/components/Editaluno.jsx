@@ -1,54 +1,24 @@
+import styles from './Editaluno.module.css'
+
 import axios from "axios";
 import { useState, useEffect } from "react";
-import styles from './Newaluno.module.css'
 import config from '../config/config.json';
 import { toast, ToastContainer } from "react-toastify";
 import InputMask from 'react-input-mask';
 
-export function Newaluno({ onClose }) {
-
+export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
     //objeto contendo a estrutura do aluno a ser cadastrado
     const [formData, setFormData] = useState({
-        dados_aluno: {
-            nome_aluno: "",
-            nasc_aluno: "",
-            sexo_aluno: "",
-            altura_aluno: "",
-            peso_aluno: "",
-            t_sanguineo: "",
-            tel_aluno: "",
-            email_aluno: "",
-            endereco_aluno: "",
-        },
-        dados_respons: {
-            nome_respons: "",
-            tel_respons: "",
-        },
-        dados_matricula: {
-            matri_dojo: "",
-            mensalidades: [],
-            dados_modalidades: {
-                dados_karate: {
-                    is_aluno: false,
-                    matri_federacao: "",
-                    data_insc: "",
-                    grad_aluno: [],
-                    competicoes: []
-                },
-                dados_muaythai: {
-                    is_aluno: false,
-                    matri_federacao: "",
-                    data_insc: "",
-                    grad_aluno: [],
-                    competicoes: []
-                }
-            }
-        },
-        desc_aluno:"Atleta dedicado - CT Alcateia",
-        senha_aluno: "",
-        is_adm: false
+        ...aluno
     });
 
+    const ultimaGraduacaoKarate = aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno;
+    const graduacaoPadraoKarate = ultimaGraduacaoKarate.length > 0 ? ultimaGraduacaoKarate[ultimaGraduacaoKarate.length - 1].graduacao : "";
+
+    const ultimaGraduacaoMuayThai = aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno || ''
+    const graduacaoPadraoMuayThai = ultimaGraduacaoMuayThai.length > 0 ? ultimaGraduacaoMuayThai[ultimaGraduacaoMuayThai.length - 1].graduacao : "";
+
+    const alunoId = aluno.dados_matricula.matri_dojo
 
     //objeto que armazena a imagem
     const [imagem, setImagem] = useState(null);
@@ -76,17 +46,7 @@ export function Newaluno({ onClose }) {
             const alunosData = response.data.data;
             setAlunos(alunosData);
 
-            const ids = alunosData.map(a => parseInt(a.dados_matricula.matri_dojo, 10)).filter(id => !isNaN(id));
-            const maxId = Math.max(...ids, 0);
-            const nextId = (maxId + 1).toString().padStart(4, '0');
 
-            setFormData(prevState => ({
-                ...prevState,
-                dados_matricula: {
-                    ...prevState.dados_matricula,
-                    matri_dojo: nextId
-                }
-            }));
 
 
         } catch (error) {
@@ -173,11 +133,15 @@ export function Newaluno({ onClose }) {
 
         //verifica se ja existe aluno com aquela matrícula
         if (name === "dados_matricula.matri_dojo") {
-            const existingAluno = alunos.find(a => a.dados_matricula.matri_dojo === value);
-            if (existingAluno) {
-                setIdError("Esta matrícula já está em uso.");
-            } else {
-                setIdError("");
+            const existingAluno = alunos.find(a => a.dados_matricula.matri_dojo === value)?.dados_matricula.matri_dojo;
+
+            if (existingAluno !== alunoId) {
+                if (existingAluno) {
+                    setIdError("Esta matrícula já está em uso.");
+                } else {
+                    setIdError("");
+                }
+
             }
         }
 
@@ -186,33 +150,196 @@ export function Newaluno({ onClose }) {
 
     // Função para lidar com o upload da imagem
     const handleImageChange = (e) => {
-        setImagem(e.target.files[0]);
+
+        const file = e.target.files[0]
+
+        console.log(file)
+
+        if (file.name && file.size > 0) {
+            setImagem(e.target.files[0]);
+        }
+
+
     };
 
 
     //const com arrays de faixas de karate e muay thai
-    const karateFaixas = [
-        { graduacao: "Faixa-Branca", data_graduacao: "" },
-        { graduacao: "Faixa-Amarela", data_graduacao: "" },
-        { graduacao: "Faixa-Vermelha", data_graduacao: "" },
-        { graduacao: "Faixa-Laranja", data_graduacao: "" },
-        { graduacao: "Faixa-Verde", data_graduacao: "" },
-        { graduacao: "Faixa-Roxa", data_graduacao: "" },
-        { graduacao: "Faixa-Marrom", data_graduacao: "" },
-        { graduacao: "Faixa-Preta", data_graduacao: "" }
-    ];
+    const [newKarateFaixa, setNewKarateFaixa] = useState(
+        {
+            graduacao: "",
+            data_graduacao: ""
+        },
+    )
 
-    const muayThaiFaixas = [
-        { graduacao: "Branca", data_graduacao: "" },
-        { graduacao: "Branca ponta Vermelha", data_graduacao: "" },
-        { graduacao: "Vermelha", data_graduacao: "" },
-        { graduacao: "Vermelha ponta Azul clara", data_graduacao: "" },
-        { graduacao: "Azul clara", data_graduacao: "" },
-        { graduacao: "Azul clara ponta Azul escura", data_graduacao: "" },
-        { graduacao: "Azul escura", data_graduacao: "" },
-        { graduacao: "Azul escura ponta Preta", data_graduacao: "" },
-        { graduacao: "Preta", data_graduacao: "" }
-    ];
+
+    const [newMuayThaiFaixa, setNewMuayThaiFaixa] = useState(
+        {
+            graduacao: "",
+            data_graduacao: ""
+        },
+    )
+
+
+    const handleKaratefaixaChange = (e) => {
+        const { name, value } = e.target;
+        setNewKarateFaixa((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleMuayThaifaixaChange = (e) => {
+        const { name, value } = e.target;
+        setNewMuayThaiFaixa((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+
+    const handleAddGraduacaoKarate = () => {
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_karate: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_karate,
+                        grad_aluno: [
+                            ...prevData.dados_matricula.dados_modalidades.dados_karate.grad_aluno,
+                            { graduacao: newKarateFaixa.graduacao, data_graduacao: newKarateFaixa.data_graduacao }
+                        ]
+                    }
+                }
+            }
+        }));
+        // Limpar os campos de nova competição
+        setNewKarateFaixa({
+            graduacao: "",
+            data_graduacao: ""
+        });
+    };
+
+    const handleAddGraduacaoMuayThai = () => {
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_muaythai: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_muaythai,
+                        grad_aluno: [
+                            ...prevData.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno,
+                            { graduacao: newMuayThaiFaixa.graduacao, data_graduacao: newMuayThaiFaixa.data_graduacao }
+                        ]
+                    }
+                }
+            }
+        }));
+        // Limpar os campos de nova competição
+        setNewMuayThaiFaixa({
+            graduacao: "",
+            data_graduacao: ""
+        });
+    };
+
+    const handleEditGraduacaoKarate = (index, field, value) => {
+        // Faz uma cópia profunda do array grad_aluno para garantir que não haja referências mistas
+        const updatedGraduacoes = formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno.map((grad, i) => ({
+            ...grad, // clona o objeto de cada graduação
+        }));
+
+        // Atualiza o campo específico da graduação selecionada
+        updatedGraduacoes[index] = {
+            ...updatedGraduacoes[index],
+            [field]: value,
+        };
+
+        // Atualiza o estado do formData com a nova lista de graduações
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_karate: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_karate,
+                        grad_aluno: updatedGraduacoes,
+                    },
+                },
+            },
+        }));
+    };
+
+    const handleEditGraduacaoMuayThai = (index, field, value) => {
+        // Faz uma cópia profunda do array grad_aluno para garantir que não haja referências mistas
+        const updatedGraduacoes = formData.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.map((grad, i) => ({
+            ...grad, // clona o objeto de cada graduação
+        }));
+
+        // Atualiza o campo específico da graduação selecionada
+        updatedGraduacoes[index] = {
+            ...updatedGraduacoes[index],
+            [field]: value,
+        };
+
+        // Atualiza o estado do formData com a nova lista de graduações
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_muaythai: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_muaythai,
+                        grad_aluno: updatedGraduacoes,
+                    },
+                },
+            },
+        }));
+    };
+
+    // Função para remover uma graduação com base no índice
+const handleRemoveGraduacaoKarate = (index) => {
+    const updatedGraduacoes = formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno.filter((_, i) => i !== index);
+
+    setFormData(prevData => ({
+        ...prevData,
+        dados_matricula: {
+            ...prevData.dados_matricula,
+            dados_modalidades: {
+                ...prevData.dados_matricula.dados_modalidades,
+                dados_karate: {
+                    ...prevData.dados_matricula.dados_modalidades.dados_karate,
+                    grad_aluno: updatedGraduacoes,
+                },
+            },
+        },
+    }));
+};
+
+    // Função para remover uma graduação com base no índice
+    const handleRemoveGraduacaoMuayThai = (index) => {
+        const updatedGraduacoes = formData.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.filter((_, i) => i !== index);
+
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_muaythai: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_muaythai,
+                        grad_aluno: updatedGraduacoes,
+                    },
+                },
+            },
+        }));
+    };
+
+
 
     const [newCompetitionKarate, setNewCompetitionKarate] = useState({
         titulo: "",
@@ -231,8 +358,8 @@ export function Newaluno({ onClose }) {
             [name]: value
         }));
 
-        
     };
+
 
     const handleCompetitionMuayThaiChange = (e) => {
         const { name, value } = e.target;
@@ -241,8 +368,10 @@ export function Newaluno({ onClose }) {
             [name]: value
         }));
 
-        
+
     };
+
+
 
     const handleAddCompetitionKarate = () => {
         setFormData(prevData => ({
@@ -287,26 +416,7 @@ export function Newaluno({ onClose }) {
     };
 
     //inserindo as faixas de karatê e muay thai no objeto
-    const handleKarateChange = (event) => {
-        const selectedGraduacao = event.target.value;
-        const selectedIndex = karateFaixas.findIndex(faixa => faixa.graduacao === selectedGraduacao);
 
-        const inferiorGraduacoes = karateFaixas.slice(0, selectedIndex + 1).map(faixa => ({ graduacao: faixa.graduacao, data_graduacao: "" }));
-
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            dados_matricula: {
-                ...prevFormData.dados_matricula,
-                dados_modalidades: {
-                    ...prevFormData.dados_matricula.dados_modalidades,
-                    dados_karate: {
-                        ...prevFormData.dados_matricula.dados_modalidades.dados_karate,
-                        grad_aluno: inferiorGraduacoes
-                    }
-                }
-            }
-        }));
-    };
 
     const handleMuayThaiChange = (event) => {
         const selectedGraduacao = event.target.value;
@@ -362,56 +472,19 @@ export function Newaluno({ onClose }) {
 
         //encaminha os dados para a rota e volta os valores para o padrão
         try {
-            const response = await axios.post(`${config.urlRoot}/cadastrarAlunos`, form, {
+            const response = await axios.put(`${config.urlRoot}/alterarAlunos`, form, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
             toast.success(response.data.mensagemStatus);
-            setFormData({
-                dados_aluno: {
-                    nome_aluno: "",
-                    nasc_aluno: "",
-                    sexo_aluno: "",
-                    altura_aluno: "",
-                    peso_aluno: "",
-                    t_sanguineo: "",
-                    tel_aluno: "",
-                    email_aluno: "",
-                    endereco_aluno: "",
-                },
-                dados_respons: {
-                    nome_respons: "",
-                    tel_respons: "",
-                },
-                dados_matricula: {
-                    mensalidades: [],
-                    dados_modalidades: {
-                        dados_karate: {
-                            is_aluno: false,
-                            matri_federacao: "",
-                            data_insc: "",
-                            grad_aluno: [],
-                            competicoes: []
-                        },
-                        dados_muaythai: {
-                            is_aluno: false,
-                            matri_federacao: "",
-                            data_insc: "",
-                            grad_aluno: [],
-                            competicoes: []
-                        }
-                    }
-                },
-                desc_aluno:"Atleta dedicado - CT Alcateia",
-                senha_aluno: "",
-                is_adm: false,
-            });
-            setIdade(null);
-            setImagem(null)
-            document.querySelector('input[name="imagem"]').value = '';
-            getAlunos()
-            setActiveTab('informacoes')
+            handleIdUrl(aluno._id)
+            onClose()
+            getAlunosList()
+
+            console.log(response.data.mensagemStatus)
+
+
         } catch (error) {
             console.error("Erro ao cadastrar o aluno:", error);
             // Aqui você pode tratar o erro, como exibir uma mensagem para o usuário
@@ -617,11 +690,11 @@ export function Newaluno({ onClose }) {
                                     type="checkbox"
                                     name="dados_karate.is_aluno"
                                     onChange={handleCheckboxChange}
-                                    checked={formData.dados_matricula.dados_modalidades.dados_karate.is_aluno || false}
+                                    checked={aluno.dados_matricula.dados_modalidades.dados_karate.is_aluno || false}
                                 />
                                 <label>Karate</label>
                             </div>
-                            {formData.dados_matricula.dados_modalidades.dados_karate.is_aluno && (
+                            {aluno.dados_matricula.dados_modalidades.dados_karate.is_aluno && (
                                 <>
                                     <div className={styles.formRow}>
                                         <div className={styles.formGroup}>
@@ -635,17 +708,63 @@ export function Newaluno({ onClose }) {
                                                 required
                                             />
                                         </div>
-                                        <div className={styles.formGroup}>
-                                            <label htmlFor="karateSelect">Selecione uma graduação:</label>
-                                            <select id="karateSelect" onChange={handleKarateChange} defaultValue="">
-                                                <option value="" disabled>Escolha uma Faixa</option>
-                                                {karateFaixas.map((faixa, index) => (
-                                                    <option key={index} value={faixa.graduacao}>{faixa.graduacao}</option>
-                                                ))}
-                                            </select>
-                                        </div>
+
 
                                     </div>
+                                    <div>
+                                        <h3>Graduações - Karate</h3>
+                                        {/* Inputs para adicionar nova graduação */}
+                                        <input
+                                            type="text"
+                                            name="graduacao"
+                                            value={newKarateFaixa.graduacao}
+                                            onChange={handleKaratefaixaChange}
+                                            placeholder="Graduação"
+                                        />
+                                        <input
+                                            type="date"
+                                            name="data_graduacao"
+                                            value={newKarateFaixa.data_graduacao}
+                                            onChange={handleKaratefaixaChange}
+                                            placeholder="Data da graduação"
+                                        />
+                                        <button type="button" onClick={() => handleAddGraduacaoKarate()}>
+                                            Adicionar Graduação
+                                        </button>
+
+                                        {/* Listagem de graduações existentes com inputs para edição */}
+                                        <ul>
+                                            {formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno
+                                                .slice()
+                                                .reverse()
+                                                .map((grad, index) => {
+                                                    const reverseIndex = formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno.length - 1 - index;
+                                                    return (
+                                                        <li key={index}>
+                                                            <input
+                                                                type="text"
+                                                                name={`graduacao-${reverseIndex}`}
+                                                                value={grad.graduacao}
+                                                                onChange={(e) => handleEditGraduacaoKarate(reverseIndex, 'graduacao', e.target.value)}
+                                                                placeholder="Graduação"
+                                                            />
+                                                            <input
+                                                                type="date"
+                                                                name={`data_graduacao-${reverseIndex}`}
+                                                                value={grad.data_graduacao}
+                                                                onChange={(e) => handleEditGraduacaoKarate(reverseIndex, 'data_graduacao', e.target.value)}
+                                                                placeholder="Data da graduação"
+                                                            />
+                                                             <button type="button" onClick={() => handleRemoveGraduacaoKarate(reverseIndex)}>
+                                                                Remover
+                                                            </button>
+                                                        </li>
+                                                    )
+                                                })}
+                                        </ul>
+                                    </div>
+
+
                                     <div>
                                         <h3>Competições - Karate</h3>
                                         <input
@@ -665,10 +784,37 @@ export function Newaluno({ onClose }) {
                                         <button type="button" onClick={() => handleAddCompetitionKarate()}>
                                             Adicionar Competição
                                         </button>
+
                                         <ul>
-                                            {formData.dados_matricula.dados_modalidades.dados_karate.competicoes.map((comp, index) => (
-                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
-                                            ))}
+                                            {formData.dados_matricula.dados_modalidades.dados_karate.competicoes
+                                                .slice()
+                                                .reverse()
+                                                .map((comp, index) => {
+                                                    const reverseIndex = formData.dados_matricula.dados_modalidades.dados_karate.competicoes.length - 1 - index;
+                                                    return (
+                                                        <li key={index}>
+                                                            <input
+                                                                type="text"
+                                                                name={`titulo-${reverseIndex}`}
+                                                                value={comp.titulo}
+                                                                // onChange={(e) => handleEditGraduacaoKarate(reverseIndex, 'graduacao', e.target.value)}
+                                                                placeholder="Nome da competição"
+                                                            />
+                                                            <input
+                                                                type="text"
+                                                                name={`premiacao-${reverseIndex}`}
+                                                                value={comp.premiacao}
+                                                                // onChange={(e) => handleEditGraduacaoKarate(reverseIndex, 'data_graduacao', e.target.value)}
+                                                                placeholder="Colocação"
+                                                            />
+                                                             <button type="button" 
+                                                            //  onClick={() => handleRemoveGraduacaoKarate(reverseIndex)}
+                                                             >
+                                                                Remover
+                                                            </button>
+                                                        </li>
+                                                    )
+                                                })}
                                         </ul>
                                     </div>
                                 </>
@@ -678,11 +824,11 @@ export function Newaluno({ onClose }) {
                                     type="checkbox"
                                     name="dados_muaythai.is_aluno"
                                     onChange={handleCheckboxChange}
-                                    checked={formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno || false}
+                                    checked={aluno.dados_matricula.dados_modalidades.dados_muaythai.is_aluno || false}
                                 />
                                 <label>Muay Thai</label>
                             </div>
-                            {formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno && (
+                            {aluno.dados_matricula.dados_modalidades.dados_muaythai.is_aluno && (
                                 <>
                                     <div className={styles.formRow}>
                                         <div className={styles.formGroup}>
@@ -696,15 +842,59 @@ export function Newaluno({ onClose }) {
                                                 required
                                             />
                                         </div>
-                                        <div className={styles.formGroup}>
-                                            <label htmlFor="muayThaiSelect">Selecione uma graduação:</label>
-                                            <select id="muayThaiSelect" onChange={handleMuayThaiChange} defaultValue="">
-                                                <option value="" disabled>Escolha uma Faixa</option>
-                                                {muayThaiFaixas.map((faixa, index) => (
-                                                    <option key={index} value={faixa.graduacao}>{faixa.graduacao}</option>
-                                                ))}
-                                            </select>
-                                        </div>
+
+                                    </div>
+                                    <div>
+                                        <h3>Graduações - Muay Thai</h3>
+                                        {/* Inputs para adicionar nova graduação */}
+                                        <input
+                                            type="text"
+                                            name="graduacao"
+                                            value={newMuayThaiFaixa.graduacao}
+                                            onChange={handleMuayThaifaixaChange}
+                                            placeholder="Graduação"
+                                        />
+                                        <input
+                                            type="date"
+                                            name="data_graduacao"
+                                            value={newMuayThaiFaixa.data_graduacao}
+                                            onChange={handleMuayThaifaixaChange}
+                                            placeholder="Data da graduação"
+                                        />
+                                        <button type="button" onClick={() => handleAddGraduacaoMuayThai()}>
+                                            Adicionar Graduação
+                                        </button>
+
+                                        {/* Listagem de graduações existentes com inputs para edição */}
+                                        <ul>
+                                            {formData.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno
+                                                .slice()
+                                                .reverse()
+                                                .map((grad, index) => {
+                                                    const reverseIndex = formData.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.length - 1 - index;
+                                                    return (
+                                                        <li key={index}>
+                                                            <input
+                                                                type="text"
+                                                                name={`graduacao-${reverseIndex}`}
+                                                                value={grad.graduacao}
+                                                                onChange={(e) => handleEditGraduacaoMuayThai(reverseIndex, 'graduacao', e.target.value)}
+                                                                placeholder="Graduação"
+                                                            />
+                                                            <input
+                                                                type="date"
+                                                                name={`data_graduacao-${reverseIndex}`}
+                                                                value={grad.data_graduacao}
+                                                                onChange={(e) => handleEditGraduacaoMuayThai(reverseIndex, 'data_graduacao', e.target.value)}
+                                                                placeholder="Data da graduação"
+                                                            />
+                                                            <button type="button" onClick={() => handleRemoveGraduacaoMuayThai(reverseIndex)}>
+                                                                Remover
+                                                            </button>
+                                                        </li>
+                                                    )
+                                                })}
+                                        </ul>
                                     </div>
                                     <div>
                                         <h3>Competições - Muay Thai</h3>
@@ -735,8 +925,8 @@ export function Newaluno({ onClose }) {
                             )}
                             {modalidadeError && <p>{modalidadeError}</p>}
                             <div className={styles.buttonContainer}>
-                                <button type="submit" disabled={!continuarClicked}>
-                                    Cadastrar
+                                <button type="submit" >
+                                    Editar
                                 </button>
                             </div>
                         </div>
@@ -761,4 +951,4 @@ export function Newaluno({ onClose }) {
             </div>
         </div>
     );
-};
+}

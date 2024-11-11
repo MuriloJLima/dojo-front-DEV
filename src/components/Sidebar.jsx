@@ -5,9 +5,22 @@ import { Avatar } from './Avatar'
 import styles from './Sidebar.module.css'
 import noProfile from '../assets/noProfile.jpg';
 
-export function Sidebar({ aluno }) {
+import { useState, useEffect } from 'react';
+import { Editaluno } from './Editaluno';
 
-    
+export function Sidebar({ aluno, handleIdUrl, getAlunos, handleDelete }) {
+
+    const [showModal, setShowModal] = useState(false);
+
+    const openModal = () => setShowModal(true);
+    // const closeModal = () => setShowModal(false);
+
+    function closeModal() {
+
+        setShowModal(false)
+    }
+
+
     return (
         <aside className={styles.sidebar}>
             <img
@@ -43,14 +56,21 @@ export function Sidebar({ aluno }) {
             </div>
 
             <footer>
-                <a href="#">
+                <button className={styles.buttonEdit} onClick={openModal} type='button'>
                     <PencilLine size={20} />
                     Editar perfil
-                </a>
-                <a href="#">
+                </button>
+                {showModal &&
+                    <Editaluno
+                        onClose={closeModal}
+                        aluno={aluno}
+                        handleIdUrl={handleIdUrl}
+                        getAlunosList={getAlunos}
+                    />}
+                <button className={styles.buttonEdit} onClick={() => handleDelete(aluno._id)} type='button'>
                     <PencilLine size={20} />
                     Excluir Perfil
-                </a>
+                </button>
             </footer>
         </aside>
     )

@@ -8,7 +8,12 @@ import { useState, useEffect } from 'react';
 import axios from "axios";
 import config from './config/config.json';
 import { useNavigate } from 'react-router-dom';
+
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 import { Routes, Route, useLocation } from 'react-router-dom';
+
 
 
 
@@ -22,9 +27,9 @@ export function Home({ onLogout }) {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-          setAluno(JSON.parse(token))
+            setAluno(JSON.parse(token))
         }
-      }, []);
+    }, []);
 
     const getAlunos = async () => {
         const response = await axios.get(`${config.urlRoot}/listarAlunos`);
@@ -36,36 +41,49 @@ export function Home({ onLogout }) {
         getAlunos();
     }, []);
 
-    async function handleIdUrl(id) {
-
-        navigate(`/home?id=${id}`);
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth' // Adiciona um efeito de rolagem suave
+    // Função de busca para obter dados do aluno com base no ID
+    const fetchDataById = async (id) => {
+        try {
+            // Realiza a requisição GET com o parâmetro id
+            const response = await axios.get(`${config.urlRoot}/dadosAluno`, {
+                params: { id }
             });
-
-      
-            try {
-                // Realiza a requisição GET com os query parameters
-                const response = await axios.get(`${config.urlRoot}/dadosAluno`, {
-                    params: { id }
-                });
-    
-                setAluno(response.data.data)
-    
-            
-                
-            } catch (error) {
-                console.error("Erro ao buscar dados:", error);
-            }
-
-          
-        
+            setAluno(response.data.data);
+        } catch (error) {
+            console.error("Erro ao buscar dados:", error);
+        }
     };
 
-   
+    // Função para navegação que também chama a função de busca após a URL ser atualizada
+    async function handleIdUrl(id) {
+        navigate(`/home?id=${id}`);
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
 
-    
+        // Aguarda um pequeno tempo para garantir que a URL seja atualizada
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // Chama a função de busca após a navegação
+        fetchDataById(id);
+    }
+
+    // useEffect para buscar o ID da URL quando o componente é montado ou o ID da URL muda
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+        const idFromUrl = urlParams.get('id');
+
+        // Se houver um ID na URL, chama a função de busca
+        if (idFromUrl) {
+            fetchDataById(idFromUrl);
+        }
+    }, [location.search]); // Observa mudanças na URL
+
+
+
+
+
 
 
     // Função para verificar as modalidades
@@ -99,17 +117,44 @@ export function Home({ onLogout }) {
     }
 
 
+    const handleDelete = async (id) => {
+        confirmAlert({
+            message: 'Você tem certeza que deseja excluir este aluno?',
+            buttons: [
+                {
+                    label: 'Sim',
+                    onClick: async () => {
+                        await axios.delete(`${config.urlRoot}/excluirAlunos/${id}`);
+
+
+                        
+                        navigate(`/home`);
+                        window.location.reload();
+                    }
+                },
+                {
+                    label: 'Não',
+                    onClick: () => { }
+                }
+            ]
+        });
+    };
+
 
     // Retornar o JSX
     return (
         <div>
-            <Header onLogout={onLogout}/>
+            <Header onLogout={onLogout} />
             <div className={styles.container}>
                 <div className={styles.wrapper}>
-                    <Sidebar aluno={aluno}/>
+                    <Sidebar
+                        aluno={aluno}
+                        handleIdUrl={handleIdUrl}
+                        getAlunos={getAlunos}
+                        handleDelete={handleDelete} />
                     <main>
-                        <Infoprofile aluno={aluno} 
-                        handleIdUrl={handleIdUrl}/>
+                        <Infoprofile aluno={aluno}
+                            handleIdUrl={handleIdUrl} />
                     </main>
                 </div>
                 <Alunos

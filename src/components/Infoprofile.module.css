@@ -25,11 +25,25 @@
     border-bottom: 1px solid var(--gray-400);
 }
 
+.modalidades {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+
 /* Estilização dos históricos */
 .history {
     padding: 1rem 1.5rem;
+    margin-top: 1rem;
     border-radius: 8px;
-    
+    background: var(--white);
+}
+
+.history:not(:last-child){
+    border-right: 1px solid var(--gray-400);
+    border-radius: 0%;
 }
 
 .history h2 {
@@ -39,7 +53,6 @@
 .buttonContainer {
     padding-top: 1rem;
     margin-top: 1rem;
-    border-top: 1px solid var(--gray-400);
     text-align: center;
 }
 
@@ -53,15 +66,13 @@
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s;
-    
-    
-  }
-  
-  .infoButton:hover {
+
+
+}
+
+.infoButton:hover {
     background-color: var(--white);
     color: var(--brown-800);
     border: 1px solid var(--brown-800);
     border-radius: 8px;
-  }
-
-
+}

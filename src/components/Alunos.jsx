@@ -20,7 +20,7 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
 
     // Função para filtrar alunos
     const filtrarAlunosPorModalidade = (aluno) => {
-        const modalidades = getModalidades(aluno.dados_matricula.dados_modalidades);
+        const modalidades = getModalidades(aluno?.dados_matricula?.dados_modalidades);
         switch (filterModalidade) {
             case "Karate":
                 return modalidades.includes("Karate");
@@ -43,8 +43,8 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
 
 
     const obterSituacaoMensalidade = (aluno) => {
-        const { dados_matricula } = aluno;
-        const { mensalidades } = dados_matricula.dados_modalidades;
+        const dados_matricula = aluno?.dados_matricula;
+        const { mensalidades } = dados_matricula;
 
     
         const dataAtual = new Date();

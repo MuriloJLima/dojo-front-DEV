@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import config from '../config/config.json';
 import axios from "axios";
 
-export function AlunoCompleto({ aluno, onClose, handleIdUrl }) {
-    const [idade, setIdade] = useState(null);
+export function AlunoCompleto({ aluno, onClose, handleIdUrl, idade }) {
+
 
     const [activeTab, setActiveTab] = useState('informacoes')
 
@@ -15,9 +15,9 @@ export function AlunoCompleto({ aluno, onClose, handleIdUrl }) {
         data_pagamento: ""
     });
 
-    const openProfille = (id)=>{
+    const openProfille = (id) => {
         handleIdUrl(id)
-     }
+    }
 
     const newPagamentoValue = () => {
 
@@ -49,20 +49,7 @@ export function AlunoCompleto({ aluno, onClose, handleIdUrl }) {
         newPagamentoValue()
     }, [])
 
-    useEffect(() => {
-        if (aluno?.dados_aluno?.nasc_aluno) {
-            const birthDate = new Date(aluno?.dados_aluno?.nasc_aluno);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDifference = today.getMonth() - birthDate.getMonth();
 
-            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-
-            setIdade(age);
-        }
-    }, [aluno?.dados_aluno]);
 
 
     const getSexoRepresentativo = (sexo) => {
@@ -260,19 +247,37 @@ export function AlunoCompleto({ aluno, onClose, handleIdUrl }) {
                                     </div>
 
                                 </div>
-                                <div>
-                                    {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes.length > 0 && (
-                                        <div>
-                                            <h2>Competições - Karatê</h2>
-                                            {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes.map((competicao, index) => (
-                                                <div key={index} className="competicaoItem">
-                                                    <p><strong>Título:</strong> {competicao.titulo}</p>
-                                                    <p><strong>Premiações:</strong> {competicao.premiacao}</p>
-                                                </div>
+
+                                {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes.length > 0 && (
+                                    <div>
+                                        <h2>Competições - Karatê</h2>
+
+                                        <ul>
+                                            {aluno?.dados_matricula?.dados_modalidades.dados_karate.competicoes.map((comp, index) => (
+                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
                                             ))}
-                                        </div>
-                                    )}
-                                </div>
+                                        </ul>
+
+                                    </div>
+                                )}
+
+                                {aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno.length > 0 && (
+                                    <div>
+                                        <h2>Histórico de graduação</h2>
+
+                                        <ul>
+                                            {aluno?.dados_matricula?.dados_modalidades.dados_karate.grad_aluno
+                                                .slice() // cria uma cópia do array
+                                                .reverse() // inverte a ordem do array
+                                                .map((grad, index) => (
+                                                    <li key={index}>{grad.graduacao} - {grad.data_graduacao}</li>
+                                                ))}
+                                        </ul>
+
+
+                                    </div>
+                                )}
+
                             </div>
                         )}
 
@@ -298,19 +303,37 @@ export function AlunoCompleto({ aluno, onClose, handleIdUrl }) {
                                     </div>
 
                                 </div>
-                                <div>
-                                    {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes.length > 0 && (
-                                        <div>
-                                            <h2>Competições - Karatê</h2>
-                                            {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes.map((competicao, index) => (
-                                                <div key={index} className="competicaoItem">
-                                                    <p><strong>Título:</strong> {competicao.titulo}</p>
-                                                    <p><strong>Premiações:</strong> {competicao.premiacoes}</p>
-                                                </div>
+
+                                {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes.length > 0 && (
+                                    <div>
+                                        <h2>Competições - Karatê</h2>
+
+                                        <ul>
+                                            {aluno?.dados_matricula?.dados_modalidades.dados_muaythai.competicoes.map((comp, index) => (
+                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
                                             ))}
-                                        </div>
-                                    )}
-                                </div>
+                                        </ul>
+
+                                    </div>
+                                )}
+
+                                {aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.length > 0 && (
+                                    <div>
+                                        <h2>Histórico de graduação</h2>
+
+                                        <ul>
+                                            {aluno?.dados_matricula?.dados_modalidades.dados_muaythai.grad_aluno
+                                                .slice() // cria uma cópia do array
+                                                .reverse() // inverte a ordem do array
+                                                .map((grad, index) => (
+                                                    <li key={index}>{grad.graduacao} - {grad.data_graduacao}</li>
+                                                ))}
+                                        </ul>
+
+
+                                    </div>
+                                )}
+
                             </div>
                         )}
                     </>
@@ -365,10 +388,10 @@ export function AlunoCompleto({ aluno, onClose, handleIdUrl }) {
                         </div>
 
                         <div className={styles.mensalidades}>
-                            {aluno.dados_matricula.dados_modalidades.mensalidades?.length > 0 ? (
+                            {aluno.dados_matricula.mensalidades?.length > 0 ? (
                                 <div>
                                     <h2>Mensalidades pagas</h2>
-                                    {aluno.dados_matricula.dados_modalidades.mensalidades.map((mensalidade, index) => (
+                                    {aluno.dados_matricula.mensalidades.map((mensalidade, index) => (
                                         <div key={index} className="competicaoItem">
                                             <p><strong>Data de vencimento:</strong> {mensalidade.data_vencimento}</p>
                                             <p><strong>Valor do pagamento:</strong> {mensalidade.valor}</p>
@@ -377,7 +400,7 @@ export function AlunoCompleto({ aluno, onClose, handleIdUrl }) {
                                         </div>
                                     ))}
                                 </div>
-                            ) :(
+                            ) : (
                                 <p>O aluno ainda não efetuou o pagamento de nenhuma mensalidade</p>
                             )}
                         </div>

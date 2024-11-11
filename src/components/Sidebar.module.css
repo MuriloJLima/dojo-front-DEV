@@ -37,12 +37,13 @@
 }
 
 
-.sidebar footer a {
+.buttonEdit {
     background: transparent;
     color: var(--brown-800);
     border: 1px solid var(--brown-800);
     border-radius: 8px;
-    height: 50px;
+    height: 3rem;
+    width: 100%;
     padding: 0 1.5rem;
     font-weight: bold;
     display: block;
@@ -59,7 +60,7 @@
     transition: color 0.2s, background-color 0.2s;
 }
 
-.sidebar footer a:hover{
+.buttonEdit:hover{
     background: var(--brown-800);
     color: var(--white);
 }
