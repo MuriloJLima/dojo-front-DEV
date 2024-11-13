@@ -35,6 +35,11 @@
     }
 }
 
+.modal h1{
+   margin-bottom: 1rem; 
+   color: var(--gray-900);
+}
+
 .formGroup {
     flex: 1 1 0;
     display: flex;
@@ -86,10 +91,12 @@
 }
 
 .overlay h2 {
-    color: #333;
+    color: var(--gray-900);
     font-size: 1.5rem;
-    margin-bottom: 20px;
+
     text-align: center;
+    border-top: 1px solid var(--gray-400);
+    padding: 1rem;
 }
 
 .overlay form {
@@ -143,6 +150,7 @@
 input[type="email"],
 input[type="date"],
 input[type="tel"],
+input[type="number"],
 select {
     font-size: 1rem;
     padding: 10px;

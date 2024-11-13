@@ -4,6 +4,7 @@ import styles from './Newaluno.module.css'
 import config from '../config/config.json';
 import { toast, ToastContainer } from "react-toastify";
 import InputMask from 'react-input-mask';
+import { PlusCircle } from "phosphor-react";
 
 export function Newaluno({ onClose }) {
 
@@ -44,7 +45,7 @@ export function Newaluno({ onClose }) {
                 }
             }
         },
-        desc_aluno:"Atleta dedicado - CT Alcateia",
+        desc_aluno: "Atleta dedicado - CT Alcateia",
         senha_aluno: "",
         is_adm: false
     });
@@ -215,13 +216,19 @@ export function Newaluno({ onClose }) {
     ];
 
     const [newCompetitionKarate, setNewCompetitionKarate] = useState({
-        titulo: "",
-        premiacao: ""
+        nivel: "",
+        localidade: "",
+        ano: "",
+        disputa: "",
+        colocacao: ""
     });
 
     const [newCompetitionMuayThai, setNewCompetitionMuayThai] = useState({
-        titulo: "",
-        premiacao: ""
+        nivel: "",
+        localidade: "",
+        ano: "",
+        disputa: "",
+        colocacao: ""
     });
 
     const handleCompetitionKarateChange = (e) => {
@@ -231,7 +238,7 @@ export function Newaluno({ onClose }) {
             [name]: value
         }));
 
-        
+
     };
 
     const handleCompetitionMuayThaiChange = (e) => {
@@ -241,8 +248,9 @@ export function Newaluno({ onClose }) {
             [name]: value
         }));
 
-        
+
     };
+
 
     const handleAddCompetitionKarate = () => {
         setFormData(prevData => ({
@@ -255,14 +263,26 @@ export function Newaluno({ onClose }) {
                         ...prevData.dados_matricula.dados_modalidades.dados_karate,
                         competicoes: [
                             ...prevData.dados_matricula.dados_modalidades.dados_karate.competicoes,
-                            { titulo: newCompetitionKarate.titulo, premiacao: newCompetitionKarate.premiacao }
+                            {
+                                nivel: newCompetitionKarate.nivel,
+                                localidade: newCompetitionKarate.localidade,
+                                ano: newCompetitionKarate.ano,
+                                disputa: newCompetitionKarate.disputa,
+                                colocacao: newCompetitionKarate.colocacao
+                            }
                         ]
                     }
                 }
             }
         }));
         // Limpar os campos de nova competição
-        setNewCompetitionKarate({ titulo: "", premiacao: "" });
+        setNewCompetitionKarate({
+            nivel: "",
+            localidade: "",
+            ano: "",
+            disputa: "",
+            colocacao: ""
+        });
     };
 
     const handleAddCompetitionMuayThai = () => {
@@ -276,14 +296,26 @@ export function Newaluno({ onClose }) {
                         ...prevData.dados_matricula.dados_modalidades.dados_muaythai,
                         competicoes: [
                             ...prevData.dados_matricula.dados_modalidades.dados_muaythai.competicoes,
-                            { titulo: newCompetitionMuayThai.titulo, premiacao: newCompetitionMuayThai.premiacao }
+                            {
+                                nivel: newCompetitionMuayThai.nivel,
+                                localidade: newCompetitionMuayThai.localidade,
+                                ano: newCompetitionMuayThai.ano,
+                                disputa: newCompetitionMuayThai.disputa,
+                                colocacao: newCompetitionMuayThai.colocacao
+                            }
                         ]
                     }
                 }
             }
         }));
         // Limpar os campos de nova competição
-        setNewCompetitionMuayThai({ titulo: "", premiacao: "" });
+        setNewCompetitionMuayThai({
+            nivel: "",
+            localidade: "",
+            ano: "",
+            disputa: "",
+            colocacao: ""
+        });
     };
 
     //inserindo as faixas de karatê e muay thai no objeto
@@ -403,7 +435,7 @@ export function Newaluno({ onClose }) {
                         }
                     }
                 },
-                desc_aluno:"Atleta dedicado - CT Alcateia",
+                desc_aluno: "Atleta dedicado - CT Alcateia",
                 senha_aluno: "",
                 is_adm: false,
             });
@@ -619,7 +651,7 @@ export function Newaluno({ onClose }) {
                                     onChange={handleCheckboxChange}
                                     checked={formData.dados_matricula.dados_modalidades.dados_karate.is_aluno || false}
                                 />
-                                <label>Karate</label>
+                                <h2>Karate</h2>
                             </div>
                             {formData.dados_matricula.dados_modalidades.dados_karate.is_aluno && (
                                 <>
@@ -646,31 +678,86 @@ export function Newaluno({ onClose }) {
                                         </div>
 
                                     </div>
-                                    <div>
-                                        <h3>Competições - Karate</h3>
-                                        <input
-                                            type="text"
-                                            name="titulo"
-                                            value={newCompetitionKarate.titulo}
-                                            onChange={handleCompetitionKarateChange}
-                                            placeholder="Título da Competição"
-                                        />
-                                        <input
-                                            type="text"
-                                            name="premiacao"
-                                            value={newCompetitionKarate.premiacao}
-                                            onChange={handleCompetitionKarateChange}
-                                            placeholder="Premiações"
-                                        />
-                                        <button type="button" onClick={() => handleAddCompetitionKarate()}>
-                                            Adicionar Competição
-                                        </button>
-                                        <ul>
-                                            {formData.dados_matricula.dados_modalidades.dados_karate.competicoes.map((comp, index) => (
-                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
-                                            ))}
-                                        </ul>
+
+                                    <h4>Adicionar Competições</h4>
+                                    <div className={styles.formRow}>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Nível:</label>
+                                            <select name="nivel" value={newCompetitionKarate.nivel} onChange={handleCompetitionKarateChange}>
+                                                <option value="">Selecione: </option>
+                                                <option value="Municipal">Municipal</option>
+                                                <option value="Regional">Regional</option>
+                                                <option value="Estadual">Estadual</option>
+                                                <option value="Nacional">Nacional</option>
+                                                <option value="Internacional">Internacional</option>
+                                                <option value="Mundial">Mundial</option>
+                                            </select>
+                                        </div>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Localidade:</label>
+                                            <input
+                                                type="text"
+                                                name="localidade"
+                                                value={newCompetitionKarate.localidade}
+                                                onChange={handleCompetitionKarateChange}
+                                                placeholder="Cidade-UF"
+                                            />
+                                        </div>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Ano da competição:</label>
+                                            <input
+                                                type="date"
+                                                name="ano"
+                                                value={newCompetitionKarate.ano}
+                                                onChange={handleCompetitionKarateChange}
+                                                placeholder="xxxx"
+                                            />
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label>Disputa:</label>
+                                            <select name="disputa" value={newCompetitionKarate.disputa} onChange={handleCompetitionKarateChange}>
+                                                <option value="">Selecione</option>
+                                                <option value="Kata individual">Kata individual</option>
+                                                <option value="Kumite individual">Kumite individual</option>
+                                                <option value="Kata em equipe">Kata em equipe</option>
+                                                <option value="Kumite em equipe">Kumite em equipe</option>
+                                            </select>
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label>Colocação:</label>
+                                            <select name="colocacao" value={newCompetitionKarate.colocacao} onChange={handleCompetitionKarateChange}>
+                                                <option value="">Selecione</option>
+                                                <option value="1º lugar">1º lugar</option>
+                                                <option value="2º lugar">2º lugar</option>
+                                                <option value="3º lugar">3º lugar</option>
+                                            </select>
+                                        </div>
+
+                                        <div >
+                                            <label><br /></label>
+                                            <button type="button" onClick={() => handleAddCompetitionKarate()}>
+                                                <PlusCircle size={20} /> Adicionar
+                                            </button>
+                                        </div>
+
+
                                     </div>
+
+                                    {formData.dados_matricula.dados_modalidades.dados_karate.competicoes?.length > 0 && (
+
+                                        <div className={styles.compettionContainer}>
+                                            {formData.dados_matricula.dados_modalidades.dados_karate.competicoes.slice()
+                                                .reverse().map((comp, index) => (
+                                                    <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
+                                                ))}
+                                        </div>
+
+                                    )}
+
+
                                 </>
                             )}
                             <div className={styles.checkboxContainer}>
@@ -680,7 +767,7 @@ export function Newaluno({ onClose }) {
                                     onChange={handleCheckboxChange}
                                     checked={formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno || false}
                                 />
-                                <label>Muay Thai</label>
+                               <h2>Muay Thai</h2>
                             </div>
                             {formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno && (
                                 <>
@@ -706,31 +793,83 @@ export function Newaluno({ onClose }) {
                                             </select>
                                         </div>
                                     </div>
-                                    <div>
-                                        <h3>Competições - Muay Thai</h3>
-                                        <input
-                                            type="text"
-                                            name="titulo"
-                                            value={newCompetitionMuayThai.titulo}
-                                            onChange={handleCompetitionMuayThaiChange}
-                                            placeholder="Título da Competição"
-                                        />
-                                        <input
-                                            type="text"
-                                            name="premiacao"
-                                            value={newCompetitionMuayThai.premiacao}
-                                            onChange={handleCompetitionMuayThaiChange}
-                                            placeholder="Premiações"
-                                        />
-                                        <button type="button" onClick={() => handleAddCompetitionMuayThai()}>
-                                            Adicionar Competição
-                                        </button>
-                                        <ul>
-                                            {formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes.map((comp, index) => (
-                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
-                                            ))}
-                                        </ul>
+                                    <h4>Adicionar Competições</h4>
+                                    <div className={styles.formRow}>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Nível:</label>
+                                            <select name="nivel" value={newCompetitionMuayThai.nivel} onChange={handleCompetitionMuayThaiChange}>
+                                                <option value="">Selecione: </option>
+                                                <option value="Municipal">Municipal</option>
+                                                <option value="Regional">Regional</option>
+                                                <option value="Estadual">Estadual</option>
+                                                <option value="Nacional">Nacional</option>
+                                                <option value="Internacional">Internacional</option>
+                                                <option value="Mundial">Mundial</option>
+                                            </select>
+                                        </div>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Localidade:</label>
+                                            <input
+                                                type="text"
+                                                name="localidade"
+                                                value={newCompetitionMuayThai.localidade}
+                                                onChange={handleCompetitionMuayThaiChange}
+                                                placeholder="Cidade-UF"
+                                            />
+                                        </div>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Ano da competição:</label>
+                                            <input
+                                                type="date"
+                                                name="ano"
+                                                value={newCompetitionMuayThai.ano}
+                                                onChange={handleCompetitionMuayThaiChange}
+                                                placeholder="xxxx"
+                                            />
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label>Disputa:</label>
+                                            <input
+                                                type="text"
+                                                name="disputa"
+                                                value={newCompetitionMuayThai.disputa}
+                                                onChange={handleCompetitionMuayThaiChange}
+                                                placeholder="Tipo de disputa"
+                                            />
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label>Colocação:</label>
+                                            <select name="colocacao" value={newCompetitionMuayThai.colocacao} onChange={handleCompetitionMuayThaiChange}>
+                                                <option value="">Selecione</option>
+                                                <option value="1º lugar">1º lugar</option>
+                                                <option value="2º lugar">2º lugar</option>
+                                                <option value="3º lugar">3º lugar</option>
+                                            </select>
+                                        </div>
+
+                                        <div className={styles.AddButton}>
+                                            <label><br /></label>
+                                            <button type="button" onClick={() => handleAddCompetitionMuayThai()}>
+                                                <PlusCircle size={20} /> Adicionar
+                                            </button>
+                                        </div>
+
+
                                     </div>
+
+                                    {formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes?.length > 0 && (
+
+                                        <div className={styles.compettionContainer}>
+                                            {formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes.slice()
+                                                .reverse().map((comp, index) => (
+                                                    <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
+                                                ))}
+                                        </div>
+
+                                    )}
                                 </>
                             )}
                             {modalidadeError && <p>{modalidadeError}</p>}

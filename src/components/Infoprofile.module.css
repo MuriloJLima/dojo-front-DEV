@@ -25,12 +25,7 @@
     border-bottom: 1px solid var(--gray-400);
 }
 
-.modalidades {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    align-items: flex-start;
-}
+
 
 
 /* Estilização dos históricos */
@@ -41,10 +36,6 @@
     background: var(--white);
 }
 
-.history:not(:last-child){
-    border-right: 1px solid var(--gray-400);
-    border-radius: 0%;
-}
 
 .history h2 {
     margin-bottom: 1rem;
@@ -75,4 +66,18 @@
     color: var(--brown-800);
     border: 1px solid var(--brown-800);
     border-radius: 8px;
+}
+
+.compettionContainer{
+    border-top: 1px solid var(--gray-100);
+    margin-top: 1rem;
+
+}
+
+.compettionContainer p {
+    padding-top: 1rem;
+    color: black;
+    font-size: 15px;
+
+    
 }

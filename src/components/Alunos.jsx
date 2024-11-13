@@ -3,6 +3,7 @@ import noProfile from '../assets/noProfile.jpg';
 import { useState, useEffect } from 'react';
 import { MagnifyingGlass } from 'phosphor-react'
 import { Newaluno } from './Newaluno';
+import { InforMensalidade } from './InfoMensalidade';
 // import { MensalidadeStatusUpdater } from './MensalidadeStatusUpdater';
 
 export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, getAlunoshome, setFilterModalidade, getModalidades, onExportExcel }) {
@@ -16,6 +17,15 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
     function closeModal() {
         getAlunoshome()
         setShowModal(false)
+    }
+
+    const [showModalMensalidade, setShowModalMensalidade] = useState(false);
+
+    const openModalMensalidade = () => setShowModalMensalidade(true);
+
+    function closeModalMensalidade() {
+        getAlunoshome()
+        setShowModalMensalidade(false)
     }
 
     // Função para filtrar alunos
@@ -46,13 +56,13 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
         const dados_matricula = aluno?.dados_matricula;
         const { mensalidades } = dados_matricula;
 
-    
+
         const dataAtual = new Date();
         const primeiroDiaDoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
         const decimoDiaDoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 10);
 
         if (!mensalidades || mensalidades.length === 0) {
-            
+
             return "Sem mensalidade"; // Sem mensalidades registradas
         }
 
@@ -61,7 +71,7 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
             .map(mensalidade => ({ ...mensalidade, data_vencimento: new Date(mensalidade.data_vencimento) }))
             .sort((a, b) => b.data_vencimento - a.data_vencimento)[0].data_vencimento;
 
-       
+
 
         // Calcular a diferença em meses entre a última data correspondente e o dia 10 do mês atual
         const diffAnos = dataAtual.getFullYear() - ultimaMensalidade.getFullYear();
@@ -83,9 +93,9 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
     };
 
 
-    const openProfille = (id)=>{
-       handleIdUrl(id)
-       
+    const openProfille = (id) => {
+        handleIdUrl(id)
+
     }
 
 
@@ -164,10 +174,10 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
                                                 className={styles.avatar}
                                                 src={noProfile}
 
-                                            /> 
+                                            />
                                         )}
 
-                                        
+
                                     </button>
 
                                 </td>
@@ -176,7 +186,17 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
                                 <td>{calculateAge(item.dados_aluno.nasc_aluno)} anos</td>
                                 <td>{item.dados_respons.tel_respons || item.dados_aluno.tel_aluno}</td>
                                 <td>{getModalidades(item.dados_matricula.dados_modalidades)}</td>
-                                <td>{obterSituacaoMensalidade(item)}</td>
+                                <td>
+                                    <button onClick={openModalMensalidade}>
+                                        {obterSituacaoMensalidade(item)}
+                                    </button>
+                                    {showModalMensalidade &&
+                                        <InforMensalidade
+                                            aluno={item}
+                                            onClose={closeModalMensalidade}
+                                            getAlunoshome={getAlunoshome}
+                                        />}
+                                </td>
 
                             </tr>
                         ))}

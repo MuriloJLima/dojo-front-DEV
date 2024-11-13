@@ -43,16 +43,16 @@ export function App() {
           path="/"
           element={isLoggedIn ? <Navigate to="/home" replace /> : <Login onLogin={handleLogin} />}
         />
-        {/* <Route
+        <Route
           path="/home"
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn}>
               <Home onLogout={handleLogout}/>
             </ProtectedRoute>
           }
-        /> */}
+        />
         <Route path="*" element={<h1>Not Found</h1>} />
-        <Route path="/home" element={<Home onLogout={handleLogout}/>} />
+        {/* <Route path="/home" element={<Home onLogout={handleLogout}/>} /> */}
       </Routes>
     </BrowserRouter>
   )

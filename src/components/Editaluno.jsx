@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import config from '../config/config.json';
 import { toast, ToastContainer } from "react-toastify";
 import InputMask from 'react-input-mask';
+import { PlusCircle, Trash } from 'phosphor-react';
 
 export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
     //objeto contendo a estrutura do aluno a ser cadastrado
@@ -302,23 +303,23 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
     };
 
     // Função para remover uma graduação com base no índice
-const handleRemoveGraduacaoKarate = (index) => {
-    const updatedGraduacoes = formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno.filter((_, i) => i !== index);
+    const handleRemoveGraduacaoKarate = (index) => {
+        const updatedGraduacoes = formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno.filter((_, i) => i !== index);
 
-    setFormData(prevData => ({
-        ...prevData,
-        dados_matricula: {
-            ...prevData.dados_matricula,
-            dados_modalidades: {
-                ...prevData.dados_matricula.dados_modalidades,
-                dados_karate: {
-                    ...prevData.dados_matricula.dados_modalidades.dados_karate,
-                    grad_aluno: updatedGraduacoes,
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_karate: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_karate,
+                        grad_aluno: updatedGraduacoes,
+                    },
                 },
             },
-        },
-    }));
-};
+        }));
+    };
 
     // Função para remover uma graduação com base no índice
     const handleRemoveGraduacaoMuayThai = (index) => {
@@ -342,13 +343,19 @@ const handleRemoveGraduacaoKarate = (index) => {
 
 
     const [newCompetitionKarate, setNewCompetitionKarate] = useState({
-        titulo: "",
-        premiacao: ""
+        nivel: "",
+        localidade: "",
+        ano: "",
+        disputa: "",
+        colocacao: ""
     });
 
     const [newCompetitionMuayThai, setNewCompetitionMuayThai] = useState({
-        titulo: "",
-        premiacao: ""
+        nivel: "",
+        localidade: "",
+        ano: "",
+        disputa: "",
+        colocacao: ""
     });
 
     const handleCompetitionKarateChange = (e) => {
@@ -384,14 +391,26 @@ const handleRemoveGraduacaoKarate = (index) => {
                         ...prevData.dados_matricula.dados_modalidades.dados_karate,
                         competicoes: [
                             ...prevData.dados_matricula.dados_modalidades.dados_karate.competicoes,
-                            { titulo: newCompetitionKarate.titulo, premiacao: newCompetitionKarate.premiacao }
+                            {
+                                nivel: newCompetitionKarate.nivel,
+                                localidade: newCompetitionKarate.localidade,
+                                ano: newCompetitionKarate.ano,
+                                disputa: newCompetitionKarate.disputa,
+                                colocacao: newCompetitionKarate.colocacao
+                            }
                         ]
                     }
                 }
             }
         }));
         // Limpar os campos de nova competição
-        setNewCompetitionKarate({ titulo: "", premiacao: "" });
+        setNewCompetitionKarate({
+            nivel: "",
+            localidade: "",
+            ano: "",
+            disputa: "",
+            colocacao: ""
+        });
     };
 
     const handleAddCompetitionMuayThai = () => {
@@ -405,39 +424,127 @@ const handleRemoveGraduacaoKarate = (index) => {
                         ...prevData.dados_matricula.dados_modalidades.dados_muaythai,
                         competicoes: [
                             ...prevData.dados_matricula.dados_modalidades.dados_muaythai.competicoes,
-                            { titulo: newCompetitionMuayThai.titulo, premiacao: newCompetitionMuayThai.premiacao }
+                            {
+                                nivel: newCompetitionKarate.nivel,
+                                localidade: newCompetitionKarate.localidade,
+                                ano: newCompetitionKarate.ano,
+                                disputa: newCompetitionKarate.disputa,
+                                colocacao: newCompetitionKarate.colocacao
+                            }
                         ]
                     }
                 }
             }
         }));
         // Limpar os campos de nova competição
-        setNewCompetitionMuayThai({ titulo: "", premiacao: "" });
+        setNewCompetitionMuayThai({
+            nivel: "",
+            localidade: "",
+            ano: "",
+            disputa: "",
+            colocacao: ""
+        });
     };
 
-    //inserindo as faixas de karatê e muay thai no objeto
 
+    const handleEditCompetitionKarate = (index, field, value) => {
+        // Faz uma cópia profunda do array grad_aluno para garantir que não haja referências mistas
+        const updatedCompeticoes = formData.dados_matricula.dados_modalidades.dados_karate.competicoes.map((grad, i) => ({
+            ...grad, // clona o objeto de cada graduação
+        }));
 
-    const handleMuayThaiChange = (event) => {
-        const selectedGraduacao = event.target.value;
-        const selectedIndex = muayThaiFaixas.findIndex(faixa => faixa.graduacao === selectedGraduacao);
+        // Atualiza o campo específico da graduação selecionada
+        updatedCompeticoes[index] = {
+            ...updatedCompeticoes[index],
+            [field]: value,
+        };
 
-        const inferiorGraduacoes = muayThaiFaixas.slice(0, selectedIndex + 1).map(faixa => ({ graduacao: faixa.graduacao, data_graduacao: "" }));
-
-        setFormData(prevFormData => ({
-            ...prevFormData,
+        // Atualiza o estado do formData com a nova lista de graduações
+        setFormData(prevData => ({
+            ...prevData,
             dados_matricula: {
-                ...prevFormData.dados_matricula,
+                ...prevData.dados_matricula,
                 dados_modalidades: {
-                    ...prevFormData.dados_matricula.dados_modalidades,
-                    dados_muaythai: {
-                        ...prevFormData.dados_matricula.dados_modalidades.dados_muaythai,
-                        grad_aluno: inferiorGraduacoes // Salva todas as graduações inferiores
-                    }
-                }
-            }
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_karate: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_karate,
+                        competicoes: updatedCompeticoes,
+                    },
+                },
+            },
         }));
     };
+
+    const handleEditCompetitionMuayThai = (index, field, value) => {
+        // Faz uma cópia profunda do array grad_aluno para garantir que não haja referências mistas
+        const updatedCompeticoes = formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes.map((grad, i) => ({
+            ...grad, // clona o objeto de cada graduação
+        }));
+
+        // Atualiza o campo específico da graduação selecionada
+        updatedCompeticoes[index] = {
+            ...updatedCompeticoes[index],
+            [field]: value,
+        };
+
+        // Atualiza o estado do formData com a nova lista de graduações
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_muaythai: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_muaythai,
+                        competicoes: updatedCompeticoes,
+                    },
+                },
+            },
+        }));
+    };
+
+
+    const handleRemoveCompetitionKarate = (index) => {
+        const updatedCompeticoes = formData.dados_matricula.dados_modalidades.dados_karate.competicoes.filter((_, i) => i !== index);
+
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_karate: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_karate,
+                        competicoes: updatedCompeticoes,
+                    },
+                },
+            },
+        }));
+
+    }
+    
+    
+    const handleRemoveCompetitionMuayThai = (index) => {
+        const updatedCompeticoes = formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes.filter((_, i) => i !== index);
+
+        setFormData(prevData => ({
+            ...prevData,
+            dados_matricula: {
+                ...prevData.dados_matricula,
+                dados_modalidades: {
+                    ...prevData.dados_matricula.dados_modalidades,
+                    dados_muaythai: {
+                        ...prevData.dados_matricula.dados_modalidades.dados_muaythai,
+                        competicoes: updatedCompeticoes,
+                    },
+                },
+            },
+        }));
+
+    }
+
+
+    
 
 
     //envio das informações
@@ -661,7 +768,10 @@ const handleRemoveGraduacaoKarate = (index) => {
                                         placeholder="ex: Rua das Flores, 123"
                                         required
                                     />
+
+
                                 </div>
+
                                 <div className={styles.smalldiv}>
                                     <label>Administrador:</label>
                                     <select name="is_adm" value={formData.is_adm} onChange={handleChange} required>
@@ -670,6 +780,22 @@ const handleRemoveGraduacaoKarate = (index) => {
                                     </select>
 
                                 </div>
+
+                                <div className={styles.smalldiv}>
+                                    <label>Senha de acesso:</label>
+                                    <input
+                                        type="text"
+                                        name="senha_aluno"
+                                        value={formData.senha_aluno}
+                                        onChange={handleChange}
+                                        placeholder="1234"
+                                        maxLength={4}
+                                        required
+                                    />
+
+                                </div>
+
+
 
                             </div>
                             <div className={styles.buttonContainer}>
@@ -692,62 +818,96 @@ const handleRemoveGraduacaoKarate = (index) => {
                                     onChange={handleCheckboxChange}
                                     checked={aluno.dados_matricula.dados_modalidades.dados_karate.is_aluno || false}
                                 />
-                                <label>Karate</label>
+                                <label><h3>Karate</h3></label>
                             </div>
                             {aluno.dados_matricula.dados_modalidades.dados_karate.is_aluno && (
                                 <>
+
+                                    <div className={styles.formGroup}>
+                                        <label>Data de Inscrição:</label>
+                                        <input
+                                            type="date"
+                                            name="dados_matricula.dados_modalidades.dados_karate.data_insc"
+                                            value={formData.dados_matricula.dados_modalidades.dados_karate.data_insc}
+                                            onChange={handleChange}
+                                            max={hoje}
+                                            required
+                                        />
+                                    </div>
+
+
+                                    <h4>Adicionar Graduações:</h4>
                                     <div className={styles.formRow}>
+
                                         <div className={styles.formGroup}>
-                                            <label>Data de Inscrição:</label>
-                                            <input
-                                                type="date"
-                                                name="dados_matricula.dados_modalidades.dados_karate.data_insc"
-                                                value={formData.dados_matricula.dados_modalidades.dados_karate.data_insc}
-                                                onChange={handleChange}
-                                                max={hoje}
-                                                required
-                                            />
+                                            <label>Graduação:</label>
+                                            <select name="graduacao" value={newKarateFaixa.graduacao} onChange={handleKaratefaixaChange}>
+                                                <option value="">Selecione</option>
+                                                <option value="Faixa-Branca">Faixa-Branca</option>
+                                                <option value="Faixa-Amarela">Faixa-Amarela</option>
+                                                <option value="Faixa-Vermelha">Faixa-Vermelha</option>
+                                                <option value="Faixa-Laranja">Faixa-Laranja</option>
+                                                <option value="Faixa-Verde">Faixa-Verde</option>
+                                                <option value="Faixa-Roxa">Faixa-Roxa</option>
+                                                <option value="Faixa-Marrom">Faixa-Marrom</option>
+                                                <option value="Faixa-Preta">Faixa-Preta</option>
+                                            </select>
+
                                         </div>
 
 
-                                    </div>
-                                    <div>
-                                        <h3>Graduações - Karate</h3>
-                                        {/* Inputs para adicionar nova graduação */}
-                                        <input
-                                            type="text"
-                                            name="graduacao"
-                                            value={newKarateFaixa.graduacao}
-                                            onChange={handleKaratefaixaChange}
-                                            placeholder="Graduação"
-                                        />
-                                        <input
-                                            type="date"
-                                            name="data_graduacao"
-                                            value={newKarateFaixa.data_graduacao}
-                                            onChange={handleKaratefaixaChange}
-                                            placeholder="Data da graduação"
-                                        />
-                                        <button type="button" onClick={() => handleAddGraduacaoKarate()}>
-                                            Adicionar Graduação
-                                        </button>
+                                        <div className={styles.formGroup}>
+                                            <label>Data da graduação:</label>
+                                            <input
+                                                type="date"
+                                                name="data_graduacao"
+                                                value={newKarateFaixa.data_graduacao}
+                                                onChange={handleKaratefaixaChange}
+                                                placeholder="Data da graduação"
+                                            />
+                                        </div>
 
+                                        <div >
+                                            <label><br /></label>
+                                            <button type="button" onClick={() => handleAddGraduacaoKarate()}>
+                                                <PlusCircle size={20} /> Adicionar
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.listContainer}>
                                         {/* Listagem de graduações existentes com inputs para edição */}
-                                        <ul>
-                                            {formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno
-                                                .slice()
-                                                .reverse()
-                                                .map((grad, index) => {
-                                                    const reverseIndex = formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno.length - 1 - index;
-                                                    return (
-                                                        <li key={index}>
-                                                            <input
-                                                                type="text"
-                                                                name={`graduacao-${reverseIndex}`}
+
+                                        {formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno
+                                            .slice()
+                                            .reverse()
+                                            .map((grad, index) => {
+                                                const reverseIndex = formData.dados_matricula.dados_modalidades.dados_karate.grad_aluno.length - 1 - index;
+                                                return (
+                                                    <div className={styles.formRow} key={index}>
+
+                                                        <div className={styles.formGroup}>
+
+
+
+                                                            <select name={`graduacao-${reverseIndex}`}
                                                                 value={grad.graduacao}
                                                                 onChange={(e) => handleEditGraduacaoKarate(reverseIndex, 'graduacao', e.target.value)}
-                                                                placeholder="Graduação"
-                                                            />
+                                                            >
+                                                                <option value="">Selecione</option>
+                                                                <option value="Faixa-Branca">Faixa-Branca</option>
+                                                                <option value="Faixa-Amarela">Faixa-Amarela</option>
+                                                                <option value="Faixa-Vermelha">Faixa-Vermelha</option>
+                                                                <option value="Faixa-Laranja">Faixa-Laranja</option>
+                                                                <option value="Faixa-Verde">Faixa-Verde</option>
+                                                                <option value="Faixa-Roxa">Faixa-Roxa</option>
+                                                                <option value="Faixa-Marrom">Faixa-Marrom</option>
+                                                                <option value="Faixa-Preta">Faixa-Preta</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div className={styles.formGroup}>
+
                                                             <input
                                                                 type="date"
                                                                 name={`data_graduacao-${reverseIndex}`}
@@ -755,68 +915,165 @@ const handleRemoveGraduacaoKarate = (index) => {
                                                                 onChange={(e) => handleEditGraduacaoKarate(reverseIndex, 'data_graduacao', e.target.value)}
                                                                 placeholder="Data da graduação"
                                                             />
-                                                             <button type="button" onClick={() => handleRemoveGraduacaoKarate(reverseIndex)}>
-                                                                Remover
-                                                            </button>
-                                                        </li>
-                                                    )
-                                                })}
-                                        </ul>
+                                                        </div>
+
+                                                        <button type="button" onClick={() => handleRemoveGraduacaoKarate(reverseIndex)}>
+                                                            <Trash size={20} />Remover
+                                                        </button>
+                                                    </div>
+                                                )
+                                            })}
+
                                     </div>
 
 
-                                    <div>
-                                        <h3>Competições - Karate</h3>
-                                        <input
-                                            type="text"
-                                            name="titulo"
-                                            value={newCompetitionKarate.titulo}
-                                            onChange={handleCompetitionKarateChange}
-                                            placeholder="Título da Competição"
-                                        />
-                                        <input
-                                            type="text"
-                                            name="premiacao"
-                                            value={newCompetitionKarate.premiacao}
-                                            onChange={handleCompetitionKarateChange}
-                                            placeholder="Premiações"
-                                        />
-                                        <button type="button" onClick={() => handleAddCompetitionKarate()}>
-                                            Adicionar Competição
-                                        </button>
 
-                                        <ul>
-                                            {formData.dados_matricula.dados_modalidades.dados_karate.competicoes
-                                                .slice()
-                                                .reverse()
-                                                .map((comp, index) => {
-                                                    const reverseIndex = formData.dados_matricula.dados_modalidades.dados_karate.competicoes.length - 1 - index;
-                                                    return (
-                                                        <li key={index}>
-                                                            <input
-                                                                type="text"
-                                                                name={`titulo-${reverseIndex}`}
-                                                                value={comp.titulo}
-                                                                // onChange={(e) => handleEditGraduacaoKarate(reverseIndex, 'graduacao', e.target.value)}
-                                                                placeholder="Nome da competição"
-                                                            />
-                                                            <input
-                                                                type="text"
-                                                                name={`premiacao-${reverseIndex}`}
-                                                                value={comp.premiacao}
-                                                                // onChange={(e) => handleEditGraduacaoKarate(reverseIndex, 'data_graduacao', e.target.value)}
-                                                                placeholder="Colocação"
-                                                            />
-                                                             <button type="button" 
-                                                            //  onClick={() => handleRemoveGraduacaoKarate(reverseIndex)}
-                                                             >
-                                                                Remover
-                                                            </button>
-                                                        </li>
-                                                    )
-                                                })}
-                                        </ul>
+                                    <h4>Adicionar Competições</h4>
+                                    <div className={styles.formRow}>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Nível:</label>
+                                            <select name="nivel" value={newCompetitionKarate.nivel} onChange={handleCompetitionKarateChange}>
+                                                <option value="">Selecione: </option>
+                                                <option value="Municipal">Municipal</option>
+                                                <option value="Regional">Regional</option>
+                                                <option value="Estadual">Estadual</option>
+                                                <option value="Nacional">Nacional</option>
+                                                <option value="Internacional">Internacional</option>
+                                                <option value="Mundial">Mundial</option>
+                                            </select>
+                                        </div>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Localidade:</label>
+                                            <input
+                                                type="text"
+                                                name="localidade"
+                                                value={newCompetitionKarate.localidade}
+                                                onChange={handleCompetitionKarateChange}
+                                                placeholder="Cidade-UF"
+                                            />
+                                        </div>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Ano da competição:</label>
+                                            <input
+                                                type="date"
+                                                name="ano"
+                                                value={newCompetitionKarate.ano}
+                                                onChange={handleCompetitionKarateChange}
+                                                placeholder="xxxx"
+                                            />
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label>Disputa:</label>
+                                            <select name="disputa" value={newCompetitionKarate.disputa} onChange={handleCompetitionKarateChange}>
+                                                <option value="">Selecione</option>
+                                                <option value="Kata individual">Kata individual</option>
+                                                <option value="Kumite individual">Kumite individual</option>
+                                                <option value="Kata em equipe">Kata em equipe</option>
+                                                <option value="Kumite em equipe">Kumite em equipe</option>
+                                            </select>
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label>Colocação:</label>
+                                            <select name="colocacao" value={newCompetitionKarate.colocacao} onChange={handleCompetitionKarateChange}>
+                                                <option value="">Selecione</option>
+                                                <option value="1º lugar">1º lugar</option>
+                                                <option value="2º lugar">2º lugar</option>
+                                                <option value="3º lugar">3º lugar</option>
+                                            </select>
+                                        </div>
+
+                                        <div >
+                                            <label><br /></label>
+                                            <button type="button" onClick={() => handleAddCompetitionKarate()}>
+                                                <PlusCircle size={20} /> Adicionar
+                                            </button>
+                                        </div>
+
+
                                     </div>
+
+                                    <div className={styles.listContainer}>
+                                        {/* Listagem de competições existentes com inputs para edição */}
+
+                                        {formData.dados_matricula.dados_modalidades.dados_karate.competicoes
+                                            .slice()
+                                            .reverse()
+                                            .map((comp, index) => {
+                                                const reverseIndex = formData.dados_matricula.dados_modalidades.dados_karate.competicoes.length - 1 - index;
+                                                return (
+                                                    <div className={styles.formRow} key={index}>
+
+                                                        <div className={styles.formGroup}>
+
+                                                            <select name={`nivel-${reverseIndex}`} value={comp.nivel}
+                                                                onChange={(e) => handleEditCompetitionKarate(reverseIndex, 'nivel', e.target.value)}
+                                                            >
+                                                                <option value="">Selecione: </option>
+                                                                <option value="Municipal">Municipal</option>
+                                                                <option value="Regional">Regional</option>
+                                                                <option value="Estadual">Estadual</option>
+                                                                <option value="Nacional">Nacional</option>
+                                                                <option value="Internacional">Internacional</option>
+                                                                <option value="Mundial">Mundial</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div className={styles.formGroup}>
+
+                                                            <input
+                                                                type="text"
+                                                                name={`localidade-${reverseIndex}`}
+                                                                value={comp.localidade}
+                                                                onChange={(e) => handleEditCompetitionKarate(reverseIndex, 'localidade', e.target.value)}
+                                                                placeholder="Cidade-UF"
+                                                            />
+                                                        </div>
+
+                                                        <div className={styles.formGroup}>
+
+                                                            <input
+                                                                type="date"
+                                                                name={`ano-${reverseIndex}`}
+                                                                value={comp.ano}
+                                                                onChange={(e) => handleEditCompetitionKarate(reverseIndex, 'ano', e.target.value)}
+                                                                placeholder="xxxx"
+                                                            />
+                                                        </div>
+                                                        <div className={styles.formGroup}>
+                                                            <select name={`disputa-${reverseIndex}`} value={comp.disputa}
+                                                                onChange={(e) => handleEditCompetitionKarate(reverseIndex, 'disputa', e.target.value)}
+                                                            >
+                                                                <option value="">Selecione</option>
+                                                                <option value="Kata individual">Kata individual</option>
+                                                                <option value="Kumite individual">Kumite individual</option>
+                                                                <option value="Kata em equipe">Kata em equipe</option>
+                                                                <option value="Kumite em equipe">Kumite em equipe</option>
+                                                            </select>
+                                                        </div>
+                                                        <div className={styles.formGroup}>
+                                                            <select name={`colocacao-${reverseIndex}`} value={comp.colocacao}
+                                                                onChange={(e) => handleEditCompetitionKarate(reverseIndex, 'colocacao', e.target.value)}
+                                                            >
+                                                                <option value="">Selecione</option>
+                                                                <option value="1º lugar">1º lugar</option>
+                                                                <option value="2º lugar">2º lugar</option>
+                                                                <option value="3º lugar">3º lugar</option>
+                                                            </select>
+                                                        </div>
+
+
+                                                        <button type="button" onClick={() => handleRemoveCompetitionKarate(reverseIndex)}>
+                                                            <Trash size={20} />Remover
+                                                        </button>
+                                                    </div>
+                                                )
+                                            })}
+
+                                    </div>
+
                                 </>
                             )}
                             <div className={styles.checkboxContainer}>
@@ -830,57 +1087,95 @@ const handleRemoveGraduacaoKarate = (index) => {
                             </div>
                             {aluno.dados_matricula.dados_modalidades.dados_muaythai.is_aluno && (
                                 <>
+
+                                    <div className={styles.formGroup}>
+                                        <label>Data de Inscrição:</label>
+                                        <input
+                                            type="date"
+                                            name="dados_matricula.dados_modalidades.dados_muaythai.data_insc"
+                                            value={formData.dados_matricula.dados_modalidades.dados_muaythai.data_insc}
+                                            onChange={handleChange}
+                                            max={hoje}
+                                            required
+                                        />
+                                    </div>
+
+
+
+                                    <h4>Adicionar Graduações:</h4>
                                     <div className={styles.formRow}>
+
                                         <div className={styles.formGroup}>
-                                            <label>Data de Inscrição:</label>
+                                            <label>Graduação:</label>
+                                            <select name="graduacao" value={newMuayThaiFaixa.graduacao} onChange={handleMuayThaifaixaChange}>
+                                                <option value="">Selecione</option>
+                                                <option value="Branca">Branca</option>
+                                                <option value="Branca ponta Vermelha">Branca ponta Vermelha</option>
+                                                <option value="Vermelha">Vermelha</option>
+                                                <option value="Vermelha ponta Azul clara">Vermelha ponta Azul clara</option>
+                                                <option value="Azul clara">Azul clara</option>
+                                                <option value="Azul clara ponta Azul escura">Azul clara ponta Azul escura</option>
+                                                <option value="Azul escura">Azul escura</option>
+                                                <option value="Azul escura ponta Preta">Azul escura ponta Preta</option>
+                                                <option value="Preta">Preta</option>
+                                            </select>
+
+                                        </div>
+
+
+                                        <div className={styles.formGroup}>
+                                            <label>Data da graduação:</label>
                                             <input
                                                 type="date"
-                                                name="dados_matricula.dados_modalidades.dados_muaythai.data_insc"
-                                                value={formData.dados_matricula.dados_modalidades.dados_muaythai.data_insc}
-                                                onChange={handleChange}
-                                                max={hoje}
-                                                required
+                                                name="data_graduacao"
+                                                value={newMuayThaiFaixa.data_graduacao}
+                                                onChange={handleMuayThaifaixaChange}
+                                                placeholder="Data da graduação"
                                             />
                                         </div>
 
+                                        <div >
+                                            <label><br /></label>
+                                            <button type="button" onClick={() => handleAddGraduacaoMuayThai()}>
+                                                <PlusCircle size={20} /> Adicionar
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3>Graduações - Muay Thai</h3>
-                                        {/* Inputs para adicionar nova graduação */}
-                                        <input
-                                            type="text"
-                                            name="graduacao"
-                                            value={newMuayThaiFaixa.graduacao}
-                                            onChange={handleMuayThaifaixaChange}
-                                            placeholder="Graduação"
-                                        />
-                                        <input
-                                            type="date"
-                                            name="data_graduacao"
-                                            value={newMuayThaiFaixa.data_graduacao}
-                                            onChange={handleMuayThaifaixaChange}
-                                            placeholder="Data da graduação"
-                                        />
-                                        <button type="button" onClick={() => handleAddGraduacaoMuayThai()}>
-                                            Adicionar Graduação
-                                        </button>
 
+                                    <div className={styles.listContainer}>
                                         {/* Listagem de graduações existentes com inputs para edição */}
-                                        <ul>
-                                            {formData.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno
-                                                .slice()
-                                                .reverse()
-                                                .map((grad, index) => {
-                                                    const reverseIndex = formData.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.length - 1 - index;
-                                                    return (
-                                                        <li key={index}>
-                                                            <input
-                                                                type="text"
-                                                                name={`graduacao-${reverseIndex}`}
+
+                                        {formData.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno
+                                            .slice()
+                                            .reverse()
+                                            .map((grad, index) => {
+                                                const reverseIndex = formData.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.length - 1 - index;
+                                                return (
+                                                    <div className={styles.formRow} key={index}>
+
+                                                        <div className={styles.formGroup}>
+
+
+
+                                                            <select name={`graduacao-${reverseIndex}`}
                                                                 value={grad.graduacao}
                                                                 onChange={(e) => handleEditGraduacaoMuayThai(reverseIndex, 'graduacao', e.target.value)}
-                                                                placeholder="Graduação"
-                                                            />
+                                                            >
+                                                                <option value="">Selecione</option>
+                                                                <option value="Branca">Branca</option>
+                                                                <option value="Branca ponta Vermelha">Branca ponta Vermelha</option>
+                                                                <option value="Vermelha">Vermelha</option>
+                                                                <option value="Vermelha ponta Azul clara">Vermelha ponta Azul clara</option>
+                                                                <option value="Azul clara">Azul clara</option>
+                                                                <option value="Azul clara ponta Azul escura">Azul clara ponta Azul escura</option>
+                                                                <option value="Azul escura">Azul escura</option>
+                                                                <option value="Azul escura ponta Preta">Azul escura ponta Preta</option>
+                                                                <option value="Preta">Preta</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div className={styles.formGroup}>
+
                                                             <input
                                                                 type="date"
                                                                 name={`data_graduacao-${reverseIndex}`}
@@ -888,38 +1183,159 @@ const handleRemoveGraduacaoKarate = (index) => {
                                                                 onChange={(e) => handleEditGraduacaoMuayThai(reverseIndex, 'data_graduacao', e.target.value)}
                                                                 placeholder="Data da graduação"
                                                             />
-                                                            <button type="button" onClick={() => handleRemoveGraduacaoMuayThai(reverseIndex)}>
-                                                                Remover
-                                                            </button>
-                                                        </li>
-                                                    )
-                                                })}
-                                        </ul>
+                                                        </div>
+
+                                                        <button type="button" onClick={() => handleRemoveGraduacaoMuayThai(reverseIndex)}>
+                                                            <Trash size={20} />Remover
+                                                        </button>
+                                                    </div>
+                                                )
+                                            })}
+
                                     </div>
-                                    <div>
-                                        <h3>Competições - Muay Thai</h3>
-                                        <input
-                                            type="text"
-                                            name="titulo"
-                                            value={newCompetitionMuayThai.titulo}
-                                            onChange={handleCompetitionMuayThaiChange}
-                                            placeholder="Título da Competição"
-                                        />
-                                        <input
-                                            type="text"
-                                            name="premiacao"
-                                            value={newCompetitionMuayThai.premiacao}
-                                            onChange={handleCompetitionMuayThaiChange}
-                                            placeholder="Premiações"
-                                        />
-                                        <button type="button" onClick={() => handleAddCompetitionMuayThai()}>
-                                            Adicionar Competição
-                                        </button>
-                                        <ul>
-                                            {formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes.map((comp, index) => (
-                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
-                                            ))}
-                                        </ul>
+
+                                    <h4>Adicionar Competições</h4>
+                                    <div className={styles.formRow}>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Nível:</label>
+                                            <select name="nivel" value={newCompetitionMuayThai.nivel} onChange={handleCompetitionMuayThaiChange}>
+                                                <option value="">Selecione: </option>
+                                                <option value="Municipal">Municipal</option>
+                                                <option value="Regional">Regional</option>
+                                                <option value="Estadual">Estadual</option>
+                                                <option value="Nacional">Nacional</option>
+                                                <option value="Internacional">Internacional</option>
+                                                <option value="Mundial">Mundial</option>
+                                            </select>
+                                        </div>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Localidade:</label>
+                                            <input
+                                                type="text"
+                                                name="localidade"
+                                                value={newCompetitionMuayThai.localidade}
+                                                onChange={handleCompetitionMuayThaiChange}
+                                                placeholder="Cidade-UF"
+                                            />
+                                        </div>
+
+                                        <div className={styles.formGroup}>
+                                            <label>Ano da competição:</label>
+                                            <input
+                                                type="date"
+                                                name="ano"
+                                                value={newCompetitionMuayThai.ano}
+                                                onChange={handleCompetitionMuayThaiChange}
+                                                placeholder="xxxx"
+                                            />
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label>Disputa:</label>
+                                            <input
+                                                type="text"
+                                                name="disputa"
+                                                value={newCompetitionMuayThai.disputa}
+                                                onChange={handleCompetitionMuayThaiChange}
+                                                placeholder="Tipo de disputa"
+                                            />
+                                        </div>
+                                        <div className={styles.formGroup}>
+                                            <label>Colocação:</label>
+                                            <select name="colocacao" value={newCompetitionMuayThai.colocacao} onChange={handleCompetitionMuayThaiChange}>
+                                                <option value="">Selecione</option>
+                                                <option value="1º lugar">1º lugar</option>
+                                                <option value="2º lugar">2º lugar</option>
+                                                <option value="3º lugar">3º lugar</option>
+                                            </select>
+                                        </div>
+
+                                        <div >
+                                            <label><br /></label>
+                                            <button type="button" onClick={() => handleAddCompetitionMuayThai()}>
+                                                <PlusCircle size={20} /> Adicionar
+                                            </button>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div className={styles.listContainer}>
+                                        {/* Listagem de competições existentes com inputs para edição */}
+
+                                        {formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes
+                                            .slice()
+                                            .reverse()
+                                            .map((comp, index) => {
+                                                const reverseIndex = formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes.length - 1 - index;
+                                                return (
+                                                    <div className={styles.formRow} key={index}>
+
+                                                        <div className={styles.formGroup}>
+
+                                                            <select name={`nivel-${reverseIndex}`} value={comp.nivel}
+                                                            onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'nivel', e.target.value)}
+                                                            >
+                                                                <option value="">Selecione: </option>
+                                                                <option value="Municipal">Municipal</option>
+                                                                <option value="Regional">Regional</option>
+                                                                <option value="Estadual">Estadual</option>
+                                                                <option value="Nacional">Nacional</option>
+                                                                <option value="Internacional">Internacional</option>
+                                                                <option value="Mundial">Mundial</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div className={styles.formGroup}>
+
+                                                            <input
+                                                                type="text"
+                                                                name={`localidade-${reverseIndex}`}
+                                                                value={comp.localidade}
+                                                                onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'localidade', e.target.value)}
+                                                                placeholder="Cidade-UF"
+                                                            />
+                                                        </div>
+
+                                                        <div className={styles.formGroup}>
+
+                                                            <input
+                                                                type="date"
+                                                                name={`ano-${reverseIndex}`}
+                                                                value={comp.ano}
+                                                                onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'ano', e.target.value)}
+                                                                placeholder="xxxx"
+                                                            />
+                                                        </div>
+                                                        <div className={styles.formGroup}>
+                                                            <input
+                                                                type="text"
+                                                                name={`disputa-${reverseIndex}`}
+                                                                value={comp.disputa}
+                                                                onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'disputa', e.target.value)}
+                                                                placeholder="Tipo de disputa"
+                                                            />
+                                                        </div>
+                                                        <div className={styles.formGroup}>
+                                                            <select name={`colocacao-${reverseIndex}`} value={comp.colocacao}
+                                                            onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'colocacao', e.target.value)}
+                                                            >
+                                                                <option value="">Selecione</option>
+                                                                <option value="1º lugar">1º lugar</option>
+                                                                <option value="2º lugar">2º lugar</option>
+                                                                <option value="3º lugar">3º lugar</option>
+                                                            </select>
+                                                        </div>
+
+
+                                                        <button type="button" onClick={() => handleRemoveCompetitionMuayThai(reverseIndex)}>
+                                                            <Trash size={20} />Remover
+                                                        </button>
+                                                    </div>
+                                                )
+                                            })}
+
                                     </div>
                                 </>
                             )}

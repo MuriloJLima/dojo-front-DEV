@@ -1,54 +1,12 @@
 import styles from './AlunoCompleto.module.css'
 import { useState, useEffect } from 'react';
 
-import config from '../config/config.json';
-import axios from "axios";
-
-export function AlunoCompleto({ aluno, onClose, handleIdUrl, idade }) {
+export function AlunoCompleto({ aluno, onClose, idade }) {
 
 
     const [activeTab, setActiveTab] = useState('informacoes')
 
-    const [newPagamento, setNewPagamento] = useState({
-        data_vencimento: "",
-        valor: "",
-        data_pagamento: ""
-    });
-
-    const openProfille = (id) => {
-        handleIdUrl(id)
-    }
-
-    const newPagamentoValue = () => {
-
-        const today = new Date();
-
-        // Formatar data_vencimento para o dia 10 do mês atual
-        const dataVencimento = new Date(today.getFullYear(), today.getMonth(), 10);
-        const dataVencimentoFormatted = `${dataVencimento.getFullYear()}-${String(dataVencimento.getMonth() + 1).padStart(2, '0')}-${String(dataVencimento.getDate()).padStart(2, '0')}`;
-
-        // Formatar data_pagamento para a data de hoje
-        const dataPagamentoFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-        if (aluno?.dados_matricula?.dados_modalidades.dados_karate.is_aluno && aluno?.dados_matricula?.dados_modalidades.dados_muaythai.is_aluno) {
-            setNewPagamento({
-                data_vencimento: dataVencimentoFormatted,
-                valor: "200",
-                data_pagamento: dataPagamentoFormatted
-            })
-        } else {
-            setNewPagamento({
-                data_vencimento: dataVencimentoFormatted,
-                valor: "100",
-                data_pagamento: dataPagamentoFormatted
-            })
-        }
-    }
-
-    useEffect(() => {
-        newPagamentoValue()
-    }, [])
-
+ 
 
 
 
@@ -73,30 +31,9 @@ export function AlunoCompleto({ aluno, onClose, handleIdUrl, idade }) {
     const karateGrad = aluno?.dados_matricula?.dados_modalidades.dados_karate.grad_aluno;
     const muaythaiGrad = aluno?.dados_matricula?.dados_modalidades.dados_muaythai.grad_aluno;
 
-    const handleAddMensalidade = async () => {
-        try {
-            const response = await axios.put(`${config.urlRoot}/novoPagamento/${aluno._id}`, newPagamento);
-
-            console.log(response)
-            newPagamentoValue()
-            openProfille(aluno._id)
-        }
-        catch (error) {
-            console.error("Erro ao cadastrar o aluno:", error);
-            // Aqui você pode tratar o erro, como exibir uma mensagem para o usuário
-        }
-
-    }
-
-    const handlePagamentoChange = (e) => {
-        const { name, value } = e.target;
-        setNewPagamento((prev) => ({
-            ...prev,
-            [name]: value
-        }));
+  
 
 
-    };
 
 
     return (
@@ -118,12 +55,6 @@ export function AlunoCompleto({ aluno, onClose, handleIdUrl, idade }) {
                         onClick={() => setActiveTab('modalidades')}
                     >
                         Modalidades
-                    </button>
-                    <button
-                        className={`${styles.tabButton} ${activeTab === 'mensalidades' && styles.activeTab}`}
-                        onClick={() => setActiveTab('mensalidades')}
-                    >
-                        Mensalidades
                     </button>
                 </div>
 
@@ -338,76 +269,6 @@ export function AlunoCompleto({ aluno, onClose, handleIdUrl, idade }) {
                         )}
                     </>
                 )}
-
-                {activeTab === 'mensalidades' && (
-                    <>
-
-                        <h3>Nova mensalidade</h3>
-                        <div className={styles.formRow}>
-                            <div className={styles.formGroup}>
-                                <label>Data do vencimento:</label>
-                                <input
-                                    type="date"
-                                    name="data_vencimento"
-                                    value={newPagamento.data_vencimento}
-                                    onChange={handlePagamentoChange}
-                                    placeholder="Data - vencimento"
-                                />
-                            </div>
-
-                            <div>
-                                <label>Valor do pagamento:</label>
-                                <input
-                                    type="text"
-                                    name="valor"
-                                    value={newPagamento.valor}
-                                    onChange={handlePagamentoChange}
-                                    placeholder="Valor"
-                                />
-                            </div>
-                            <div>
-                                <label>Data do pagamento:</label>
-                                <input
-                                    type="date"
-                                    name="data_pagamento"
-                                    value={newPagamento.data_pagamento}
-                                    onChange={handlePagamentoChange}
-                                    placeholder="Data - Pagamento"
-                                />
-                            </div>
-
-
-                            <button type="button" onClick={() => handleAddMensalidade()}>
-                                Adicionar pagamento
-                            </button>
-
-
-
-
-
-                        </div>
-
-                        <div className={styles.mensalidades}>
-                            {aluno.dados_matricula.mensalidades?.length > 0 ? (
-                                <div>
-                                    <h2>Mensalidades pagas</h2>
-                                    {aluno.dados_matricula.mensalidades.map((mensalidade, index) => (
-                                        <div key={index} className="competicaoItem">
-                                            <p><strong>Data de vencimento:</strong> {mensalidade.data_vencimento}</p>
-                                            <p><strong>Valor do pagamento:</strong> {mensalidade.valor}</p>
-                                            <p><strong>Data de pagamento:</strong> {mensalidade.data_pagamento}</p>
-                                            {/* <p><strong>Premiações:</strong> {competicao.premiacoes}</p> */}
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p>O aluno ainda não efetuou o pagamento de nenhuma mensalidade</p>
-                            )}
-                        </div>
-
-                    </>
-                )}
-
 
 
 

@@ -9,7 +9,6 @@ export function Infoprofile({ aluno, handleIdUrl }) {
   const [idade, setIdade] = useState(null);
 
   const openModal = () => setShowModal(true);
-  // const closeModal = () => setShowModal(false);
 
   function closeModal() {
 
@@ -77,12 +76,11 @@ export function Infoprofile({ aluno, handleIdUrl }) {
               <h2>Histórico do Karatê</h2>
               <p>{`Graduação: ${obterUltimaGraduacao(karateGrad) || "--"}`}</p>
 
-              <div>
-                <ul>
-                  {aluno?.dados_matricula?.dados_modalidades.dados_karate.competicoes.map((comp, index) => (
-                    <li key={index}>{comp.titulo} - {comp.premiacao}</li>
+              <div className={styles.compettionContainer}>
+                {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes.slice()
+                  .reverse().map((comp, index) => (
+                    <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
                   ))}
-                </ul>
               </div>
             </div>
           </>
@@ -96,12 +94,11 @@ export function Infoprofile({ aluno, handleIdUrl }) {
               <h2>Histórico do Muay Thai</h2>
               <p>{`Graduação: ${obterUltimaGraduacao(muaythaiGrad) || "--"}`}</p>
 
-              <div>
-                <ul>
-                  {aluno?.dados_matricula?.dados_modalidades.dados_muaythai.competicoes.map((comp, index) => (
-                    <li key={index}>{comp.titulo} - {comp.premiacao}</li>
+              <div className={styles.compettionContainer}>
+                {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes.slice()
+                  .reverse().map((comp, index) => (
+                    <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
                   ))}
-                </ul>
               </div>
             </div>
           </>

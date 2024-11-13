@@ -25,7 +25,8 @@
 .formRow {
     display: flex; 
     justify-content: space-between;
-    gap: 10px;
+    gap: 0.6rem;
+    
 
 
     @media (max-width: 700px) {
@@ -38,6 +39,7 @@
     flex: 1 1 0;
     display: flex;
     flex-direction: column;
+  
     
 
     &:not(:last-child) {
@@ -68,20 +70,20 @@
 .overlay h2 {
     color: #333;
     font-size: 1.5rem;
-    margin-bottom: 20px;
+    margin-bottom: 1.4rem;
     text-align: center;
 }
 
 .overlay form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.4rem;
 }
 
 .tabHeader {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 1.4rem;
 }
 
 .tabButton {
@@ -113,7 +115,7 @@
 
 
 .overlay label {
-    font-size: 1.0rem;
+    font-size: 1rem;
     font-weight: 500;
     color: var(--gray-900);
     margin-bottom: 8px;
@@ -125,11 +127,14 @@ input[type="date"],
 input[type="tel"],
 select {
     font-size: 1rem;
-    padding: 10px;
+    padding: 0.7rem;
     border: 1px solid #ddd;
     border-radius: 6px;
     background-color: #fafafa;
     transition: border-color 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
 }
 
 .overlay input:focus,
@@ -138,9 +143,7 @@ select:focus {
     outline: none;
 }
 
-.overlay select {
-    color: #333;
-}
+
 
 
 
@@ -157,41 +160,36 @@ select:focus {
     border-top: 1px solid var(--gray-400);
     padding-top: 1rem;
     margin: 1rem 0 0;
-
-
+    gap: 0.4rem;
 
 }
 
-.checkboxContainer label {
+.checkboxContainer h2 {
 
-    margin-left: 8px;
-    font-size: 14px;
     color: #333;
     cursor: pointer;
-
-
-
+    font-size: 1.7rem;
 }
 
 
 
 
 .checkboxContainer input {
-    position: relative;
-    width: 18px;
-    height: 18px;
-    -webkit-appearance: none;
+    width: 1.2rem;
+    height: 1.2rem;
     appearance: none;
-    border: 2px solid #007BFF;
-    border-radius: 50%;
-    outline: none;
+    border: 2px solid black;
+    border-radius: 20%;
+    margin-top: 0.3rem;
+    
+  
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .checkboxContainer input:checked {
-    background-color: #007BFF;  
-    border-color: #007BFF;
+    background-color: var(--brown-500);  
+    border-color: var(--brown-500);
 }
 
 .formRow span {
@@ -200,6 +198,24 @@ select:focus {
     border: 0;
     height: 1px; /* Ajuste a espessura */
     background-color: #e0e0e0; /* Cor desejada */
+}
+
+.formRow button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px; /* Suaviza as bordas */
+    background: transparent;
+    color: #333; /* Cor do ícone */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Animação suave */
+}
+
+.formRow button:hover {
+    background-color: #d0d0d0; /* Cor ao passar o mouse */
 }
 
 
@@ -250,5 +266,24 @@ select:focus {
             margin-bottom: 1rem;
         }
     }
+}
+
+h4{
+    margin: 1rem 0rem ;
+}
+
+.compettionContainer{
+    border-top: 1px solid var(--gray-100);
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+
+}
+
+.compettionContainer p {
+    margin-bottom: 0.7rem;
+    color: black;
+    font-size: 15px;
+
+    
 }
 
