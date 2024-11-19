@@ -1,15 +1,16 @@
 import styles from './Alunos.module.css';
 import noProfile from '../assets/noProfile.jpg';
 import { useState, useEffect } from 'react';
-import { MagnifyingGlass } from 'phosphor-react'
+import { MagnifyingGlass, PencilLine } from 'phosphor-react'
 import { Newaluno } from './Newaluno';
-import { InforMensalidade } from './InfoMensalidade';
-// import { MensalidadeStatusUpdater } from './MensalidadeStatusUpdater';
+import { InfoMensalidade } from './InfoMensalidade';
 
 export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, getAlunoshome, setFilterModalidade, getModalidades, onExportExcel }) {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [showModal, setShowModal] = useState(false);
+
+    const [formData, setFormData] = useState();
 
     const openModal = () => setShowModal(true);
     // const closeModal = () => setShowModal(false);
@@ -21,7 +22,6 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
 
     const [showModalMensalidade, setShowModalMensalidade] = useState(false);
 
-    const openModalMensalidade = () => setShowModalMensalidade(true);
 
     function closeModalMensalidade() {
         getAlunoshome()
@@ -96,7 +96,19 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
     const openProfille = (id) => {
         handleIdUrl(id)
 
+       
+
     }
+
+    const openMensalidade = (item) =>{
+        setFormData(item)
+        setShowModalMensalidade(true)
+ 
+    }
+
+  
+
+  
 
 
     return (
@@ -160,7 +172,7 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
                         .map((item, i) => (
                             <tr key={i}>
                                 <td>
-                                    <button onClick={() => openProfille(item._id)}>
+                                    <button className={styles.profile} onClick={() => openProfille(item._id)}>
 
 
                                         {item.image_url ? (
@@ -187,14 +199,18 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
                                 <td>{item.dados_respons.tel_respons || item.dados_aluno.tel_aluno}</td>
                                 <td>{getModalidades(item.dados_matricula.dados_modalidades)}</td>
                                 <td>
-                                    <button onClick={openModalMensalidade}>
-                                        {obterSituacaoMensalidade(item)}
+                                    <button className={styles.situation} onClick={() => openMensalidade(item)}>
+                                        {(obterSituacaoMensalidade(item) )}
+                                        <PencilLine size={15} />
                                     </button>
                                     {showModalMensalidade &&
-                                        <InforMensalidade
-                                            aluno={item}
+                                        <InfoMensalidade
+                                            formData={formData}
+                                            setFormData={setFormData}
                                             onClose={closeModalMensalidade}
                                             getAlunoshome={getAlunoshome}
+                                            handleIdUrl={handleIdUrl}
+
                                         />}
                                 </td>
 

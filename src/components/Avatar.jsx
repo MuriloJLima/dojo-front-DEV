@@ -4,9 +4,12 @@ export function Avatar({src}) {
 
     
     return (
-        <img
-            className={styles.avatarBorder}
+        <div className={styles.imageContainer}>
+            <img
+            className={styles.avatar}
             src={src}
         />
+        </div>
+        
     )
 }

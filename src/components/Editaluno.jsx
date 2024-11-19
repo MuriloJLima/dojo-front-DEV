@@ -7,6 +7,8 @@ import { toast, ToastContainer } from "react-toastify";
 import InputMask from 'react-input-mask';
 import { PlusCircle, Trash } from 'phosphor-react';
 
+import noProfile from '../assets/noProfile.jpg';
+
 export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
     //objeto contendo a estrutura do aluno a ser cadastrado
     const [formData, setFormData] = useState({
@@ -23,6 +25,7 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
 
     //objeto que armazena a imagem
     const [imagem, setImagem] = useState(null);
+    const [preview, setPreview] = useState(null);
 
 
     //estados gerais para funções de idade > 18, alunos para veridicação de matrícula e estados de erro
@@ -37,7 +40,7 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
 
     const handleContinuar = () => {
         setContinuarClicked(true);
-        setActiveTab('modalidades');
+        setActiveTab('karate');
     };
 
     //busca os alunos no bd para verificar no numero de matricula
@@ -151,16 +154,15 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
 
     // Função para lidar com o upload da imagem
     const handleImageChange = (e) => {
-
-        const file = e.target.files[0]
-
-        console.log(file)
-
-        if (file.name && file.size > 0) {
-            setImagem(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+            setImagem(file);
         }
-
-
     };
 
 
@@ -425,11 +427,11 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                         competicoes: [
                             ...prevData.dados_matricula.dados_modalidades.dados_muaythai.competicoes,
                             {
-                                nivel: newCompetitionKarate.nivel,
-                                localidade: newCompetitionKarate.localidade,
-                                ano: newCompetitionKarate.ano,
-                                disputa: newCompetitionKarate.disputa,
-                                colocacao: newCompetitionKarate.colocacao
+                                nivel: newCompetitionMuayThai.nivel,
+                                localidade: newCompetitionMuayThai.localidade,
+                                ano: newCompetitionMuayThai.ano,
+                                disputa: newCompetitionMuayThai.disputa,
+                                colocacao: newCompetitionMuayThai.colocacao
                             }
                         ]
                     }
@@ -522,8 +524,8 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
         }));
 
     }
-    
-    
+
+
     const handleRemoveCompetitionMuayThai = (index) => {
         const updatedCompeticoes = formData.dados_matricula.dados_modalidades.dados_muaythai.competicoes.filter((_, i) => i !== index);
 
@@ -544,7 +546,7 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
     }
 
 
-    
+
 
 
     //envio das informações
@@ -585,11 +587,12 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                 },
             });
             toast.success(response.data.mensagemStatus);
+
+           
+
             handleIdUrl(aluno._id)
             onClose()
             getAlunosList()
-
-            console.log(response.data.mensagemStatus)
 
 
         } catch (error) {
@@ -610,12 +613,25 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                     >
                         Informações Gerais
                     </button>
+
                     <button
-                        className={`${styles.tabButton} ${activeTab === 'modalidades' && styles.activeTab}`}
-                        onClick={() => setActiveTab('modalidades')}
+                        className={`${styles.tabButton} ${activeTab === 'karate' && styles.activeTab}`}
+                        onClick={() => setActiveTab('karate')}
                     >
-                        Modalidades
+                        Karate
                     </button>
+
+
+
+
+                    <button
+                        className={`${styles.tabButton} ${activeTab === 'muay thai' && styles.activeTab}`}
+                        onClick={() => setActiveTab('muay thai')}
+                    >
+                        Muay Thai
+                    </button>
+
+
                 </div>
 
 
@@ -627,8 +643,35 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                     {activeTab === 'informacoes' && (
                         <>
                             <div className={styles.formRow}>
-                                <div>
-                                    <input type="file" name="imagem" onChange={handleImageChange} />
+                                <div className={styles.imageContainer}>
+                                    <label htmlFor="file-upload" className={styles.uploadLabel}>
+                                        <div className={styles.previewContainer}>
+                                            {preview ? (
+                                                <img src={preview} alt="Preview" className={styles.imagePreview} />
+                                            ) : aluno?.image_url ? (
+                                                <img
+                                                    className={styles.imagePreview}
+                                                    src={`http://localhost:3001/${aluno.image_url}`}
+                                                    alt="Avatar"
+                                                />
+                                            ) : (
+                                                <img
+                                                    className={styles.imagePreview}
+                                                    src={noProfile}
+                                                    alt="No Profile"
+                                                />
+                                            )}
+                                        </div>
+
+                                        <input
+                                            id="file-upload"
+                                            type="file"
+                                            name="imagem"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className={styles.hiddenInput}
+                                        />
+                                    </label>
                                 </div>
                                 <div className={styles.smalldiv}>
                                     <label>Matrícula:</label>
@@ -650,6 +693,12 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                     <label>Nome Completo:</label>
                                     <input type="text" name="dados_aluno.nome_aluno" value={formData.dados_aluno.nome_aluno} onChange={handleChange} required />
                                 </div>
+
+
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Descrição:</label>
+                                <input type="text" name="desc_aluno" value={formData.desc_aluno} onChange={handleChange} required />
                             </div>
                             <div className={styles.formRow}>
                                 <div className={styles.formGroup}>
@@ -808,9 +857,9 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
 
 
                     {/* Conteúdo da aba "Modalidades" */}
-                    {activeTab === 'modalidades' && (
+                    {activeTab === 'karate' && (
                         <div className={styles.formGroup}>
-                            <label>Modalidades:</label>
+
                             <div className={styles.checkboxContainer}>
                                 <input
                                     type="checkbox"
@@ -818,7 +867,7 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                     onChange={handleCheckboxChange}
                                     checked={aluno.dados_matricula.dados_modalidades.dados_karate.is_aluno || false}
                                 />
-                                <label><h3>Karate</h3></label>
+                                <h2>Karate</h2>
                             </div>
                             {aluno.dados_matricula.dados_modalidades.dados_karate.is_aluno && (
                                 <>
@@ -1076,6 +1125,18 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
 
                                 </>
                             )}
+
+                            {modalidadeError && <p>{modalidadeError}</p>}
+                            <div className={styles.buttonContainer}>
+                                <button type="submit" >
+                                    Editar
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'muay thai' && (
+                        <div className={styles.formGroup}>
                             <div className={styles.checkboxContainer}>
                                 <input
                                     type="checkbox"
@@ -1083,7 +1144,7 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                     onChange={handleCheckboxChange}
                                     checked={aluno.dados_matricula.dados_modalidades.dados_muaythai.is_aluno || false}
                                 />
-                                <label>Muay Thai</label>
+                                <h2>Muay Thai</h2>
                             </div>
                             {aluno.dados_matricula.dados_modalidades.dados_muaythai.is_aluno && (
                                 <>
@@ -1275,7 +1336,7 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                                         <div className={styles.formGroup}>
 
                                                             <select name={`nivel-${reverseIndex}`} value={comp.nivel}
-                                                            onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'nivel', e.target.value)}
+                                                                onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'nivel', e.target.value)}
                                                             >
                                                                 <option value="">Selecione: </option>
                                                                 <option value="Municipal">Municipal</option>
@@ -1319,7 +1380,7 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                                         </div>
                                                         <div className={styles.formGroup}>
                                                             <select name={`colocacao-${reverseIndex}`} value={comp.colocacao}
-                                                            onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'colocacao', e.target.value)}
+                                                                onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'colocacao', e.target.value)}
                                                             >
                                                                 <option value="">Selecione</option>
                                                                 <option value="1º lugar">1º lugar</option>
@@ -1346,6 +1407,7 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                 </button>
                             </div>
                         </div>
+
                     )}
 
 

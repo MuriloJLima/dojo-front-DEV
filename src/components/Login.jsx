@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import config from '../config/config.json';
+import logo from '../assets/logo.png'
 
 
 
-export function Login({onLogin}) {
+export function Login({ onLogin, isLoggedIn }) {
 
-    
+
 
     const [alunos, setAlunos] = useState([]);
 
@@ -19,7 +20,7 @@ export function Login({onLogin}) {
 
 
     const [error, setError] = useState('');
-   
+
 
     const getAlunos = async () => {
         try {
@@ -58,31 +59,45 @@ export function Login({onLogin}) {
 
 
     return (
-        <div className={styles.loginContainer}>
-            <h2>Login</h2>
-            <form className={styles.loginForm} onSubmit={handleSubmit}>
-                <label>Matrícula:</label>
-                <input
-                    type="text"
-                    value={matricula}
-                    onChange={(e) => setMatricula(e.target.value)}
-                    required
-                    error={!!error}
-                />
-                <label>Senha:</label>
-                <input
-                    type="text"
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    required
-                error={!!error}
-                />
-                {error && <p className={styles.errorText}>{error}</p>}
-                <div className={styles.buttonContainer}>
-                    <button type="submit">Entrar</button>
-                </div>
-            </form>
+        <div>
+            <header className={styles.header}>
 
+
+
+
+                <img src={logo} alt="cd-alcateia" />
+
+
+            </header>
+        
+          
+            <div className={styles.loginContainer}>
+                <form className={styles.loginForm} onSubmit={handleSubmit}>
+                    <h2>Login - Painel do administrador</h2>
+                    <label>Matrícula:</label>
+                    <input
+                        type="text"
+                        value={matricula}
+                        onChange={(e) => setMatricula(e.target.value)}
+                        required
+                        error={!!error}
+                    />
+                    <label>Senha:</label>
+                    <input
+                        type="text"
+                        value={senha}
+                        onChange={(e) => setSenha(e.target.value)}
+                        required
+                        error={!!error}
+                    />
+                    {error && <p className={styles.errorText}>{error}</p>}
+                    <div className={styles.buttonContainer}>
+                        <button type="submit">Entrar</button>
+                    </div>
+                </form>
+
+            </div>
         </div>
+
     )
 }

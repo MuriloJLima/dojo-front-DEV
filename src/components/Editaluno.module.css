@@ -26,7 +26,7 @@
     display: flex; 
     justify-content: space-between;
     gap: 0.6rem;
-    margin-bottom: 0.5rem;
+  
 
 
     @media (max-width: 700px) {
@@ -39,6 +39,8 @@
     flex: 1 1 0;
     display: flex;
     flex-direction: column;
+
+    justify-content: center;
     
 
     &:not(:last-child) {
@@ -151,7 +153,8 @@ select {
     background-color: #fafafa;
     transition: border-color 0.2s ease;
     width: 100%;
-    height: 100%;
+    box-sizing: border-box;
+    height: 3rem;
 }
 
 .overlay input:focus,
@@ -176,44 +179,41 @@ select:focus {
 
 .checkboxContainer {
     display: flex;
-    border-top: 1px solid var(--gray-400);
+    
     padding-top: 1rem;
     margin: 1rem 0 0;
-
-
+    gap: 0.4rem;
 
 }
 
-.checkboxContainer label {
+.checkboxContainer h2 {
 
-    margin-left: 8px;
-    font-size: 14px;
     color: #333;
     cursor: pointer;
-
-
-
+    font-size: 1.7rem;
 }
+
 
 
 
 
 .checkboxContainer input {
-    position: relative;
-    width: 18px;
-    height: 18px;
-    -webkit-appearance: none;
+    width: 1.2rem;
+    height: 1.2rem;
     appearance: none;
-    border: 2px solid #007BFF;
-    border-radius: 50%;
-    outline: none;
+    border: 2px solid black;
+    border-radius: 20%;
+    margin-top: 0.3rem;
+
+
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
+
 .checkboxContainer input:checked {
-    background-color: #007BFF;  
-    border-color: #007BFF;
+    background-color: var(--brown-500);
+    border-color: var(--brown-500);
 }
 
 .formRow span {
@@ -264,6 +264,8 @@ select:focus {
     flex: 0 0 0%;
     display: flex;
     flex-direction: column;
+
+    justify-content: center;
     
 
     &:not(:last-child) {
@@ -281,6 +283,48 @@ select:focus {
 
 
 .listContainer{
+    margin-top: 1rem;
     border-top: 1px solid var(--gray-100);
     padding: 1rem 0 ;
+}
+
+
+.previewContainer {
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.imagePreview {
+    width: 6rem;
+    height: 6rem;
+    object-fit: cover;
+}
+
+
+.uploadLabel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid var(--brown-500);
+    
+}
+
+.uploadLabel:hover {
+    background: var(--gray-900); /* Cor evidenciada */
+    opacity: 0.5; /* Leve transparência */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Realce adicional */
+    transition: all 0.3s ease; /* Suavização da transição */
+}
+
+
+
+.hiddenInput{
+    display: none;
 }

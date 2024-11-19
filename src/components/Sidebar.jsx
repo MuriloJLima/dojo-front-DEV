@@ -1,5 +1,5 @@
 
-import { PencilLine } from 'phosphor-react'
+import { PencilLine, Trash } from 'phosphor-react'
 
 import { Avatar } from './Avatar'
 import styles from './Sidebar.module.css'
@@ -8,7 +8,7 @@ import noProfile from '../assets/noProfile.jpg';
 import { useState, useEffect } from 'react';
 import { Editaluno } from './Editaluno';
 
-export function Sidebar({ aluno, handleIdUrl, getAlunos, handleDelete }) {
+export function Sidebar({ aluno, handleIdUrl, getAlunos, handleDelete, onLogin }) {
 
     const [showModal, setShowModal] = useState(false);
 
@@ -58,7 +58,7 @@ export function Sidebar({ aluno, handleIdUrl, getAlunos, handleDelete }) {
             <footer>
                 <button className={styles.buttonEdit} onClick={openModal} type='button'>
                     <PencilLine size={20} />
-                    Editar perfil
+                    Editar
                 </button>
                 {showModal &&
                     <Editaluno
@@ -66,10 +66,11 @@ export function Sidebar({ aluno, handleIdUrl, getAlunos, handleDelete }) {
                         aluno={aluno}
                         handleIdUrl={handleIdUrl}
                         getAlunosList={getAlunos}
+                   
                     />}
                 <button className={styles.buttonEdit} onClick={() => handleDelete(aluno._id)} type='button'>
-                    <PencilLine size={20} />
-                    Excluir Perfil
+                    <Trash size={20} />
+                    Excluir
                 </button>
             </footer>
         </aside>

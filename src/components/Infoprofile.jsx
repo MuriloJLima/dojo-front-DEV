@@ -73,7 +73,7 @@ export function Infoprofile({ aluno, handleIdUrl }) {
           <>
             {/* Histórico do Karatê */}
             <div className={styles.history}>
-              <h2>Histórico do Karatê</h2>
+              <h2>Histórico - Karate</h2>
               <p>{`Graduação: ${obterUltimaGraduacao(karateGrad) || "--"}`}</p>
 
               <div className={styles.compettionContainer}>
@@ -91,7 +91,7 @@ export function Infoprofile({ aluno, handleIdUrl }) {
           <>
             {/* Histórico do Muay Thai */}
             <div className={styles.history}>
-              <h2>Histórico do Muay Thai</h2>
+              <h2>Histórico - Muay Thai</h2>
               <p>{`Graduação: ${obterUltimaGraduacao(muaythaiGrad) || "--"}`}</p>
 
               <div className={styles.compettionContainer}>

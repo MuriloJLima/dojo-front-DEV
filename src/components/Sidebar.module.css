@@ -31,9 +31,13 @@
 }
 
 .sidebar footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
     border-top: 1px solid var(--gray-100);
     margin-top: 1.25rem;
-    padding: 0 2rem 1rem;
+    padding: 0 1rem 1rem;
 }
 
 
@@ -43,8 +47,7 @@
     border: 1px solid var(--brown-800);
     border-radius: 8px;
     height: 3rem;
-    width: 100%;
-    padding: 0 1.5rem;
+    
     font-weight: bold;
     display: block;
     text-decoration: none;

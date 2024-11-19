@@ -60,10 +60,27 @@
   border-radius: 8px;
 }
 
+.profile{
+  width: calc(3rem + 12px);
+  height: calc(3rem + 12px);
+  border-radius: 8px;
+  border: none;
+  
+}
+
+.profile:hover{
+  background: var(--gray-400);
+  cursor: pointer;
+  opacity: 60%;
+
+}
+
 .avatar {
   width: calc(3rem + 12px);
   height: calc(3rem + 12px);
   border-radius: 8px;
+  object-fit: cover;
+  
 }
 
 tr {
@@ -128,6 +145,17 @@ tr {
       display: none;
     }
   }
+}
+
+.situation{
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--gray-700 )
+}
+
+.situation:hover{
+  text-decoration: underline;
 }
 
 

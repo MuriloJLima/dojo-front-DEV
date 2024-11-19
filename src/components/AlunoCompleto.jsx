@@ -6,7 +6,7 @@ export function AlunoCompleto({ aluno, onClose, idade }) {
 
     const [activeTab, setActiveTab] = useState('informacoes')
 
- 
+
 
 
 
@@ -31,7 +31,7 @@ export function AlunoCompleto({ aluno, onClose, idade }) {
     const karateGrad = aluno?.dados_matricula?.dados_modalidades.dados_karate.grad_aluno;
     const muaythaiGrad = aluno?.dados_matricula?.dados_modalidades.dados_muaythai.grad_aluno;
 
-  
+
 
 
 
@@ -50,12 +50,27 @@ export function AlunoCompleto({ aluno, onClose, idade }) {
                     >
                         Informações Gerais
                     </button>
-                    <button
-                        className={`${styles.tabButton} ${activeTab === 'modalidades' && styles.activeTab}`}
-                        onClick={() => setActiveTab('modalidades')}
-                    >
-                        Modalidades
-                    </button>
+
+                    {aluno?.dados_matricula?.dados_modalidades.dados_karate.is_aluno === true && (
+                        <button
+                            className={`${styles.tabButton} ${activeTab === 'karate' && styles.activeTab}`}
+                            onClick={() => setActiveTab('karate')}
+                        >
+                            Karate
+                        </button>
+
+                    )}
+
+                    {aluno?.dados_matricula?.dados_modalidades.dados_muaythai.is_aluno === true && (
+                        <button
+                            className={`${styles.tabButton} ${activeTab === 'muay thai' && styles.activeTab}`}
+                            onClick={() => setActiveTab('muay thai')}
+                        >
+                            Muay Thai
+                        </button>
+
+                    )}
+
                 </div>
 
                 {activeTab === 'informacoes' && (
@@ -154,119 +169,137 @@ export function AlunoCompleto({ aluno, onClose, idade }) {
                     </>
                 )}
 
-                {activeTab === 'modalidades' && (
+                {activeTab === 'karate' && (
                     <>
-                        {aluno?.dados_matricula?.dados_modalidades.dados_karate.is_aluno === true && (
-                            <div className={styles.profileSection}>
-                                <h3>Modalidade: Karatê</h3>
-                                <div className={styles.profileRow}>
-                                    <div className={styles.profileGroup}>
-                                        <label>Matrícula (Federação):</label>
-                                        <span>{aluno?.dados_matricula.dados_modalidades.dados_karate.matri_federacao || "--"}</span>
-                                    </div>
-                                    <div className={styles.profileGroup}>
-                                        <label>Data de Inscrição:</label>
-                                        <span>
-                                            {aluno?.dados_matricula.dados_modalidades.dados_karate.data_insc
-                                                ? new Date(aluno?.dados_matricula.dados_modalidades.dados_karate.data_insc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
-                                                : "--"}
-                                        </span>
-                                    </div>
-                                    <div className={styles.profileGroup}>
-                                        <label>Graduação:</label>
-                                        <span>{obterUltimaGraduacao(karateGrad) || "--"}</span>
-                                    </div>
 
+                        <div className={styles.profileSection}>
+                            <h3>Modalidade: Karatê</h3>
+                            <div className={styles.profileRow}>
+                                <div className={styles.profileGroup}>
+                                    <label>Matrícula (Federação):</label>
+                                    <span>{aluno?.dados_matricula.dados_modalidades.dados_karate.matri_federacao || "--"}</span>
+                                </div>
+                                <div className={styles.profileGroup}>
+                                    <label>Data de Inscrição:</label>
+                                    <span>
+                                        {aluno?.dados_matricula.dados_modalidades.dados_karate.data_insc
+                                            ? new Date(aluno?.dados_matricula.dados_modalidades.dados_karate.data_insc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                                            : "--"}
+                                    </span>
+                                </div>
+                                <div className={styles.profileGroup}>
+                                    <label>Graduação:</label>
+                                    <span>{obterUltimaGraduacao(karateGrad) || "--"}</span>
                                 </div>
 
-                                {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes.length > 0 && (
-                                    <div>
-                                        <h2>Competições - Karatê</h2>
-
-                                        <ul>
-                                            {aluno?.dados_matricula?.dados_modalidades.dados_karate.competicoes.map((comp, index) => (
-                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
-                                            ))}
-                                        </ul>
-
-                                    </div>
-                                )}
-
-                                {aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno.length > 0 && (
-                                    <div>
-                                        <h2>Histórico de graduação</h2>
-
-                                        <ul>
-                                            {aluno?.dados_matricula?.dados_modalidades.dados_karate.grad_aluno
-                                                .slice() // cria uma cópia do array
-                                                .reverse() // inverte a ordem do array
-                                                .map((grad, index) => (
-                                                    <li key={index}>{grad.graduacao} - {grad.data_graduacao}</li>
-                                                ))}
-                                        </ul>
-
-
-                                    </div>
-                                )}
-
                             </div>
-                        )}
 
-                        {aluno?.dados_matricula?.dados_modalidades.dados_muaythai.is_aluno === true && (
-                            <div className={styles.profileSection}>
-                                <h3>Modalidade: Muay Thai</h3>
-                                <div className={styles.profileRow}>
-                                    <div className={styles.profileGroup}>
-                                        <label>Matrícula (Federação):</label>
-                                        <span>{aluno?.dados_matricula.dados_modalidades.dados_muaythai.matri_federacao || "--"}</span>
-                                    </div>
-                                    <div className={styles.profileGroup}>
-                                        <label>Data de Inscrição:</label>
-                                        <span>
-                                            {aluno?.dados_matricula.dados_modalidades.dados_muaythai.data_insc
-                                                ? new Date(aluno?.dados_matricula.dados_modalidades.dados_muaythai.data_insc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
-                                                : "--"}
-                                        </span>
-                                    </div>
-                                    <div className={styles.profileGroup}>
-                                        <label>Graduação:</label>
-                                        <span>{obterUltimaGraduacao(muaythaiGrad) || "--"}</span>
-                                    </div>
+                            {aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno.length > 0 && (
+                                <>
 
+                                    {/* Histórico do Karatê */}
+                                    <div className={styles.history}>
+                                        <h2>Histórico de Graduações: </h2>
+
+                                        <div className={styles.infoContainer}>
+                                            {aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno.slice()
+                                                .reverse().map((grad, index) => (
+                                                    <p key={index}> {grad.graduacao} - {grad.data_graduacao} </p>
+                                                ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes.length > 0 && (
+                                <>
+
+                                    {/* Histórico do Karatê */}
+                                    <div className={styles.history}>
+                                        <h2>Histórico de Competições: </h2>
+
+                                        <div className={styles.infoContainer}>
+                                            {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes.slice()
+                                                .reverse().map((comp, index) => (
+                                                    <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
+                                                ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                        </div>
+
+
+
+                    </>
+                )}
+
+                {activeTab === 'muay thai' && (
+                    <>
+
+                        <div className={styles.profileSection}>
+                            <h3>Modalidade: Muay Thai</h3>
+                            <div className={styles.profileRow}>
+                                <div className={styles.profileGroup}>
+                                    <label>Matrícula (Federação):</label>
+                                    <span>{aluno?.dados_matricula.dados_modalidades.dados_muaythai.matri_federacao || "--"}</span>
+                                </div>
+                                <div className={styles.profileGroup}>
+                                    <label>Data de Inscrição:</label>
+                                    <span>
+                                        {aluno?.dados_matricula.dados_modalidades.dados_muaythai.data_insc
+                                            ? new Date(aluno?.dados_matricula.dados_modalidades.dados_muaythai.data_insc).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                                            : "--"}
+                                    </span>
+                                </div>
+                                <div className={styles.profileGroup}>
+                                    <label>Graduação:</label>
+                                    <span>{obterUltimaGraduacao(muaythaiGrad) || "--"}</span>
                                 </div>
 
-                                {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes.length > 0 && (
-                                    <div>
-                                        <h2>Competições - Karatê</h2>
-
-                                        <ul>
-                                            {aluno?.dados_matricula?.dados_modalidades.dados_muaythai.competicoes.map((comp, index) => (
-                                                <li key={index}>{comp.titulo} - {comp.premiacao}</li>
-                                            ))}
-                                        </ul>
-
-                                    </div>
-                                )}
-
-                                {aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.length > 0 && (
-                                    <div>
-                                        <h2>Histórico de graduação</h2>
-
-                                        <ul>
-                                            {aluno?.dados_matricula?.dados_modalidades.dados_muaythai.grad_aluno
-                                                .slice() // cria uma cópia do array
-                                                .reverse() // inverte a ordem do array
-                                                .map((grad, index) => (
-                                                    <li key={index}>{grad.graduacao} - {grad.data_graduacao}</li>
-                                                ))}
-                                        </ul>
-
-
-                                    </div>
-                                )}
-
                             </div>
-                        )}
+
+                            {aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.length > 0 && (
+                                <>
+
+                                    {/* Histórico do Karatê */}
+                                    <div className={styles.history}>
+                                        <h2>Histórico de Graduações: </h2>
+
+                                        <div className={styles.infoContainer}>
+                                            {aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.slice()
+                                                .reverse().map((grad, index) => (
+                                                    <p key={index}> {grad.graduacao} - {grad.data_graduacao} </p>
+                                                ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes.length > 0 && (
+                                <>
+
+                                    {/* Histórico do Karatê */}
+                                    <div className={styles.history}>
+                                        <h2>Histórico de Competições: </h2>
+
+                                        <div className={styles.infoContainer}>
+                                            {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes.slice()
+                                                .reverse().map((comp, index) => (
+                                                    <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
+                                                ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+
+
+                        </div>
+
+
+
                     </>
                 )}
 

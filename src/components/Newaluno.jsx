@@ -6,6 +6,8 @@ import { toast, ToastContainer } from "react-toastify";
 import InputMask from 'react-input-mask';
 import { PlusCircle } from "phosphor-react";
 
+import noProfile from '../assets/noProfile.jpg';
+
 export function Newaluno({ onClose }) {
 
     //objeto contendo a estrutura do aluno a ser cadastrado
@@ -53,6 +55,7 @@ export function Newaluno({ onClose }) {
 
     //objeto que armazena a imagem
     const [imagem, setImagem] = useState(null);
+    const [preview, setPreview] = useState(null);
 
 
     //estados gerais para funções de idade > 18, alunos para veridicação de matrícula e estados de erro
@@ -187,7 +190,15 @@ export function Newaluno({ onClose }) {
 
     // Função para lidar com o upload da imagem
     const handleImageChange = (e) => {
-        setImagem(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+            setImagem(file);
+        }
     };
 
 
@@ -479,8 +490,24 @@ export function Newaluno({ onClose }) {
                     {activeTab === 'informacoes' && (
                         <>
                             <div className={styles.formRow}>
-                                <div>
-                                    <input type="file" name="imagem" onChange={handleImageChange} />
+                                <div className={styles.imageContainer}>
+                                    <label htmlFor="file-upload" className={styles.uploadLabel}>
+                                    <div className={styles.previewContainer}>
+                                        {preview ? (
+                                            <img src={preview} alt="Preview" className={styles.imagePreview} />
+                                        ) : (
+                                            <img src={noProfile} alt="Preview" className={styles.imagePreview} />
+                                        )}
+                                    </div>
+                                        <input
+                                            id="file-upload"
+                                            type="file"
+                                            name="imagem"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className={styles.hiddenInput}
+                                        />
+                                    </label>
                                 </div>
                                 <div className={styles.smalldiv}>
                                     <label>Matrícula:</label>
@@ -643,7 +670,6 @@ export function Newaluno({ onClose }) {
                     {/* Conteúdo da aba "Modalidades" */}
                     {activeTab === 'modalidades' && (
                         <div className={styles.formGroup}>
-                            <label>Modalidades:</label>
                             <div className={styles.checkboxContainer}>
                                 <input
                                     type="checkbox"
@@ -760,6 +786,8 @@ export function Newaluno({ onClose }) {
 
                                 </>
                             )}
+
+                            <span className={styles.border}></span>
                             <div className={styles.checkboxContainer}>
                                 <input
                                     type="checkbox"
@@ -767,7 +795,7 @@ export function Newaluno({ onClose }) {
                                     onChange={handleCheckboxChange}
                                     checked={formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno || false}
                                 />
-                               <h2>Muay Thai</h2>
+                                <h2>Muay Thai</h2>
                             </div>
                             {formData.dados_matricula.dados_modalidades.dados_muaythai.is_aluno && (
                                 <>

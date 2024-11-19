@@ -17,19 +17,37 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 
 
 
-export function Home({ onLogout }) {
+export function Home({ onLogout, onLogin }) {
     const [alunos, setAlunos] = useState([]);
     const [filterModalidade, setFilterModalidade] = useState("Todos"); // Corrigido para "Todos"
     const [aluno, setAluno] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [alunoLogado, setAlunoLogado] = useState([])
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             setAluno(JSON.parse(token))
+            setAlunoLogado(JSON.parse(token))
         }
     }, []);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        const alunoLog = JSON.parse(token)
+        if (alunoLog._id === aluno._id) {
+           
+                localStorage.setItem('token', JSON.stringify(aluno));
+                setAlunoLogado(aluno)
+                
+         
+        }
+    }, [aluno]);
+
+
 
     const getAlunos = async () => {
         const response = await axios.get(`${config.urlRoot}/listarAlunos`);
@@ -49,6 +67,9 @@ export function Home({ onLogout }) {
                 params: { id }
             });
             setAluno(response.data.data);
+
+
+
         } catch (error) {
             console.error("Erro ao buscar dados:", error);
         }
@@ -62,8 +83,7 @@ export function Home({ onLogout }) {
             behavior: 'smooth'
         });
 
-        // Aguarda um pequeno tempo para garantir que a URL seja atualizada
-        await new Promise((resolve) => setTimeout(resolve, 100));
+    
 
         // Chama a função de busca após a navegação
         fetchDataById(id);
@@ -144,14 +164,20 @@ export function Home({ onLogout }) {
     // Retornar o JSX
     return (
         <div>
-            <Header onLogout={onLogout} />
+            <Header 
+            onLogout={onLogout} 
+            aluno={alunoLogado}
+            handleIdUrl={handleIdUrl}
+            />
             <div className={styles.container}>
                 <div className={styles.wrapper}>
                     <Sidebar
                         aluno={aluno}
                         handleIdUrl={handleIdUrl}
                         getAlunos={getAlunos}
-                        handleDelete={handleDelete} />
+                        handleDelete={handleDelete}
+                        alunoLogado={alunoLogado}
+                     />
                     <main>
                         <Infoprofile aluno={aluno}
                             handleIdUrl={handleIdUrl} />
@@ -167,6 +193,7 @@ export function Home({ onLogout }) {
                     getAlunoshome={getAlunos}
                     calculateAge={calculateAge}
                     handleIdUrl={handleIdUrl}
+                    
                 // Passar a função
                 />
             </div>
