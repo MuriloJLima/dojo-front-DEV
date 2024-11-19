@@ -3,9 +3,12 @@ import styles from './Editaluno.module.css'
 import axios from "axios";
 import { useState, useEffect } from "react";
 import config from '../config/config.json';
-import { toast, ToastContainer } from "react-toastify";
+
 import InputMask from 'react-input-mask';
 import { PlusCircle, Trash } from 'phosphor-react';
+
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 import noProfile from '../assets/noProfile.jpg';
 
@@ -41,6 +44,18 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
     const handleContinuar = () => {
         setContinuarClicked(true);
         setActiveTab('karate');
+    };
+
+    const notify = (mensage, type) => {
+        toast[type](mensage, {
+            position: "top-center", // Define a posição no topo central
+            autoClose: 1000,        // Fecha automaticamente após 1 segundo
+            hideProgressBar: true,  // Oculta a barra de progresso
+            closeOnClick: true,     // Fecha ao clicar
+            pauseOnHover: false,    // Não pausa ao passar o mouse
+            draggable: false,       // Notificação fixa, sem arrastar
+        });
+
     };
 
     //busca os alunos no bd para verificar no numero de matricula
@@ -586,13 +601,19 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            toast.success(response.data.mensagemStatus);
-
+           
+            notify("Aluno editado com sucesso!", "success")
            
 
-            handleIdUrl(aluno._id)
-            onClose()
-            getAlunosList()
+            setTimeout(() => {
+                handleIdUrl(aluno._id)
+                onClose()
+                getAlunosList()
+            }, 1000);
+           
+           
+
+          
 
 
         } catch (error) {
@@ -1416,14 +1437,10 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                 </form>
 
                 <ToastContainer
-                    style={{
-                        color: '#808080',
-                        position: 'fixed',
-                        right: '-400%',
-                        zIndex: 9999
-                    }}
-                    autoClose={3000}
-                />
+                autoClose={1000}               // Fecha em 1 segundo
+                hideProgressBar={true}         // Sem barra de progresso
+              
+            />
 
 
             </div>

@@ -2,13 +2,12 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import styles from './Newaluno.module.css'
 import config from '../config/config.json';
-import { toast, ToastContainer } from "react-toastify";
 import InputMask from 'react-input-mask';
 import { PlusCircle } from "phosphor-react";
 
 import noProfile from '../assets/noProfile.jpg';
 
-export function Newaluno({ onClose }) {
+export function Newaluno({ onClose, notify }) {
 
     //objeto contendo a estrutura do aluno a ser cadastrado
     const [formData, setFormData] = useState({
@@ -410,7 +409,7 @@ export function Newaluno({ onClose }) {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            toast.success(response.data.mensagemStatus);
+
             setFormData({
                 dados_aluno: {
                     nome_aluno: "",
@@ -450,11 +449,19 @@ export function Newaluno({ onClose }) {
                 senha_aluno: "",
                 is_adm: false,
             });
-            setIdade(null);
-            setImagem(null)
-            document.querySelector('input[name="imagem"]').value = '';
-            getAlunos()
-            setActiveTab('informacoes')
+            notify("Aluno adicionado com sucesso!", "success")
+
+           
+                setIdade(null);
+                setImagem(null)
+                setPreview(null)
+                
+                getAlunos()
+                setActiveTab('informacoes')
+            
+
+          
+
         } catch (error) {
             console.error("Erro ao cadastrar o aluno:", error);
             // Aqui você pode tratar o erro, como exibir uma mensagem para o usuário
@@ -492,13 +499,13 @@ export function Newaluno({ onClose }) {
                             <div className={styles.formRow}>
                                 <div className={styles.imageContainer}>
                                     <label htmlFor="file-upload" className={styles.uploadLabel}>
-                                    <div className={styles.previewContainer}>
-                                        {preview ? (
-                                            <img src={preview} alt="Preview" className={styles.imagePreview} />
-                                        ) : (
-                                            <img src={noProfile} alt="Preview" className={styles.imagePreview} />
-                                        )}
-                                    </div>
+                                        <div className={styles.previewContainer}>
+                                            {preview ? (
+                                                <img src={preview} alt="Preview" className={styles.imagePreview} />
+                                            ) : (
+                                                <img src={noProfile} alt="Preview" className={styles.imagePreview} />
+                                            )}
+                                        </div>
                                         <input
                                             id="file-upload"
                                             type="file"
@@ -506,6 +513,7 @@ export function Newaluno({ onClose }) {
                                             accept="image/*"
                                             onChange={handleImageChange}
                                             className={styles.hiddenInput}
+                                            
                                         />
                                     </label>
                                 </div>
@@ -914,15 +922,7 @@ export function Newaluno({ onClose }) {
 
                 </form>
 
-                <ToastContainer
-                    style={{
-                        color: '#808080',
-                        position: 'fixed',
-                        right: '-400%',
-                        zIndex: 9999
-                    }}
-                    autoClose={3000}
-                />
+
 
 
             </div>

@@ -257,7 +257,9 @@ select:focus {
 }
 
 .overlay button[type="submit"]:hover {
-    background: var(--white);
+    background-color: var(--white);
+    color: var(--brown-800);
+    border: 1px solid var(--brown-800);
 }
 
 .smalldiv {

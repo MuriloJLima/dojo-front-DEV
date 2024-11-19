@@ -5,7 +5,7 @@ import { MagnifyingGlass, PencilLine } from 'phosphor-react'
 import { Newaluno } from './Newaluno';
 import { InfoMensalidade } from './InfoMensalidade';
 
-export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, getAlunoshome, setFilterModalidade, getModalidades, onExportExcel }) {
+export function Alunos({ handleIdUrl, notify, calculateAge, alunos, filterModalidade, getAlunoshome, setFilterModalidade, getModalidades, onExportExcel }) {
     const [searchTerm, setSearchTerm] = useState('');
 
     const [showModal, setShowModal] = useState(false);
@@ -144,7 +144,7 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
                     <button onClick={openModal} className={styles.addButton}>
                         Inserir Aluno
                     </button>
-                    {showModal && <Newaluno onClose={closeModal} />}
+                    {showModal && <Newaluno onClose={closeModal} notify={notify} />}
                 </div>
                 <button onClick={onExportExcel} className={styles.exportButton}>
                     Exportar para Excel
@@ -210,6 +210,7 @@ export function Alunos({ handleIdUrl, calculateAge, alunos, filterModalidade, ge
                                             onClose={closeModalMensalidade}
                                             getAlunoshome={getAlunoshome}
                                             handleIdUrl={handleIdUrl}
+                                            notify={notify}
 
                                         />}
                                 </td>

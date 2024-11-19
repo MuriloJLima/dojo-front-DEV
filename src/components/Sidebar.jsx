@@ -8,7 +8,7 @@ import noProfile from '../assets/noProfile.jpg';
 import { useState, useEffect } from 'react';
 import { Editaluno } from './Editaluno';
 
-export function Sidebar({ aluno, handleIdUrl, getAlunos, handleDelete, onLogin }) {
+export function Sidebar({ aluno, handleIdUrl, getAlunos, handleDelete,  }) {
 
     const [showModal, setShowModal] = useState(false);
 
@@ -66,6 +66,7 @@ export function Sidebar({ aluno, handleIdUrl, getAlunos, handleDelete, onLogin }
                         aluno={aluno}
                         handleIdUrl={handleIdUrl}
                         getAlunosList={getAlunos}
+                       
                    
                     />}
                 <button className={styles.buttonEdit} onClick={() => handleDelete(aluno._id)} type='button'>

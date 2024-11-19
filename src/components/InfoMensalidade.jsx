@@ -6,12 +6,25 @@ import config from '../config/config.json';
 import axios from "axios";
 import { PlusCircle, Trash } from 'phosphor-react';
 
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 export function InfoMensalidade({ formData, onClose, getAlunoshome, setFormData }) {
 
     
 
    
+    const notify = (mensage, type) => {
+        toast[type](mensage, {
+            position: "top-center", // Define a posição no topo central
+            autoClose: 1000,        // Fecha automaticamente após 1 segundo
+            hideProgressBar: true,  // Oculta a barra de progresso
+            closeOnClick: true,     // Fecha ao clicar
+            pauseOnHover: false,    // Não pausa ao passar o mouse
+            draggable: false,       // Notificação fixa, sem arrastar
+        });
 
+    };
     
 
     
@@ -140,8 +153,15 @@ export function InfoMensalidade({ formData, onClose, getAlunoshome, setFormData 
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            getAlunoshome()
-            onClose()
+           
+
+            notify("Mensalidade adicionada!", "success")
+
+            setTimeout(() => {
+                getAlunoshome()
+                onClose()
+            }, 1000);
+           
 
 
         } catch (error) {
@@ -265,6 +285,11 @@ export function InfoMensalidade({ formData, onClose, getAlunoshome, setFormData 
                             Concluído
                         </button>
                     </div>
+
+                    <ToastContainer
+   
+              
+            />
                 </form>
             </div>
         </div>

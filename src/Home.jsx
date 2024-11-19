@@ -8,6 +8,8 @@ import { useState, useEffect } from 'react';
 import axios from "axios";
 import config from './config/config.json';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -17,7 +19,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 
 
 
-export function Home({ onLogout, onLogin }) {
+export function Home({ onLogout }) {
     const [alunos, setAlunos] = useState([]);
     const [filterModalidade, setFilterModalidade] = useState("Todos"); // Corrigido para "Todos"
     const [aluno, setAluno] = useState([]);
@@ -25,6 +27,7 @@ export function Home({ onLogout, onLogin }) {
     const location = useLocation();
 
     const [alunoLogado, setAlunoLogado] = useState([])
+    
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -147,9 +150,13 @@ export function Home({ onLogout, onLogin }) {
                         await axios.delete(`${config.urlRoot}/excluirAlunos/${id}`);
 
 
-                        
-                        navigate(`/home`);
+                        notify("Aluno excluído com sucesso!", "success")
+
+                        setTimeout(() => {
+                            navigate(`/home`);
                         window.location.reload();
+                        }, 1000);
+                        
                     }
                 },
                 {
@@ -158,6 +165,22 @@ export function Home({ onLogout, onLogin }) {
                 }
             ]
         });
+    };
+
+    
+
+    const notify = (mensage, type) => {
+        toast[type](mensage, {
+            position: "top-center", // Define a posição no topo central
+            autoClose: 1000,        // Fecha automaticamente após 1 segundo
+            hideProgressBar: true,  // Oculta a barra de progresso
+            closeOnClick: true,     // Fecha ao clicar
+            pauseOnHover: false,    // Não pausa ao passar o mouse
+            draggable: false,       // Notificação fixa, sem arrastar
+        });
+
+        console.log(mensage, type)
+
     };
 
 
@@ -177,6 +200,7 @@ export function Home({ onLogout, onLogin }) {
                         getAlunos={getAlunos}
                         handleDelete={handleDelete}
                         alunoLogado={alunoLogado}
+                 
                      />
                     <main>
                         <Infoprofile aluno={aluno}
@@ -193,10 +217,15 @@ export function Home({ onLogout, onLogin }) {
                     getAlunoshome={getAlunos}
                     calculateAge={calculateAge}
                     handleIdUrl={handleIdUrl}
+                    notify={notify}
+                    
                     
                 // Passar a função
                 />
             </div>
+
+            <ToastContainer
+            />
         </div>
     );
 }
