@@ -224,6 +224,8 @@ export function Home({ onLogout }) {
                 />
             </div>
 
+            <span className={styles.version}>Versão: 2.0.0</span>
+
             <ToastContainer
             />
         </div>

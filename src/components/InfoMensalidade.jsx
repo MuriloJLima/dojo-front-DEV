@@ -155,7 +155,7 @@ export function InfoMensalidade({ formData, onClose, getAlunoshome, setFormData 
             });
            
 
-            notify("Mensalidade adicionada!", "success")
+            notify("Mensalidades editadas!", "success")
 
             setTimeout(() => {
                 getAlunoshome()

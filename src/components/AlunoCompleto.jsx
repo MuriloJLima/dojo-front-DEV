@@ -219,8 +219,12 @@ export function AlunoCompleto({ aluno, onClose, idade }) {
                                         <h2>Histórico de Competições: </h2>
 
                                         <div className={styles.infoContainer}>
-                                            {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes.slice()
-                                                .reverse().map((comp, index) => (
+                                            {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes
+                                                .sort((a, b) => {
+                                                    const ordem = ['Mundial', 'Internacional', 'Nacional', 'Estadual', 'Regional', 'Municipal'];
+                                                    return ordem.indexOf(a.nivel) - ordem.indexOf(b.nivel);
+                                                })
+                                                .map((comp, index) => (
                                                     <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
                                                 ))}
                                         </div>
@@ -285,8 +289,12 @@ export function AlunoCompleto({ aluno, onClose, idade }) {
                                         <h2>Histórico de Competições: </h2>
 
                                         <div className={styles.infoContainer}>
-                                            {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes.slice()
-                                                .reverse().map((comp, index) => (
+                                            {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes
+                                                .sort((a, b) => {
+                                                    const ordem = ['Mundial', 'Internacional', 'Nacional', 'Estadual', 'Regional', 'Municipal'];
+                                                    return ordem.indexOf(a.nivel) - ordem.indexOf(b.nivel);
+                                                })
+                                                .map((comp, index) => (
                                                     <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
                                                 ))}
                                         </div>

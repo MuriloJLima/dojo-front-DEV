@@ -96,19 +96,19 @@ export function Alunos({ handleIdUrl, notify, calculateAge, alunos, filterModali
     const openProfille = (id) => {
         handleIdUrl(id)
 
-       
+
 
     }
 
-    const openMensalidade = (item) =>{
+    const openMensalidade = (item) => {
         setFormData(item)
         setShowModalMensalidade(true)
- 
+
     }
 
-  
 
-  
+
+
 
 
     return (
@@ -126,30 +126,34 @@ export function Alunos({ handleIdUrl, notify, calculateAge, alunos, filterModali
                     />
 
                 </div>
-                <div className={styles.filterWrapper}>
-                    <span>Filtrar</span>
-                    <select
-                        value={filterModalidade}
-                        onChange={(e) => setFilterModalidade(e.target.value)}
-                    >
-                        <option value="Todos">Todos</option>
-                        <option value="Karate">Karate</option>
-                        <option value="Muay Thai">Muay Thai</option>
-                        <option value="Karate e Muay Thai">Karate e Muay Thai</option>
-                    </select>
 
-                </div>
+                <div className={styles.buttonSection}>
 
-                <div>
-                    <button onClick={openModal} className={styles.addButton}>
-                        Inserir Aluno
+
+                    <div className={styles.filterWrapper}>
+                        <span>Filtrar</span>
+                        <select
+                            value={filterModalidade}
+                            onChange={(e) => setFilterModalidade(e.target.value)}
+                        >
+                            <option value="Todos">Todos</option>
+                            <option value="Karate">Karate</option>
+                            <option value="Muay Thai">Muay Thai</option>
+                            <option value="Karate e Muay Thai">Karate e Muay Thai</option>
+                        </select>
+
+                    </div>
+
+                    <div>
+                        <button onClick={openModal} className={styles.addButton}>
+                            Inserir Aluno
+                        </button>
+                        {showModal && <Newaluno onClose={closeModal} notify={notify} />}
+                    </div>
+                    <button onClick={onExportExcel} className={styles.exportButton}>
+                        Exportar para Excel
                     </button>
-                    {showModal && <Newaluno onClose={closeModal} notify={notify} />}
                 </div>
-                <button onClick={onExportExcel} className={styles.exportButton}>
-                    Exportar para Excel
-                </button>
-
 
             </div>
             <table className={styles.alunos}>
@@ -200,7 +204,7 @@ export function Alunos({ handleIdUrl, notify, calculateAge, alunos, filterModali
                                 <td>{getModalidades(item.dados_matricula.dados_modalidades)}</td>
                                 <td>
                                     <button className={styles.situation} onClick={() => openMensalidade(item)}>
-                                        {(obterSituacaoMensalidade(item) )}
+                                        {(obterSituacaoMensalidade(item))}
                                         <PencilLine size={15} />
                                     </button>
                                     {showModalMensalidade &&

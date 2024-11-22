@@ -11,10 +11,24 @@
 }
 
 .header {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr ));
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px){
+  .header{
+      grid-template-columns: 1fr;
+  }
+}
+
+.buttonSection{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+
 }
 
 .searchContainer {
@@ -151,7 +165,7 @@ tr {
   border: none;
   background: transparent;
   cursor: pointer;
-  color: var(--gray-700 )
+  color: var(--gray-700 );
 }
 
 .situation:hover{

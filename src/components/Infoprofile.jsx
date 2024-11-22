@@ -77,11 +77,21 @@ export function Infoprofile({ aluno, handleIdUrl }) {
               <p>{`Graduação: ${obterUltimaGraduacao(karateGrad) || "--"}`}</p>
 
               <div className={styles.compettionContainer}>
-                {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes.slice()
-                  .reverse().map((comp, index) => (
-                    <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
+                {aluno.dados_matricula.dados_modalidades.dados_karate.competicoes
+                  .sort((a, b) => {
+                    const ordem = ['Mundial', 'Internacional', 'Nacional', 'Estadual', 'Regional', 'Municipal'];
+                    return ordem.indexOf(a.nivel) - ordem.indexOf(b.nivel);
+
+                    
+                  })
+                  .slice(0, 5) // Limita o array aos primeiros 5 itens
+                  .map((comp, index) => (
+                    <p key={index}>
+                      {comp.colocacao} - Competição {comp.nivel} ({comp.localidade}, {comp.ano}) - {comp.disputa}
+                    </p>
                   ))}
               </div>
+
             </div>
           </>
         )}
@@ -95,8 +105,13 @@ export function Infoprofile({ aluno, handleIdUrl }) {
               <p>{`Graduação: ${obterUltimaGraduacao(muaythaiGrad) || "--"}`}</p>
 
               <div className={styles.compettionContainer}>
-                {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes.slice()
-                  .reverse().map((comp, index) => (
+                {aluno.dados_matricula.dados_modalidades.dados_muaythai.competicoes
+                 .sort((a, b) => {
+                  const ordem = ['Mundial', 'Internacional', 'Nacional', 'Estadual', 'Regional', 'Municipal'];
+                  return ordem.indexOf(a.nivel) - ordem.indexOf(b.nivel);
+                })
+                .slice(0, 5) // Limita o array aos primeiros 5 itens
+                  .map((comp, index) => (
                     <p key={index}> {comp.colocacao} - Competição {comp.nivel} ({comp.localidade},  {comp.ano}) - {comp.disputa} </p>
                   ))}
               </div>

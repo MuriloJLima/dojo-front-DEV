@@ -451,16 +451,16 @@ export function Newaluno({ onClose, notify }) {
             });
             notify("Aluno adicionado com sucesso!", "success")
 
-           
-                setIdade(null);
-                setImagem(null)
-                setPreview(null)
-                
-                getAlunos()
-                setActiveTab('informacoes')
-            
 
-          
+            setIdade(null);
+            setImagem(null)
+            setPreview(null)
+
+            getAlunos()
+            setActiveTab('informacoes')
+
+
+
 
         } catch (error) {
             console.error("Erro ao cadastrar o aluno:", error);
@@ -513,7 +513,7 @@ export function Newaluno({ onClose, notify }) {
                                             accept="image/*"
                                             onChange={handleImageChange}
                                             className={styles.hiddenInput}
-                                            
+
                                         />
                                     </label>
                                 </div>
@@ -741,15 +741,26 @@ export function Newaluno({ onClose, notify }) {
                                         </div>
 
                                         <div className={styles.formGroup}>
-                                            <label>Ano da competição:</label>
+                                            <label>Ano:</label>
                                             <input
-                                                type="date"
+                                                type="number"
                                                 name="ano"
                                                 value={newCompetitionKarate.ano}
                                                 onChange={handleCompetitionKarateChange}
-                                                placeholder="xxxx"
+                                                placeholder="2024"
+                                                min="2000"
+                                                max="2100"
+                                                step="1"
+                                                maxLength="4"
+                                                onInput={(e) => {
+                                                    // Limita o valor para 4 caracteres
+                                                    if (e.target.value.length > 4) {
+                                                        e.target.value = e.target.value.slice(0, 4);
+                                                    }
+                                                }}
                                             />
                                         </div>
+
                                         <div className={styles.formGroup}>
                                             <label>Disputa:</label>
                                             <select name="disputa" value={newCompetitionKarate.disputa} onChange={handleCompetitionKarateChange}>
@@ -857,15 +868,26 @@ export function Newaluno({ onClose, notify }) {
                                         </div>
 
                                         <div className={styles.formGroup}>
-                                            <label>Ano da competição:</label>
+                                            <label>Ano:</label>
                                             <input
-                                                type="date"
+                                                type="number"
                                                 name="ano"
                                                 value={newCompetitionMuayThai.ano}
                                                 onChange={handleCompetitionMuayThaiChange}
-                                                placeholder="xxxx"
+                                                placeholder="2024"
+                                                min="2000"
+                                                max="2100"
+                                                step="1"
+                                                maxLength="4"
+                                                onInput={(e) => {
+                                                    // Limita o valor para 4 caracteres
+                                                    if (e.target.value.length > 4) {
+                                                        e.target.value = e.target.value.slice(0, 4);
+                                                    }
+                                                }}
                                             />
                                         </div>
+
                                         <div className={styles.formGroup}>
                                             <label>Disputa:</label>
                                             <input

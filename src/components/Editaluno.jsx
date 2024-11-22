@@ -601,19 +601,19 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-           
+
             notify("Aluno editado com sucesso!", "success")
-           
+
 
             setTimeout(() => {
                 handleIdUrl(aluno._id)
                 onClose()
                 getAlunosList()
             }, 1000);
-           
-           
 
-          
+
+
+
 
 
         } catch (error) {
@@ -1026,15 +1026,26 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                         </div>
 
                                         <div className={styles.formGroup}>
-                                            <label>Ano da competição:</label>
+                                            <label>Ano:</label>
                                             <input
-                                                type="date"
+                                                type="number"
                                                 name="ano"
                                                 value={newCompetitionKarate.ano}
                                                 onChange={handleCompetitionKarateChange}
-                                                placeholder="xxxx"
+                                                placeholder="2024"
+                                                min="2000"
+                                                max="2100"
+                                                step="1"
+                                                maxLength="4"
+                                                onInput={(e) => {
+                                                    // Limita o valor para 4 caracteres
+                                                    if (e.target.value.length > 4) {
+                                                        e.target.value = e.target.value.slice(0, 4);
+                                                    }
+                                                }}
                                             />
                                         </div>
+
                                         <div className={styles.formGroup}>
                                             <label>Disputa:</label>
                                             <select name="disputa" value={newCompetitionKarate.disputa} onChange={handleCompetitionKarateChange}>
@@ -1105,11 +1116,21 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                                         <div className={styles.formGroup}>
 
                                                             <input
-                                                                type="date"
+                                                                type="number"
                                                                 name={`ano-${reverseIndex}`}
                                                                 value={comp.ano}
                                                                 onChange={(e) => handleEditCompetitionKarate(reverseIndex, 'ano', e.target.value)}
-                                                                placeholder="xxxx"
+                                                                placeholder="2024"
+                                                                min="2000"
+                                                                max="2100"
+                                                                step="1"
+                                                                maxLength="4"
+                                                                onInput={(e) => {
+                                                                    // Limita o valor para 4 caracteres
+                                                                    if (e.target.value.length > 4) {
+                                                                        e.target.value = e.target.value.slice(0, 4);
+                                                                    }
+                                                                }}
                                                             />
                                                         </div>
                                                         <div className={styles.formGroup}>
@@ -1304,13 +1325,23 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                         </div>
 
                                         <div className={styles.formGroup}>
-                                            <label>Ano da competição:</label>
+                                            <label>Ano:</label>
                                             <input
-                                                type="date"
+                                                type="number"
                                                 name="ano"
                                                 value={newCompetitionMuayThai.ano}
                                                 onChange={handleCompetitionMuayThaiChange}
-                                                placeholder="xxxx"
+                                                placeholder="2024"
+                                                min="2000"
+                                                max="2100"
+                                                step="1"
+                                                maxLength="4"
+                                                onInput={(e) => {
+                                                    // Limita o valor para 4 caracteres
+                                                    if (e.target.value.length > 4) {
+                                                        e.target.value = e.target.value.slice(0, 4);
+                                                    }
+                                                }}
                                             />
                                         </div>
                                         <div className={styles.formGroup}>
@@ -1383,11 +1414,21 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                                         <div className={styles.formGroup}>
 
                                                             <input
-                                                                type="date"
+                                                                type="number"
                                                                 name={`ano-${reverseIndex}`}
                                                                 value={comp.ano}
                                                                 onChange={(e) => handleEditCompetitionMuayThai(reverseIndex, 'ano', e.target.value)}
-                                                                placeholder="xxxx"
+                                                                placeholder="2024"
+                                                                min="2000"
+                                                                max="2100"
+                                                                step="1"
+                                                                maxLength="4"
+                                                                onInput={(e) => {
+                                                                    // Limita o valor para 4 caracteres
+                                                                    if (e.target.value.length > 4) {
+                                                                        e.target.value = e.target.value.slice(0, 4);
+                                                                    }
+                                                                }}
                                                             />
                                                         </div>
                                                         <div className={styles.formGroup}>
@@ -1437,10 +1478,10 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                 </form>
 
                 <ToastContainer
-                autoClose={1000}               // Fecha em 1 segundo
-                hideProgressBar={true}         // Sem barra de progresso
-              
-            />
+                    autoClose={1000}               // Fecha em 1 segundo
+                    hideProgressBar={true}         // Sem barra de progresso
+
+                />
 
 
             </div>
