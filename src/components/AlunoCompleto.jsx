@@ -204,8 +204,12 @@ export function AlunoCompleto({ aluno, onClose, idade }) {
                                         <div className={styles.infoContainer}>
                                             {aluno.dados_matricula.dados_modalidades.dados_karate.grad_aluno.slice()
                                                 .reverse().map((grad, index) => (
-                                                    <p key={index}> {grad.graduacao} - {grad.data_graduacao} </p>
+                                                    <p key={index}>
+                                                        {grad.graduacao}
+                                                        {grad.data_graduacao && ` - ${new Date(grad.data_graduacao).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}`}
+                                                    </p>
                                                 ))}
+
                                         </div>
                                     </div>
                                 </>
@@ -274,7 +278,10 @@ export function AlunoCompleto({ aluno, onClose, idade }) {
                                         <div className={styles.infoContainer}>
                                             {aluno.dados_matricula.dados_modalidades.dados_muaythai.grad_aluno.slice()
                                                 .reverse().map((grad, index) => (
-                                                    <p key={index}> {grad.graduacao} - {grad.data_graduacao} </p>
+                                                    <p key={index}>
+                                                        {grad.graduacao}
+                                                        {grad.data_graduacao && ` - ${new Date(grad.data_graduacao).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}`}
+                                                    </p>
                                                 ))}
                                         </div>
                                     </div>

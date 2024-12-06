@@ -1,5 +1,5 @@
 import styles from './Header.module.css'
-
+import config from '../config/config.json';
 
 import logo from '../assets/logo.png'
 import noProfile from '../assets/noProfile.jpg';
@@ -34,7 +34,7 @@ export function Header({ onLogout, aluno, handleIdUrl, isLoggedIn }) {
                     {aluno?.image_url ? (
                         <img
                             className={styles.avatar}
-                            src={`http://localhost:3001/${aluno?.image_url}`}
+                            src={aluno?.image_url}
 
                         />
                     ) : (

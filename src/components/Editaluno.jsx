@@ -672,7 +672,7 @@ export function Editaluno({ onClose, aluno, handleIdUrl, getAlunosList }) {
                                             ) : aluno?.image_url ? (
                                                 <img
                                                     className={styles.imagePreview}
-                                                    src={`http://localhost:3001/${aluno.image_url}`}
+                                                    src={aluno?.image_url}
                                                     alt="Avatar"
                                                 />
                                             ) : (

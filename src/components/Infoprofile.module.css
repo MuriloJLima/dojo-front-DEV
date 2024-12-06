@@ -25,6 +25,16 @@
     border-bottom: 1px solid var(--gray-400);
 }
 
+@media (max-width: 768px){
+    .infoSection{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+       
+    }
+}
+
+
 
 
 

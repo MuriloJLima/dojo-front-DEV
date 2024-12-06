@@ -4,6 +4,7 @@ import { PencilLine, Trash } from 'phosphor-react'
 import { Avatar } from './Avatar'
 import styles from './Sidebar.module.css'
 import noProfile from '../assets/noProfile.jpg';
+import config from '../config/config.json';
 
 import { useState, useEffect } from 'react';
 import { Editaluno } from './Editaluno';
@@ -35,7 +36,7 @@ export function Sidebar({ aluno, handleIdUrl, getAlunos, handleDelete,  }) {
                 {aluno?.image_url ? (
                     <Avatar
                         className={styles.avatar}
-                        src={`http://localhost:3001/${aluno.image_url}`}
+                        src={aluno?.image_url}
 
                     />
                 ) : (

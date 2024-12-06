@@ -1,4 +1,4 @@
-import styles from './infoMensalidade.module.css'
+import styles from './InfoMensalidade.module.css'
 
 import { useState, useEffect } from 'react';
 

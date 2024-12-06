@@ -153,7 +153,7 @@ export function Home({ onLogout }) {
                         notify("Aluno excluído com sucesso!", "success")
 
                         setTimeout(() => {
-                            navigate(`/home`);
+                            navigate(`/`);
                         window.location.reload();
                         }, 1000);
                         
@@ -183,9 +183,8 @@ export function Home({ onLogout }) {
 
     };
 
-
-    // Retornar o JSX
-    return (
+      // Retornar o JSX
+      return (
         <div>
             <Header 
             onLogout={onLogout} 
@@ -230,4 +229,6 @@ export function Home({ onLogout }) {
             />
         </div>
     );
+
+    
 }

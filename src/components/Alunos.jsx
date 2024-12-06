@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { MagnifyingGlass, PencilLine } from 'phosphor-react'
 import { Newaluno } from './Newaluno';
 import { InfoMensalidade } from './InfoMensalidade';
+import config from '../config/config.json';
 
 export function Alunos({ handleIdUrl, notify, calculateAge, alunos, filterModalidade, getAlunoshome, setFilterModalidade, getModalidades, onExportExcel }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -182,7 +183,7 @@ export function Alunos({ handleIdUrl, notify, calculateAge, alunos, filterModali
                                         {item.image_url ? (
                                             <img
                                                 className={styles.avatar}
-                                                src={`http://localhost:3001/${item.image_url}`}
+                                                src={item.image_url}
 
                                             />
                                         ) : (
